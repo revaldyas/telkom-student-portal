@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+.next
+node_modules
+.git
+.vercel
+.agents
+.aws
+.codex
+memory
+tsconfig.tsbuildinfo
