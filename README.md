@@ -9,6 +9,11 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 - Registrasi dan login akun website dengan role Siswa atau Guru. Registrasi siswa memerlukan NIS yang sudah terdaftar di Data Siswa.
 - Dashboard siswa untuk mengelola karya sendiri.
 - Suka, komentar, voting penghargaan, badge, dan riwayat achievement.
+- Profil kompetensi siswa dengan minat, keterampilan, pengalaman proyek, program keahlian, dan pencapaian.
+- Galeri karya dengan sampul gambar, video atau PDF pendukung, tautan, dan status verifikasi Guru.
+- Ruang Guru untuk meninjau karya, memberi umpan balik, meminta revisi, menerbitkan karya, dan mengelola peluang.
+- Dashboard dampak sekolah untuk partisipasi, kategori proyek, status verifikasi, publikasi, dan peluang.
+- Kanal peluang untuk kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi industri.
 - Pencarian global untuk konten publik.
 - Panel admin Payload CMS untuk mengelola data sekolah, karya, pengguna, penghargaan, dan media.
 - Upload gambar yang dikompresi ke WebP sebelum disimpan.
@@ -72,11 +77,14 @@ Buat admin CMS pertama melalui environment variables di atas, lalu jalankan `npm
 | Collection | Isi dan relasi utama |
 | --- | --- |
 | `admins` | Akun khusus untuk panel CMS Payload. |
-| `users` | Akun website Siswa/Guru, profil, NIS, kelas, program keahlian, dan foto profil. |
+| `users` | Akun website Siswa/Guru, profil kompetensi, NIS, kelas, program keahlian, dan foto profil. |
 | `students` | Daftar siswa sekolah dan NIS resmi; terpisah dari akun login. Terhubung ke `classes`. |
 | `programs` | Program keahlian. |
 | `classes` | Kelas yang terhubung ke satu program keahlian. Tidak memiliki field tahun ajaran. |
-| `portfolios` | Karya siswa; terhubung ke pengguna siswa, kategori, dan gambar upload. Slug dibuat dari judul dan harus unik. |
+| `portfolios` | Karya siswa; terhubung ke pengguna siswa, kategori, sampul, dan berkas bukti. Slug dibuat dari judul dan harus unik; karya dapat diverifikasi Guru sebelum diterbitkan. |
+| `portfolio-reviews` | Keputusan verifikasi atau revisi dan umpan balik Guru pada karya. |
+| `opportunities` | Kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi yang dikelola Guru atau admin. |
+| `opportunity-interests` | Minat siswa pada peluang yang sedang dibuka. |
 | `portfolio-categories` | Kategori karya yang dapat dikelola admin. |
 | `uploads` | Metadata dan file gambar yang digunakan profil maupun karya. |
 | `portfolio-likes` | Relasi siswa dan karya yang disukai. Satu siswa hanya dapat menyukai karya yang sama sekali. |
@@ -112,6 +120,7 @@ scripts/                   Script seed data demo dan admin CMS
 - `GET /api/community/leaderboard`
 - `GET /api/community/search`
 - `GET /api/community/students/:id`
+- `GET /api/mentor/reviews`, `POST /api/mentor/reviews` (khusus Guru; cakupan dibatasi ke kelas/program yang ditugaskan)
 - `GET /api/community/portfolios/slug/:slug`
 - `GET` dan `POST /api/community/portfolios/:id/comments`
 - `GET` dan `POST /api/community/portfolios/:id/stats` untuk statistik dan interaksi suka
@@ -141,6 +150,8 @@ npm run seed:awards
 
 Payload mengelola schema PostgreSQL melalui adapter Drizzle. Deployment Vercel menggunakan Shared Transaction Pooler Supabase karena fungsi serverless membuka koneksi singkat dan deployment Vercel memerlukan jalur IPv4. Direct connection Supabase pada konfigurasi standar dapat hanya menyediakan IPv6. Session Pooler lebih cocok untuk server lokal yang berjalan lama.
 
+Schema push otomatis Payload dinonaktifkan agar schema lokal tanpa plugin Vercel Blob tidak menghapus kolom internal Blob pada database bersama. Setiap perubahan collection perlu disertai migrasi dan dicatat di `migrations/index.ts`.
+
 Jalankan perintah CLI Payload melalui script npm:
 
 ```bash
@@ -150,7 +161,7 @@ npm run payload -- migrate:status
 npm run payload -- migrate
 ```
 
-Periksa isi migrasi sebelum menerapkannya pada database bersama/produksi. Migrasi yang saat ini ada adalah perubahan untuk kolom `_objectkey` pada `uploads`; migrasi ini bukan baseline schema lengkap untuk database kosong. Database baru memerlukan proses inisialisasi schema awal yang terencana sebelum migrasi tambahan diterapkan.
+Periksa isi migrasi sebelum menerapkannya pada database bersama/produksi. Migrasi yang ada mencakup kolom `_objectkey` pada `uploads` dan schema untuk modul kompetensi, verifikasi karya, dan peluang; migrasi ini bukan baseline schema lengkap untuk database kosong. Database baru memerlukan proses inisialisasi schema awal yang terencana sebelum migrasi tambahan diterapkan.
 
 Saat mengubah collection atau field, perbarui konfigurasi di `collections/` dan daftarkan collection baru di `payload.config.ts`. Setelah itu, regenerasi tipe dan import map Payload, tinjau perubahan schema, lalu buat dan periksa migrasi sebelum menerapkannya.
 

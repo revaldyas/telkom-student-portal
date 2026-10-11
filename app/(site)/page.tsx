@@ -18,6 +18,7 @@ type Portfolio = {
   likes?: number
   comments?: number
   isNominee?: boolean
+  verificationStatus?: string
 }
 type Award = { id: string | number; title: string; description: string; opensAt: string; closesAt: string; nominees?: { id: string | number; title: string; slug: string; coverImage: string | null }[] }
 type Leader = { id: string; name: string; profilePhoto: string | null; likes: number; comments: number; score?: number }
@@ -97,7 +98,7 @@ export default function Home() {
         const rank = mvsRank(board, studentID)
         const author = <>{photo ? <span className="mvs-avatar"><SkeletonImage src={photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{nameOf(work.student).slice(0, 1).toUpperCase()}</span>}<span>{nameOf(work.student)}{rank > 0 && <small className="work-author-rank">MVS #{rank}</small>}</span></>
         return <article className="lowfi-work-card" key={work.id}>
-          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}</Link>
+          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}{work.verificationStatus === 'verified' && <span className="verified-badge">TERVERIFIKASI</span>}</Link>
           <div className="work-card-body"><p className="work-card-category">{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Karya'}{work.year ? ` / ${work.year}` : ''}</p><h3><Link href={`/karya/${work.slug}`}>{displayTitle(work.title, nameOf(work.student))}</Link></h3><div className="work-card-footer"><p className="work-author">{studentID ? <Link href={`/siswa/${studentID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-arrow" aria-hidden="true">↗</span></div></div>
         </article>
       })}</div> : <p>Belum ada karya terbit.</p>}

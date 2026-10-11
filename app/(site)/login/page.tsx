@@ -18,7 +18,7 @@ export default function LoginPage() {
       if (!response.ok || !data.user) throw new Error(data.message || 'Email atau kata sandi belum cocok.')
       try { localStorage.removeItem('karyakita-token') } catch {}
       window.dispatchEvent(new Event('karyakita-session-change'))
-      router.push(data.user?.role === 'teacher' ? '/awards' : '/dashboard')
+      router.push(data.user?.role === 'teacher' ? '/mentor' : '/dashboard')
     } catch (err) { setError(err instanceof Error ? err.message : 'Tidak bisa masuk. Coba lagi.') }
     finally { setBusy(false) }
   }

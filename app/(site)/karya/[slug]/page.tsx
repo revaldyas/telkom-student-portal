@@ -16,7 +16,10 @@ type Portfolio = {
   slug: string
   year?: number
   projectUrl?: string
+  projectFile?: { url?: string; mimeType?: string; filename?: string } | null
   tools?: string[]
+  verificationStatus?: string
+  verifiedBy?: { name?: string } | null
   categoryRef?: Relation
   coverImage?: Relation
   student?: Relation
@@ -185,10 +188,14 @@ export default function WorkPage() {
       <p className="work-author">Oleh <Link href={`/siswa/${authorId}`}>{authorPhoto ? <span className="mvs-avatar"><SkeletonImage className="work-author-placeholder" src={authorPhoto} alt="" />{mvsRank > 0 && <small className="mvs-rank-badge">MVS #{mvsRank}</small>}</span> : mvsRank > 0 ? <span className="mvs-avatar work-author-placeholder">{(author?.name || 'Siswa').slice(0, 1).toUpperCase()}<small className="mvs-rank-badge">MVS #{mvsRank}</small></span> : null}{author?.name || 'Siswa'}</Link></p>
       </header>
       {image && <SkeletonImage className="lowfi-cover" src={image} alt={`Sampul ${portfolio.title}`} />}
+      {portfolio.verificationStatus === 'verified' && <p className="verified-callout">Terverifikasi oleh {portfolio.verifiedBy?.name || 'Guru pembimbing'}</p>}
       <div className="work-detail-body">
       <p>{portfolio.summary}</p>
       {portfolio.tools?.length ? <p><strong>Perangkat:</strong> {portfolio.tools.join(', ')}</p> : null}
       {portfolio.projectUrl && <p><a href={portfolio.projectUrl} target="_blank" rel="noreferrer">Buka tautan karya</a></p>}
+      {portfolio.projectFile?.url && (portfolio.projectFile.mimeType?.startsWith('video/')
+        ? <video className="work-project-video" controls preload="metadata" src={portfolio.projectFile.url}>Browser tidak mendukung pemutaran video.</video>
+        : <a className="work-project-file" href={portfolio.projectFile.url} target="_blank" rel="noreferrer">Lihat atau unduh dokumen · {portfolio.projectFile.filename || 'PDF'} ↗</a>)}
       <div className="lowfi-actions"><button type="button" disabled={busy} onClick={() => void toggleLike()}>{myLike ? '♥ Disukai' : '♡ Suka'} · {counts.likes}</button><span>{counts.comments} komentar</span></div>
       {awards.length > 0 && <section className="lowfi-panel"><h2>Voting Penghargaan</h2><p>Karya ini masuk nominasi penghargaan yang sedang tersedia.</p>{awards.map((award) => <div className="lowfi-row" key={award.id}><span>{award.title}</span><button disabled={busy || role === 'teacher' || role === 'admin'} onClick={() => void vote(award)}>{myVotes[String(award.id)] ? 'Ubah suara' : 'Vote karya'}</button></div>)}</section>}
       <section className="lowfi-panel"><h2>Komentar ({comments.length})</h2><form onSubmit={submitComment}><label htmlFor="comment">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder="Berikan tanggapan yang membangun…"/><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></form>{message && <p role="status">{message}</p>}{comments.map((comment) => <article className="lowfi-comment" key={comment.id}><p>{comment.content}</p><small><Link href={`/siswa/${relationId(comment.student)}`}>{relationName(comment.student) || 'Siswa'}</Link> · {new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}</small></article>)}</section>

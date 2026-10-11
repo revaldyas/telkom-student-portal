@@ -18,13 +18,15 @@ type StudentRecord = {
 type Work = {
   id: string | number; slug: string; title: string; summary: string; year?: number
   status?: string; projectUrl?: string; tools?: string[]
-  categoryRef?: { name?: string; code?: string } | string | number
+  verificationStatus?: string; reviewFeedback?: string | null
+  projectFile?: { url?: string; filename?: string; mimeType?: string } | null
+  categoryRef?: { id?: string | number; name?: string; code?: string } | string | number
   coverImage?: { url?: string; alt?: string } | string | number
   likeCount: number; commentCount: number
   isNominee?: boolean
 }
 type Profile = {
-  student: { id: string | number; name: string; bio?: string | null; profilePhoto?: string | null; class?: string | null; program?: string | null }
+  student: { id: string | number; name: string; bio?: string | null; profilePhoto?: string | null; class?: string | null; program?: string | null; interests?: string[]; skills?: string[]; experiences?: string[] }
   totals: { likes: number; comments: number; portfolios: number }
   portfolios: Work[]; nomineeAwards: AwardEntry[]; winningAwards: AwardEntry[]; badges: Badge[]; records: StudentRecord[]
 }
@@ -40,6 +42,7 @@ export default function StudentProfilePage() {
   const [workQuery, setWorkQuery] = useState('')
   const [editing, setEditing] = useState(false)
   const [addingWork, setAddingWork] = useState(false)
+  const [editingWork, setEditingWork] = useState<Work | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
   const [notice, setNotice] = useState('')
 
@@ -79,8 +82,10 @@ export default function StudentProfilePage() {
                 return {
                   id: work.id, slug: work.slug, title: work.title, summary: work.summary || '', year: work.year,
                   status: work.status, projectUrl: work.projectUrl, tools: work.tools,
-                  categoryRef: category ? { name: category.name, code: category.code } : null,
+                  verificationStatus: work.verificationStatus, reviewFeedback: work.reviewFeedback,
+                  categoryRef: category ? { id: category.id, name: category.name, code: category.code } : null,
                   coverImage: cover ? { url: cover.url, alt: cover.alt } : null,
+                  projectFile: typeof work.projectFile === 'object' && work.projectFile ? { url: work.projectFile.url, filename: work.projectFile.filename, mimeType: work.projectFile.mimeType } : null,
                   likeCount: existing?.likeCount || 0, commentCount: existing?.commentCount || 0,
                   isNominee: existing?.isNominee || false,
                 }
@@ -118,13 +123,17 @@ export default function StudentProfilePage() {
       if (!uploadResponse.ok) { setNotice(uploadData.errors?.[0]?.message || 'Foto profil belum berhasil diunggah.'); return }
       profilePhoto = uploadData.doc?.id
     }
-    const data: Record<string, unknown> = { name: form.get('name'), bio: form.get('bio') }
+    const readLines = (key: string) => String(form.get(key) || '').split(/\n|,/).map((item) => item.trim()).filter(Boolean)
+    const data: Record<string, unknown> = {
+      name: form.get('name'), bio: form.get('bio'),
+      interests: readLines('interests'), skills: readLines('skills'), experiences: readLines('experiences'),
+    }
     if (profilePhoto !== undefined) data.profilePhoto = profilePhoto
     const response = await siteFetch(`/api/users/${profile.student.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
     const result = await response.json()
     if (!response.ok) { setNotice(result.errors?.[0]?.message || 'Profil belum berhasil diperbarui.'); return }
     const user = result.doc || result
-    setProfile({ ...profile, student: { ...profile.student, name: user.name, bio: user.bio || null, profilePhoto: user.profilePhoto?.url || profile.student.profilePhoto } })
+    setProfile({ ...profile, student: { ...profile.student, name: user.name, bio: user.bio || null, interests: user.interests || [], skills: user.skills || [], experiences: user.experiences || [], profilePhoto: user.profilePhoto?.url || profile.student.profilePhoto } })
     setEditing(false)
     setNotice('Profil berhasil diperbarui.')
   }
@@ -145,12 +154,23 @@ export default function StudentProfilePage() {
       if (!uploadResponse.ok) { setNotice(uploadData.errors?.[0]?.message || 'Gambar sampul belum berhasil diunggah.'); return }
       coverImage = uploadData.doc?.id
     }
+    const evidenceFile = form.get('projectFile')
+    let projectFile: string | number | undefined
+    if (evidenceFile instanceof File && evidenceFile.size) {
+      const upload = new FormData(); upload.append('file', evidenceFile); upload.append('alt', `Bukti karya ${title}`)
+      const uploadResponse = await siteFetch('/api/uploads', { method: 'POST', body: upload })
+      const uploadData = await uploadResponse.json()
+      if (!uploadResponse.ok) { setNotice(uploadData.errors?.[0]?.message || 'Bukti karya belum berhasil diunggah.'); return }
+      projectFile = uploadData.doc?.id
+    }
     const tools = String(form.get('tools') || '').split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
-    const response = await siteFetch('/api/portfolios?depth=2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title, categoryRef: category?.id, summary: form.get('summary'), coverImage, year: Number(form.get('year')), tools, projectUrl: form.get('projectUrl') || undefined, status: 'draft' }) })
+    const data = { title, categoryRef: category?.id, summary: form.get('summary'), coverImage, projectFile, year: Number(form.get('year')), tools, projectUrl: form.get('projectUrl') || undefined }
+    const response = await siteFetch(editingWork ? `/api/portfolios/${editingWork.id}?depth=2` : '/api/portfolios?depth=2', { method: editingWork ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(editingWork ? data : { ...data, status: 'draft' }) })
     const result = await response.json()
     if (!response.ok) { setNotice(result.errors?.[0]?.message || 'Karya belum berhasil disubmit.'); return }
     setAddingWork(false)
-    setNotice('Karya berhasil disubmit dan menunggu ditinjau admin.')
+    setEditingWork(null)
+    setNotice(editingWork ? 'Perubahan karya berhasil disimpan untuk ditinjau Guru pembimbing.' : 'Karya berhasil disubmit dan menunggu ditinjau Guru pembimbing.')
     window.location.reload()
   }
 
@@ -173,7 +193,7 @@ export default function StudentProfilePage() {
           <div className="creator-stats"><span><strong>{publishedCount}</strong> karya</span><span><strong>{profile.totals.likes}</strong> suka</span><span><strong>{profile.totals.comments}</strong> komentar</span></div>
           <p className="creator-school">{student.class || 'Siswa'}{student.program ? ` · ${student.program}` : ''}</p>
           {student.bio && <p className="creator-bio">{student.bio}</p>}
-          {isOwner && <button className="dash-new" onClick={() => setAddingWork(!addingWork)}>{addingWork ? 'Tutup form' : '+ Tambah karya'}</button>}
+          {isOwner && <button className="dash-new" onClick={() => { setEditingWork(null); setAddingWork(!addingWork) }}>{addingWork ? 'Tutup form' : '+ Tambah karya'}</button>}
         </div>
       </header>
 
@@ -181,18 +201,23 @@ export default function StudentProfilePage() {
       {editing && isOwner && <form className="project-form profile-edit-form" onSubmit={saveProfile}>
         <h2>Edit profil</h2><label htmlFor="profile-name">NAMA</label><input id="profile-name" name="name" required defaultValue={student.name} />
         <label htmlFor="profile-bio">BIO</label><textarea id="profile-bio" name="bio" maxLength={300} defaultValue={student.bio || ''} placeholder="Ceritakan sedikit tentang dirimu" />
+        <label htmlFor="profile-interests">MINAT</label><textarea id="profile-interests" name="interests" defaultValue={(student.interests || []).join('\n')} placeholder="Satu minat per baris" />
+        <label htmlFor="profile-skills">KETERAMPILAN</label><textarea id="profile-skills" name="skills" defaultValue={(student.skills || []).join('\n')} placeholder="Satu keterampilan per baris" />
+        <label htmlFor="profile-experiences">PENGALAMAN PROYEK</label><textarea id="profile-experiences" name="experiences" defaultValue={(student.experiences || []).join('\n')} placeholder="Contoh: Aplikasi Kasir — UI designer, 2025" />
         <label htmlFor="profile-photo">FOTO PROFIL</label><input id="profile-photo" name="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
         <button className="auth-submit">Simpan perubahan</button>
       </form>}
       {addingWork && isOwner && <form className="project-form profile-edit-form" onSubmit={submitWork}>
-        <h2>Submit karya</h2><label htmlFor="work-title">JUDUL KARYA</label><input id="work-title" name="title" required />
-        <label htmlFor="work-category">KATEGORI</label><select id="work-category" name="category" required defaultValue=""><option value="" disabled>Pilih kategori</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
-        <label htmlFor="work-summary">RINGKASAN KARYA</label><textarea id="work-summary" name="summary" required />
+        <h2>{editingWork ? 'Perbarui karya' : 'Submit karya'}</h2><label htmlFor="work-title">JUDUL KARYA</label><input id="work-title" name="title" required defaultValue={editingWork?.title || ''} />
+        <label htmlFor="work-category">KATEGORI</label><select id="work-category" name="category" required defaultValue={typeof editingWork?.categoryRef === 'object' && editingWork.categoryRef ? editingWork.categoryRef.id || '' : ''}><option value="" disabled>Pilih kategori</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select>
+        <label htmlFor="work-summary">RINGKASAN KARYA</label><textarea id="work-summary" name="summary" required defaultValue={editingWork?.summary || ''} />
         <label htmlFor="work-cover">GAMBAR SAMPUL</label><input id="work-cover" name="coverImage" type="file" accept="image/jpeg,image/png,image/webp" />
-        <label htmlFor="work-year">TAHUN KARYA</label><input id="work-year" name="year" type="number" min="2000" max={new Date().getFullYear() + 1} defaultValue={new Date().getFullYear()} required />
-        <label htmlFor="work-tools">PERANGKAT YANG DIGUNAKAN</label><textarea id="work-tools" name="tools" placeholder="Pisahkan dengan koma atau baris baru" />
-        <label htmlFor="work-url">TAUTAN KARYA (OPSIONAL)</label><input id="work-url" name="projectUrl" type="url" />
-        <p className="project-form-note">Karya akan dikirim sebagai draf untuk ditinjau admin.</p><button className="auth-submit">Submit Karya</button>
+        <label htmlFor="work-project-file">VIDEO ATAU DOKUMEN PENDUKUNG (OPSIONAL)</label><input id="work-project-file" name="projectFile" type="file" accept="video/mp4,video/webm,application/pdf" />
+        <label htmlFor="work-year">TAHUN KARYA</label><input id="work-year" name="year" type="number" min="2000" max={new Date().getFullYear() + 1} defaultValue={editingWork?.year || new Date().getFullYear()} required />
+        <label htmlFor="work-tools">PERANGKAT YANG DIGUNAKAN</label><textarea id="work-tools" name="tools" defaultValue={(editingWork?.tools || []).join(', ')} placeholder="Pisahkan dengan koma atau baris baru" />
+        <label htmlFor="work-url">TAUTAN KARYA (OPSIONAL)</label><input id="work-url" name="projectUrl" type="url" defaultValue={editingWork?.projectUrl || ''} />
+        {editingWork?.projectFile?.url && <p>Bukti saat ini: <a href={editingWork.projectFile.url} target="_blank" rel="noreferrer">{editingWork.projectFile.filename || 'Lihat berkas'}</a></p>}
+        <p className="project-form-note">{editingWork ? 'Perubahan akan dikirim kembali ke Guru pembimbing untuk ditinjau.' : 'Karya akan ditinjau Guru pembimbing sebelum diterbitkan.'}</p><button className="auth-submit">{editingWork ? 'Simpan perubahan' : 'Submit Karya'}</button>
       </form>}
 
       <section className="creator-achievements">
@@ -220,13 +245,20 @@ export default function StudentProfilePage() {
         </div>
       </section>
 
+      {(student.interests?.length || student.skills?.length || student.experiences?.length || isOwner) ? <section className="competency-panel"><div className="section-heading"><div><span className="section-kicker">PROFIL KOMPETENSI</span><h2>Yang sedang kamu kembangkan</h2></div>{isOwner && <button className="filter" type="button" onClick={() => setEditing(true)}>Perbarui profil</button>}</div>
+        {!!student.skills?.length && <div className="competency-group"><h3>Keterampilan</h3><div className="competency-chips">{student.skills.map((skill) => <span key={skill}>{skill}</span>)}</div></div>}
+        {!!student.interests?.length && <div className="competency-group"><h3>Minat</h3><div className="competency-chips competency-chips--soft">{student.interests.map((interest) => <span key={interest}>{interest}</span>)}</div></div>}
+        {!!student.experiences?.length && <div className="competency-group"><h3>Pengalaman proyek</h3><ul className="competency-experiences">{student.experiences.map((experience) => <li key={experience}>{experience}</li>)}</ul></div>}
+        {!student.skills?.length && !student.interests?.length && !student.experiences?.length && <p>Tambahkan minat, keterampilan, dan pengalaman proyek agar profil kompetensimu berkembang.</p>}
+      </section> : null}
+
       <section className="creator-work-section"><div className="creator-tabs"><h2>Karya</h2><span>{isOwner ? 'Semua karya' : 'Karya terbit'}</span></div>
         <label className="listing-search profile-work-search"><span>Cari karya siswa</span><input type="search" value={workQuery} onChange={(event) => setWorkQuery(event.target.value)} placeholder="Judul atau kategori…" /></label>
         {visibleWorks.length ? <div className="creator-work-grid">{visibleWorks.map((work) => {
           const image = typeof work.coverImage === 'object' && work.coverImage ? work.coverImage.url : null
           return <article className="creator-work-card" key={work.id}>
             <Link className="creator-work-image" href={work.status === 'published' || !work.status ? `/karya/${work.slug}` : '#'}>{image ? <SkeletonImage src={image} alt={typeof work.coverImage === 'object' ? work.coverImage.alt || work.title : work.title} /> : <span>{work.title.slice(0, 1)}</span>}{isOwner && work.status !== 'published' && <small className="creator-work-status">Draf · menunggu tinjauan</small>}</Link>
-            <div className="creator-work-meta">{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}<h3>{work.status === 'published' || !work.status ? <Link href={`/karya/${work.slug}`}>{displayTitle(work.title, student.name)}</Link> : displayTitle(work.title, student.name)}</h3><p>{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Portofolio'}{work.year ? ` · ${work.year}` : ''}</p><div className="lowfi-counts"><span>♡ {work.likeCount}</span><span>◉ {work.commentCount}</span></div></div>
+            <div className="creator-work-meta">{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}{work.verificationStatus === 'verified' && <span className="verified-badge">TERVERIFIKASI</span>}<h3>{work.status === 'published' || !work.status ? <Link href={`/karya/${work.slug}`}>{displayTitle(work.title, student.name)}</Link> : displayTitle(work.title, student.name)}</h3><p>{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Portofolio'}{work.year ? ` · ${work.year}` : ''}</p>{isOwner && work.status !== 'published' && <button className="filter" type="button" onClick={() => { setEditingWork(work); setAddingWork(true) }}>Edit dan kirim ulang</button>}{isOwner && work.reviewFeedback && <p className="work-feedback"><strong>Umpan balik Guru:</strong> {work.reviewFeedback}</p>}<div className="lowfi-counts"><span>♡ {work.likeCount}</span><span>◉ {work.commentCount}</span></div></div>
           </article>
         })}</div> : <p>{profile.portfolios.length ? 'Tidak ada karya yang cocok dengan pencarian.' : 'Belum ada karya yang diterbitkan.'}</p>}
       </section>
