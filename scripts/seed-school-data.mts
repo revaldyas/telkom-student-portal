@@ -2,14 +2,20 @@ import { getPayload } from 'payload'
 import { loadEnv } from 'payload/node'
 
 const programs = [
-  { name: 'Teknik Transmisi', code: 'TT', description: 'Teknologi jaringan transmisi digital', legacyCodes: ['ANIMASI'] },
-  { name: 'Teknik Komputer dan Jaringan', code: 'TKJ', description: 'Jaringan komputer dan server', legacyCodes: ['TJKT'] },
+  { name: 'Teknik Transmisi', code: 'TR', description: 'Teknologi jaringan transmisi digital', legacyCodes: ['TT', 'ANIMASI'] },
+  { name: 'Teknik Komputer dan Jaringan', code: 'TJKT', description: 'Jaringan komputer dan server', legacyCodes: ['TKJ'] },
   { name: 'Teknik Jaringan Akses', code: 'TJA', description: 'Sistem akses dan telekomunikasi', legacyCodes: ['BROADCASTING'] },
   { name: 'Pengembangan Perangkat Lunak dan Gim', code: 'PPLG', description: 'Coding aplikasi dan gim', legacyCodes: [] },
   { name: 'Desain Komunikasi Visual', code: 'DKV', description: 'Desain visual dan kreatif', legacyCodes: [] },
 ]
 
 const grades = ['X', 'XI', 'XII']
+
+const relationID = (value: unknown): string | number | undefined => {
+  if (typeof value === 'string' || typeof value === 'number') return value
+  if (value && typeof value === 'object' && 'id' in value) return relationID((value as { id: unknown }).id)
+  return undefined
+}
 
 async function main() {
   loadEnv()
@@ -29,6 +35,68 @@ async function main() {
       const record = existing.docs.find((item) => item.code === program.code)
         ?? existing.docs[0]
       const data = { name: program.name, code: program.code, description: program.description }
+      const canonicalID = record?.id
+
+      for (const duplicate of existing.docs.filter((item) => String(item.id) !== String(canonicalID))) {
+        if (canonicalID === undefined) {
+          throw new Error(`Tidak dapat menggabungkan ${String(duplicate.code)} tanpa record program tujuan ${program.code}.`)
+        }
+        // Free any unique program name before applying the canonical name.
+        await payload.update({
+          collection: 'programs',
+          id: duplicate.id,
+          data: { name: `Duplikat ${String(duplicate.code)} ${String(duplicate.id)}` },
+          overrideAccess: true,
+        })
+        const duplicateClasses = await payload.find({
+          collection: 'classes',
+          where: { program: { equals: duplicate.id } },
+          limit: 1000,
+          overrideAccess: true,
+        })
+        for (const classRecord of duplicateClasses.docs) {
+          const suffix = ` ${String(duplicate.code)}`
+          const name = classRecord.name.endsWith(suffix)
+            ? `${classRecord.name.slice(0, -suffix.length)} ${program.code}`
+            : classRecord.name
+          await payload.update({
+            collection: 'classes',
+            id: classRecord.id,
+            data: { name, program: canonicalID },
+            overrideAccess: true,
+          })
+        }
+
+        const duplicateUsers = await payload.find({
+          collection: 'users',
+          where: { program: { equals: duplicate.id } },
+          limit: 1000,
+          overrideAccess: true,
+        })
+        for (const user of duplicateUsers.docs) {
+          await payload.update({ collection: 'users', id: user.id, data: { program: canonicalID }, overrideAccess: true })
+        }
+
+        const targetedOpportunities = await payload.find({
+          collection: 'opportunities',
+          where: { targetPrograms: { equals: duplicate.id } },
+          limit: 1000,
+          depth: 0,
+          overrideAccess: true,
+        })
+        for (const opportunity of targetedOpportunities.docs) {
+          const targets = Array.isArray(opportunity.targetPrograms) ? opportunity.targetPrograms : []
+          const targetPrograms = [...new Set(targets.map((target) => {
+            const id = String(relationID(target) ?? target)
+            return id === String(duplicate.id) ? String(canonicalID) : id
+          }))]
+          await payload.update({ collection: 'opportunities', id: opportunity.id, data: { targetPrograms }, overrideAccess: true })
+        }
+
+        await payload.delete({ collection: 'programs', id: duplicate.id, overrideAccess: true })
+        console.info(`Duplikat ${String(duplicate.code)} dipindahkan ke ${program.code} dan dihapus.`)
+      }
+
       const saved = record
         ? await payload.update({ collection: 'programs', id: record.id, data, overrideAccess: true })
         : await payload.create({ collection: 'programs', data, overrideAccess: true })
