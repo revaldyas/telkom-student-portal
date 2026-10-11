@@ -10,13 +10,14 @@ export async function GET(request: Request) {
 
   const payload = await getPayload({ config })
   const contains = { contains: query }
-  const [works, students, classes, programs, categories, awards] = await Promise.all([
+  const [works, students, classes, programs, categories, awards, opportunities] = await Promise.all([
     payload.find({ collection: 'portfolios', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
     payload.find({ collection: 'users', where: { and: [{ role: { equals: 'student' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
     payload.find({ collection: 'classes', where: { name: contains }, depth: 1, limit: 3, overrideAccess: true }),
     payload.find({ collection: 'programs', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
     payload.find({ collection: 'portfolio-categories', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
     payload.find({ collection: 'awards', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
+    payload.find({ collection: 'opportunities', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
   ])
 
   const items: SearchItem[] = [
@@ -26,6 +27,7 @@ export async function GET(request: Request) {
     ...programs.docs.map((item) => ({ type: 'Program keahlian', label: item.name, detail: item.code, href: `/karya?program=${item.id}` })),
     ...categories.docs.map((item) => ({ type: 'Kategori karya', label: item.name, detail: item.code, href: `/karya?kategori=${item.id}` })),
     ...awards.docs.map((item) => ({ type: 'Award', label: item.title, detail: 'Penghargaan siswa', href: `/awards?q=${encodeURIComponent(item.title)}` })),
+    ...opportunities.docs.map((item) => ({ type: 'Peluang', label: item.title, detail: item.organizer, href: '/peluang' })),
   ]
   const lowerQuery = query.toLocaleLowerCase('id')
   if (['leaderboard', 'peringkat', 'mvs', 'top likes', 'trending'].some((term) => term.includes(lowerQuery) || lowerQuery.includes(term))) {

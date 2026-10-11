@@ -59,6 +59,7 @@ export async function GET(request: Request) {
       title: work.title,
       summary: work.summary,
       year: work.year,
+      verificationStatus: work.verificationStatus || 'unreviewed',
       categoryRef: category ? { id: category.id, name: category.name, code: category.code } : null,
       coverImage: cover ? { url: cover.url, alt: cover.alt } : null,
       student: student ? {

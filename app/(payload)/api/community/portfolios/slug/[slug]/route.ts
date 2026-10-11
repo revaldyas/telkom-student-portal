@@ -29,6 +29,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const photo = student && typeof student.profilePhoto === 'object' ? student.profilePhoto : null
   const category = typeof work.categoryRef === 'object' ? work.categoryRef : null
   const cover = typeof work.coverImage === 'object' ? work.coverImage : null
+  const projectFile = typeof work.projectFile === 'object' ? work.projectFile : null
   return NextResponse.json({
     id: work.id,
     slug: work.slug,
@@ -37,7 +38,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
     summary: work.summary,
     year: work.year,
     projectUrl: work.projectUrl,
+    projectFile: projectFile ? { url: projectFile.url, mimeType: projectFile.mimeType, filename: projectFile.filename } : null,
     tools: work.tools,
+    verificationStatus: work.verificationStatus || 'unreviewed',
+    verifiedBy: typeof work.verifiedBy === 'object' && work.verifiedBy ? { name: work.verifiedBy.name } : null,
     categoryRef: category ? { name: category.name, code: category.code } : null,
     coverImage: cover ? { url: cover.url, alt: cover.alt } : null,
     student: student ? { id: student.id, name: student.name, profilePhoto: photo?.url || null } : null,
