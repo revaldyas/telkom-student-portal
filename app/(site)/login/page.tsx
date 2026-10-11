@@ -18,13 +18,13 @@ export default function LoginPage() {
       if (!response.ok || !data.user) throw new Error(data.message || 'Email atau kata sandi belum cocok.')
       try { localStorage.removeItem('karyakita-token') } catch {}
       window.dispatchEvent(new Event('karyakita-session-change'))
-      router.push(data.user?.role === 'teacher' ? '/mentor' : '/dashboard')
+      router.push(data.user?.role === 'teacher' ? '/portal/guru' : '/portal/siswa')
     } catch (err) { setError(err instanceof Error ? err.message : 'Tidak bisa masuk. Coba lagi.') }
     finally { setBusy(false) }
   }
   return <main className="auth-shell">
     <aside className="auth-side">
-      <Link href="/" className="brand" aria-label="Telkom Student Creation — Beranda"><img className="auth-brand-logo" src="/brand/telkom-schools.png" width="160" height="53" alt="Telkom Schools — SMK Telkom Jakarta" /></Link>
+      <Link href="/" className="brand auth-brand" aria-label="TEL-CREATION — Beranda"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></Link>
       <div className="auth-side-copy"><div className="eyebrow"><span className="live-dot"/> AREA PENGGUNA</div><h1>Ruangmu.<br/>Karyamu.</h1><p>Kelola portofolio, ceritakan proses, dan tunjukkan karya terbaikmu.</p></div>
       <div className="auth-shape">✳</div>
       <div className="auth-side-foot">SMK TELKOM · CREATE WHAT'S NEXT</div>

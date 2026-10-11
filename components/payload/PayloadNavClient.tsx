@@ -13,7 +13,8 @@ type NavGroup = { label: string; entities: NavEntity[] }
 function GroupIcon({ name }: { name: string }) {
   const normalized = name.toLocaleLowerCase('id')
   let path = 'M4 5.5h16v13H4z M8 9h8 M8 13h5'
-  if (normalized.includes('pengguna')) path = 'M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19 M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M16 11a3 3 0 1 0 0-6 M17 14h1a3 3 0 0 1 3 3v2'
+  if (normalized.includes('beranda')) path = 'm3 10 9-7 9 7 M5 9v11h14V9 M9 20v-7h6v7'
+  else if (normalized.includes('pengguna')) path = 'M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19 M9.5 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7 M16 11a3 3 0 1 0 0-6 M17 14h1a3 3 0 0 1 3 3v2'
   else if (normalized.includes('akademik')) path = 'M3 8 12 3l9 5-9 5-9-5z M6 10v5l6 3 6-3v-5 M21 8v6'
   else if (normalized.includes('penghargaan')) path = 'M8 4h8v5a4 4 0 0 1-8 0V4z M8 6H5v2a4 4 0 0 0 4 4 M16 6h3v2a4 4 0 0 1-4 4 M12 13v4 M8 21h8 M9 17h6'
   else if (normalized.includes('media')) path = 'M4 5h16v14H4z M7 15l3-3 2 2 3-4 3 5 M8 9h.01'

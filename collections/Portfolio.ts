@@ -34,7 +34,21 @@ export const Portfolio: CollectionConfig = {
   hooks: {
     beforeChange: [async ({ data, originalDoc, req }) => {
       const nextData = { ...data }
-      if (isStudentUser(req.user)) nextData.student = req.user.id
+      if (isStudentUser(req.user)) {
+        nextData.student = req.user.id
+        nextData.status = 'draft'
+        if (originalDoc?.status === 'published') {
+          nextData.verificationStatus = 'unreviewed'
+          nextData.verifiedBy = null
+          nextData.verifiedAt = null
+          nextData.reviewFeedback = null
+        } else if (originalDoc) {
+          nextData.verificationStatus = originalDoc.verificationStatus
+          nextData.verifiedBy = originalDoc.verifiedBy
+          nextData.verifiedAt = originalDoc.verifiedAt
+          nextData.reviewFeedback = originalDoc.reviewFeedback
+        }
+      }
 
       const categoryRef = nextData.categoryRef ?? originalDoc?.categoryRef
       if (categoryRef) {
@@ -98,10 +112,23 @@ export const Portfolio: CollectionConfig = {
       name: 'category',
       label: 'Kategori Lama',
       type: 'select',
-      options: ['UI/UX', 'Web Development', 'Branding', 'Graphic Design', 'Photography', 'Motion'],
+      options: [
+        'UI/UX', 'Web Development', 'Branding', 'Graphic Design', 'Photography', 'Motion',
+        'TR-TRANSMISI', 'TR-OPTIK', 'TR-SINYAL', 'TR-TELEKOM',
+        'TJKT-TOPOLOGI', 'TJKT-SERVER', 'TJKT-KEAMANAN', 'TJKT-HARDWARE',
+        'TJA-FTTH', 'TJA-ODP', 'TJA-WIRELESS', 'TJA-LAYANAN',
+        'PPLG-WEB', 'PPLG-MOBILE', 'PPLG-GAME', 'PPLG-UIUX',
+        'DKV-BRAND', 'DKV-GRAFIS', 'DKV-FOTO', 'DKV-MOTION',
+      ],
       admin: { hidden: true },
     },
     { name: 'summary', label: 'Ringkasan Karya', type: 'textarea', required: true },
+    {
+      name: 'details',
+      label: 'Detail Karya',
+      type: 'richText',
+      admin: { description: 'Penjelasan lengkap proses, tujuan, dan hasil karya. Format teks dapat diatur melalui editor.' },
+    },
     {
       name: 'coverImage',
       type: 'upload',
@@ -109,8 +136,16 @@ export const Portfolio: CollectionConfig = {
       label: 'Gambar Sampul',
       admin: { description: 'Unggah gambar sampul dalam format JPG, PNG, atau WebP.' },
     },
+    {
+      name: 'galleryImages',
+      type: 'upload',
+      relationTo: 'uploads',
+      hasMany: true,
+      label: 'Galeri Karya',
+      admin: { description: 'Unggah gambar tambahan untuk ditampilkan pada halaman detail karya.' },
+    },
     { name: 'year', label: 'Tahun', type: 'number', defaultValue: new Date().getFullYear() },
-    { name: 'tools', label: 'Perangkat yang Digunakan', type: 'text', hasMany: true },
+    { name: 'tools', label: 'Perangkat & teknologi yang digunakan', type: 'text', hasMany: true },
     {
       name: 'projectUrl', label: 'Tautan Karya', type: 'text',
       validate: (value: unknown) => {
@@ -122,7 +157,7 @@ export const Portfolio: CollectionConfig = {
     { name: 'projectFile', label: 'Video atau Dokumen Pendukung', type: 'upload', relationTo: 'uploads', admin: { description: 'Opsional. Unggah video MP4/WebM atau dokumen PDF sebagai bukti karya.' } },
     {
       name: 'verificationStatus', label: 'Status Verifikasi', type: 'select', defaultValue: 'unreviewed',
-      access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) },
+      access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) || isStudentUser(req.user) },
       options: [
         { label: 'Belum ditinjau', value: 'unreviewed' },
         { label: 'Terverifikasi', value: 'verified' },
@@ -130,13 +165,13 @@ export const Portfolio: CollectionConfig = {
       ],
       admin: { readOnly: true, position: 'sidebar' },
     },
-    { name: 'verifiedBy', label: 'Diverifikasi oleh', type: 'relationship', relationTo: 'users', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
-    { name: 'verifiedAt', label: 'Tanggal Verifikasi', type: 'date', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
+    { name: 'verifiedBy', label: 'Diverifikasi oleh', type: 'relationship', relationTo: 'users', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) || isStudentUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
+    { name: 'verifiedAt', label: 'Tanggal Verifikasi', type: 'date', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) || isStudentUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
     {
       name: 'reviewFeedback', label: 'Umpan Balik Guru', type: 'textarea', maxLength: 3000,
       access: {
         create: ({ req }) => isCMSAdmin(req.user),
-        update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user),
+        update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) || isStudentUser(req.user),
         read: ({ req, doc }) => isCMSAdmin(req.user) || (isStudentUser(req.user) && String(relationID(doc?.student)) === String(req.user.id)),
       },
       admin: { readOnly: true },
@@ -149,7 +184,7 @@ export const Portfolio: CollectionConfig = {
       defaultValue: 'draft',
       access: {
         create: ({ req }) => isCMSAdmin(req.user),
-        update: ({ req }) => isCMSAdmin(req.user),
+        update: ({ req }) => isCMSAdmin(req.user) || isStudentUser(req.user),
       },
       options: [{ label: 'Draf', value: 'draft' }, { label: 'Terbit', value: 'published' }],
     },

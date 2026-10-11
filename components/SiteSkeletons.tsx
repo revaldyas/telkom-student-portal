@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-type CountProps = { count?: number }
+type CountProps = { count?: number; className?: string }
 
 function LoadingStatus({ label, children }: { label: string; children: ReactNode }) {
   return <div className="site-skeleton" role="status" aria-label={label} aria-busy="true">
@@ -18,8 +18,8 @@ export function HeroSkeleton() {
   </LoadingStatus>
 }
 
-export function WorkGridSkeleton({ count = 6 }: CountProps) {
-  return <LoadingStatus label="Memuat karya siswa"><div className="lowfi-work-grid">
+export function WorkGridSkeleton({ count = 6, className = '' }: CountProps) {
+  return <LoadingStatus label="Memuat karya siswa"><div className={`lowfi-work-grid ${className}`.trim()}>
     {Array.from({ length: count }, (_, index) => <div className="skeleton-work-card" key={index}>
       <div className="sk skeleton-work-media" />
       <div className="skeleton-work-body"><span className="sk sk-kicker" /><span className="sk sk-card-title" /><span className="sk sk-card-title sk-card-title-short" /><div className="skeleton-work-author"><span className="sk sk-avatar" /><span className="sk sk-author-line" /></div></div>
@@ -65,6 +65,10 @@ export function WorkDetailSkeleton() {
     <div className="sk skeleton-detail-cover" />
     <div className="work-detail-body"><span className="sk sk-line" /><span className="sk sk-line" /><span className="sk sk-line sk-line-short" /><span className="sk sk-button" /><div className="skeleton-detail-panel"><span className="sk sk-panel-title" /><span className="sk sk-line" /><span className="sk sk-line sk-line-short" /></div></div>
   </article></LoadingStatus></main>
+}
+
+export function PortfolioFormSkeleton() {
+  return <main className="portal-page portfolio-form-page"><div className="sk sk-filter" /><div className="sk sk-panel-title" /><div className="sk sk-line" /><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /><div className="sk sk-filter" /><div className="sk sk-filter" /></section><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /></section><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /><div className="sk sk-filter" /></section></main>
 }
 
 export function SearchResultsSkeleton() {

@@ -8,11 +8,14 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 - Halaman katalog dan detail portofolio, kategori, serta profil publik siswa.
 - Registrasi dan login akun website dengan role Siswa atau Guru. Registrasi siswa memerlukan NIS yang sudah terdaftar di Data Siswa.
 - Dashboard siswa untuk mengelola karya sendiri.
+- Portal Guru dan siswa dengan navigasi serta halaman kerja terpisah dari halaman publik.
 - Suka, komentar, voting penghargaan, badge, dan riwayat achievement.
 - Profil kompetensi siswa dengan minat, keterampilan, pengalaman proyek, program keahlian, dan pencapaian.
 - Galeri karya dengan sampul gambar, video atau PDF pendukung, tautan, dan status verifikasi Guru.
 - Ruang Guru untuk meninjau karya, memberi umpan balik, meminta revisi, menerbitkan karya, dan mengelola peluang.
-- Dashboard dampak sekolah untuk partisipasi, kategori proyek, status verifikasi, publikasi, dan peluang.
+- Proyek kolaborasi dengan beberapa Guru pembimbing, undangan Guru, satu mentor utama, dan riwayat tinjauan.
+- Notifikasi portal untuk tindak lanjut karya, proyek, aktivitas komunitas, penghargaan, peluang, dan minat siswa.
+- Ringkasan dampak sekolah di dashboard Guru: partisipasi, kategori proyek, status verifikasi, publikasi, dan peluang.
 - Kanal peluang untuk kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi industri.
 - Pencarian global untuk konten publik.
 - Panel admin Payload CMS untuk mengelola data sekolah, karya, pengguna, penghargaan, dan media.
@@ -72,6 +75,32 @@ Autentikasi website dan CMS dipisahkan:
 
 Buat admin CMS pertama melalui environment variables di atas, lalu jalankan `npm run seed:cms-admin`. Seed ini tidak mengganti password jika akun dengan email tersebut sudah ada. Jangan menaruh password admin di source code atau Git.
 
+## Portal siswa dan Guru
+
+Portal akun website memakai layout terpisah dari halaman publik. Siswa mengakses `/portal/siswa`, sedangkan Guru mengakses `/portal/guru`. Sidebar menyediakan tautan ke dashboard, karya atau verifikasi, proyek, peluang, dan profil publik sesuai jenis akun.
+
+Ikon lonceng pada header membuka notifikasi yang dapat diklik untuk menuju pekerjaan terkait. Badge menghitung notifikasi yang belum dibaca; status baca disimpan di `localStorage` browser per akun. Daftar dibuat dari status data saat ini, jadi tidak memerlukan collection notifikasi tersendiri. Daftar dimuat ulang saat portal dibuka, berpindah halaman, atau menu notifikasi dibuka.
+
+Jenis notifikasi siswa:
+
+- Karya yang diminta revisi, menuju halaman detail karya.
+- Respons Guru atas undangan membimbing proyek, menuju halaman proyek.
+- Komentar dan suka baru pada karya siswa, menuju halaman karya terkait.
+- Penghargaan atau achievement baru, menuju profil publik siswa.
+- Tenggat peluang atau voting penghargaan yang tinggal tujuh hari atau kurang, menuju halaman peluang atau penghargaan.
+
+Jenis notifikasi Guru:
+
+- Karya baru yang menunggu verifikasi dalam cakupan kelas atau program keahlian Guru, menuju detail karya.
+- Undangan pembimbingan dan proyek yang sudah diajukan untuk ditinjau, menuju detail proyek.
+- Minat siswa pada peluang dalam cakupan bimbingan Guru, menuju halaman pengelolaan peluang.
+
+## Proyek kolaborasi
+
+Collection `projects` menyimpan proyek bersama siswa, termasuk anggota dan kontribusinya, detail, media, perangkat dan teknologi, status publikasi, serta verifikasi. Pengelola proyek dapat mengundang beberapa Guru berdasarkan keahlian dan minat yang tercantum pada profil Guru. Satu undangan ditetapkan sebagai mentor utama, sedangkan undangan lain dapat menjadi mentor pendamping.
+
+Guru menerima atau menolak undangan dari halaman detail proyek. Proyek hanya dapat diajukan untuk tinjauan setelah mentor utama menerima undangan. Mentor pendamping dapat memberi masukan; hanya mentor utama yang dapat meminta revisi atau menyetujui dan menerbitkan proyek. Respons undangan, komentar tinjauan, keputusan, dan tanggalnya tercatat pada riwayat proyek. Proyek draf hanya dapat dilihat pengelola dan Guru yang diundang.
+
 ## Model data Payload
 
 | Collection | Isi dan relasi utama |
@@ -83,6 +112,7 @@ Buat admin CMS pertama melalui environment variables di atas, lalu jalankan `npm
 | `classes` | Kelas yang terhubung ke satu program keahlian. Tidak memiliki field tahun ajaran. |
 | `portfolios` | Karya siswa; terhubung ke pengguna siswa, kategori, sampul, dan berkas bukti. Slug dibuat dari judul dan harus unik; karya dapat diverifikasi Guru sebelum diterbitkan. |
 | `portfolio-reviews` | Keputusan verifikasi atau revisi dan umpan balik Guru pada karya. |
+| `projects` | Proyek kolaborasi siswa, anggota dan kontribusi, undangan mentor, status verifikasi/publikasi, dan riwayat tinjauan. |
 | `opportunities` | Kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi yang dikelola Guru atau admin. |
 | `opportunity-interests` | Minat siswa pada peluang yang sedang dibuka. |
 | `portfolio-categories` | Kategori karya yang dapat dikelola admin. |
@@ -120,6 +150,8 @@ scripts/                   Script seed data demo dan admin CMS
 - `GET /api/community/leaderboard`
 - `GET /api/community/search`
 - `GET /api/community/students/:id`
+- `GET /api/portal/notifications` (khusus sesi website siswa/Guru; notifikasi dibuat dari aktivitas dan status terbaru)
+- `POST /api/community/projects/:id/actions` (respons undangan Guru, pengajuan tinjauan, dan masukan/keputusan mentor)
 - `GET /api/mentor/reviews`, `POST /api/mentor/reviews` (khusus Guru; cakupan dibatasi ke kelas/program yang ditugaskan)
 - `GET /api/community/portfolios/slug/:slug`
 - `GET` dan `POST /api/community/portfolios/:id/comments`
@@ -150,7 +182,7 @@ npm run seed:awards
 
 Payload mengelola schema PostgreSQL melalui adapter Drizzle. Deployment Vercel menggunakan Shared Transaction Pooler Supabase karena fungsi serverless membuka koneksi singkat dan deployment Vercel memerlukan jalur IPv4. Direct connection Supabase pada konfigurasi standar dapat hanya menyediakan IPv6. Session Pooler lebih cocok untuk server lokal yang berjalan lama.
 
-Schema push otomatis Payload dinonaktifkan agar schema lokal tanpa plugin Vercel Blob tidak menghapus kolom internal Blob pada database bersama. Setiap perubahan collection perlu disertai migrasi dan dicatat di `migrations/index.ts`.
+Schema push otomatis Payload dinonaktifkan agar schema lokal tanpa plugin Vercel Blob tidak menghapus kolom internal Blob pada database bersama. Setiap perubahan collection perlu disertai migrasi dan dicatat di `migrations/index.ts`. Schema Proyek, penyesuaian nama kolom anggota proyek, undangan mentor, status pengajuan tinjauan, dan riwayat tinjauan dicatat pada migrasi `20261011_150000_projects`, `20261011_160000_fix_project_members_columns`, dan `20261011_170000_project_mentors_and_reviews`.
 
 Jalankan perintah CLI Payload melalui script npm:
 

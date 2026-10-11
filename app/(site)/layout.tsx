@@ -2,6 +2,9 @@ import type { Metadata } from 'next'
 import SiteLayout from '../../components/SiteLayout'
 import './globals.css'
 import './refinement.css'
+import './portfolio-editor.css'
+import './workspace-notifications.css'
+import './home-banner.css'
 
 export const metadata: Metadata = {
   title: 'Telkom Student Creation — Portofolio Siswa',

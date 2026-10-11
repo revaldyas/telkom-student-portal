@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap');
 
 :root {
   color-scheme: light;
@@ -14,8 +14,8 @@
   --shadow-hover: 0 22px 48px rgba(20, 22, 28, .15);
 }
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; scroll-padding-top: 90px; }
-body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 'DM Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+html { overflow-x: clip; scroll-behavior: smooth; scroll-padding-top: 90px; }
+body { max-width: 100%; overflow-x: clip; margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 'DM Sans', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--accent-dark); }
 button, input, select, textarea { color: inherit; font: inherit; }

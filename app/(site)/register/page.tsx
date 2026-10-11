@@ -45,7 +45,7 @@ export default function RegisterPage() {
       }
       try { localStorage.removeItem('karyakita-token') } catch {}
       window.dispatchEvent(new Event('karyakita-session-change'))
-      router.push('/dashboard')
+      router.push('/portal/siswa')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Tidak bisa mendaftar. Coba lagi.')
     } finally {
@@ -55,7 +55,7 @@ export default function RegisterPage() {
 
   return <main className="auth-shell">
     <aside className="auth-side">
-      <Link href="/" className="brand" aria-label="Telkom Student Creation — Beranda"><img className="auth-brand-logo" src="/brand/telkom-schools.png" width="160" height="53" alt="Telkom Schools — SMK Telkom Jakarta" /></Link>
+      <Link href="/" className="brand auth-brand" aria-label="TEL-CREATION — Beranda"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></Link>
       <div className="auth-side-copy"><div className="eyebrow"><span className="live-dot" /> RUANG KARYA SISWA</div><h1>Mulai dari<br />karyamu.</h1><p>Buat akun siswa dan bagikan proses kreatifmu bersama komunitas Telkom Student Creation.</p></div>
       <div className="auth-shape">✳</div>
       <div className="auth-side-foot">SMK TELKOM · CREATE WHAT'S NEXT</div>

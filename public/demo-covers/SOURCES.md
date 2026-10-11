@@ -2,6 +2,17 @@
 
 Visual di galeri disimpan lokal sebagai WebP (maksimum sisi 1200 px, kualitas 82) untuk pengembangan dan demonstrasi.
 
+## Sumber visual baru untuk seed demo 2026
+
+Seed baru memakai salinan gambar pin Pinterest berikut. Payload mengompresi gambar saat upload ke media.
+
+- `pinterest-2026/telekom-5g.jpg` — [Infographic: 5G Phone Service to Far Surpass 4G](https://au.pinterest.com/pin/infographic-5g-phone-service-to-far-surpass-4g--438186238744475083/)
+- `pinterest-2026/server-rack.jpg` — [New Server Network Rack for Home Virtualization Lab Environment](https://br.pinterest.com/pin/6825836928283231/)
+- `pinterest-2026/ui-wireframes.jpg` — [Example of app wireframes and flow from screen to screen](https://www.pinterest.com/pin/example-of-app-wireframes-and-flow-from-screen-to-screen--330310953899315067/)
+- `pinterest-2026/brand-identity.jpg` — [Graphic Design Portfolio & Branding Examples](https://uk.pinterest.com/pin/graphic-design-portfolio-branding-examples--849491548490871178/)
+- `pinterest-2026/product-photography.jpg` — [Portfolio 02: Product Photography](https://uk.pinterest.com/pin/portfolio-02-product-photography--364158319879275386/)
+- `pinterest-2026/brand-makeup.jpg` — [Brand Identity Design for Olivia Sparkle](https://www.pinterest.com/pin/5207355814524877/)
+
 ## Produk Digital · UI/UX
 
 1. [Produk Digital · UI/UX — visual demo 1](https://medium.com/@rits_8/revamping-the-user-experience-pinterest-92420843dc4a)

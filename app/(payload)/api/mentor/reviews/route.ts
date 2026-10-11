@@ -17,7 +17,9 @@ function inScope(user: Record<string, unknown>, portfolio: Record<string, unknow
   if (!owner) return false
   const teacherClass = relationID(user.class)
   const teacherProgram = relationID(user.program)
-  return Boolean((teacherClass && String(teacherClass) === String(relationID(owner.class))) || (teacherProgram && String(teacherProgram) === String(relationID(owner.program))))
+  const ownerClass = owner.class && typeof owner.class === 'object' ? owner.class as Record<string, unknown> : null
+  const studentProgram = relationID(owner.program) ?? relationID(ownerClass?.program)
+  return Boolean((teacherClass && String(teacherClass) === String(relationID(owner.class))) || (teacherProgram && String(teacherProgram) === String(studentProgram)))
 }
 
 export async function GET(request: Request) {
@@ -30,18 +32,21 @@ export async function GET(request: Request) {
   const result = await payload.find({
     collection: 'portfolios',
     where: { or: [{ status: { equals: 'draft' } }, { verificationStatus: { equals: 'revision-requested' } }] },
-    depth: 2,
+    depth: 3,
     limit: 200,
     sort: '-updatedAt',
     overrideAccess: true,
   })
   const docs = result.docs.filter((doc) => inScope(user as unknown as Record<string, unknown>, doc as unknown as Record<string, unknown>))
   const reviews = await Promise.all(docs.map(async (doc) => {
-    const reviewResult = await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: doc.id } }, depth: 1, limit: 1, overrideAccess: true })
+    const reviewResult = await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: doc.id } }, depth: 1, limit: 1, sort: '-createdAt', overrideAccess: true })
     const review = reviewResult.docs[0]
     const student = doc.student && typeof doc.student === 'object' ? doc.student : null
     const studentClass = student?.class && typeof student.class === 'object' ? student.class.name : null
-    const studentProgram = student?.program && typeof student.program === 'object' ? student.program.name : null
+    const studentClassData = student?.class && typeof student.class === 'object' ? student.class : null
+    const studentProgram = student?.program && typeof student.program === 'object'
+      ? student.program.name
+      : studentClassData && typeof studentClassData.program === 'object' ? studentClassData.program.name : null
     const cover = doc.coverImage && typeof doc.coverImage === 'object' ? doc.coverImage : null
     const projectFile = doc.projectFile && typeof doc.projectFile === 'object' ? doc.projectFile : null
     return {
@@ -54,7 +59,17 @@ export async function GET(request: Request) {
       review: review ? { id: review.id, decision: review.decision, feedback: review.feedback } : null,
     }
   }))
-  return NextResponse.json({ docs: reviews }, { headers: { 'Cache-Control': 'no-store' } })
+  const projectResponse = await payload.find({ collection: 'projects', where: { or: [{ verificationStatus: { equals: 'submitted' } }, { status: { equals: 'draft' } }] }, depth: 3, limit: 500, sort: '-updatedAt', overrideAccess: true })
+  const assignedProjects = isTeacherUser(sessionUser) ? projectResponse.docs.flatMap((project) => {
+    const entries = Array.isArray(project.mentorAssignments) ? project.mentorAssignments : []
+    const assignment = entries.find((entry) => String(relationID(entry.mentor)) === String(user.id))
+    if (!assignment) return []
+    const owner = typeof project.createdBy === 'object' && project.createdBy ? project.createdBy : null
+    const cover = typeof project.coverImage === 'object' && project.coverImage ? project.coverImage : null
+    const category = typeof project.categoryRef === 'object' && project.categoryRef ? project.categoryRef : null
+    return [{ kind: 'project' as const, id: project.id, title: project.title, slug: project.slug, summary: project.summary, year: project.year, tools: project.tools || [], status: project.status, verificationStatus: project.verificationStatus, student: owner ? { id: owner.id, name: owner.name } : null, category: category?.name || 'Proyek kolaborasi', coverImage: cover?.url || null, projectFile: null, review: null, mentorResponse: assignment.response, mentorRole: assignment.assignmentRole }]
+  }) : []
+  return NextResponse.json({ docs: [...assignedProjects, ...reviews.map((review) => ({ kind: 'portfolio' as const, ...review }))] }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function POST(request: Request) {
@@ -70,14 +85,11 @@ export async function POST(request: Request) {
   if (!Number.isInteger(portfolioID) || portfolioID < 1 || !feedback || feedback.length < 5 || feedback.length > 3000 || !['verified', 'revision-requested'].includes(String(body?.decision))) {
     return NextResponse.json({ message: 'Pilih keputusan dan tulis umpan balik minimal 5 karakter.' }, { status: 400 })
   }
-  const portfolio = await payload.findByID({ collection: 'portfolios', id: portfolioID, depth: 2, overrideAccess: true })
+  const portfolio = await payload.findByID({ collection: 'portfolios', id: portfolioID, depth: 3, overrideAccess: true })
   if (!inScope(user as unknown as Record<string, unknown>, portfolio as unknown as Record<string, unknown>)) return NextResponse.json({ message: 'Karya ini berada di luar kelas atau program keahlian yang menjadi tanggung jawabmu.' }, { status: 403 })
-  const existing = await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: portfolioID } }, limit: 1, overrideAccess: true })
   const localReq = await createLocalReq({ user: user as TypedUser }, payload)
   const decision = body!.decision as 'verified' | 'revision-requested'
   const data = { portfolio: portfolioID, reviewer: user.id, reviewKey: String(portfolioID), decision, feedback }
-  const review = existing.docs[0]
-    ? await payload.update({ collection: 'portfolio-reviews', id: existing.docs[0].id, data, req: localReq, overrideAccess: true })
-    : await payload.create({ collection: 'portfolio-reviews', data, req: localReq, overrideAccess: true, draft: false })
+  const review = await payload.create({ collection: 'portfolio-reviews', data, req: localReq, overrideAccess: true, draft: false })
   return NextResponse.json({ doc: review }, { status: 200 })
 }

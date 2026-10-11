@@ -22,6 +22,6 @@ export default async function DashboardPage() {
   }
 
   if (!authenticatedUser || authenticatedUser.collection !== 'users' || !['student', 'teacher'].includes(String(authenticatedUser.role))) redirect('/login')
-  if (authenticatedUser.role === 'teacher') redirect('/mentor')
-  redirect(`/siswa/${authenticatedUser.id}`)
+  if (authenticatedUser.role === 'teacher') redirect('/portal/guru')
+  redirect('/portal/siswa')
 }

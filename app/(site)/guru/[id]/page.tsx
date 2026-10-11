@@ -123,7 +123,7 @@ export default function MentorProfilePage() {
           <div className="creator-stats"><span><strong>{impact.works}</strong> karya terverifikasi</span><span><strong>{impact.reviews}</strong> tinjauan</span><span><strong>{impact.revisions}</strong> arahan revisi</span></div>
           <p className="creator-school">{mentor.class || 'Guru'}{mentor.program ? ` · ${mentor.program}` : ''}</p>
           {mentor.bio && <p className="creator-bio">{mentor.bio}</p>}
-          {isOwner && <Link className="dash-new" href="/mentor">Buka ruang Guru</Link>}
+          {isOwner && <Link className="dash-new" href="/portal/guru">Buka Portal Guru</Link>}
         </div>
       </header>
 

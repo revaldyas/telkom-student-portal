@@ -5,6 +5,7 @@ import { id } from '@payloadcms/translations/languages/id'
 import { buildConfig } from 'payload'
 import { Classes } from './collections/Classes'
 import { Admins } from './collections/Admins'
+import { HomeBanners } from './collections/HomeBanners'
 import { AwardVotes } from './collections/AwardVotes'
 import { Awards } from './collections/Awards'
 import { Portfolio } from './collections/Portfolio'
@@ -12,6 +13,7 @@ import { PortfolioCategories } from './collections/PortfolioCategories'
 import { PortfolioComments } from './collections/PortfolioComments'
 import { PortfolioLikes } from './collections/PortfolioLikes'
 import { PortfolioReviews } from './collections/PortfolioReviews'
+import { Projects } from './collections/Projects'
 import { OpportunityInterests } from './collections/OpportunityInterests'
 import { Opportunities } from './collections/Opportunities'
 import { Programs } from './collections/Programs'
@@ -30,7 +32,7 @@ export default buildConfig({
     components: { Nav: '@/components/payload/PayloadNav' },
     importMap: { baseDir: process.cwd() },
   },
-  collections: [Portfolio, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
+  collections: [HomeBanners, Portfolio, Projects, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
   plugins: [
     vercelBlobStorage({
       // Use the same storage adapter locally when a Blob token is configured;

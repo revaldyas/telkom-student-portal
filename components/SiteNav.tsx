@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import GlobalSearch from './GlobalSearch'
 import SkeletonImage from './SkeletonImage'
 
@@ -13,11 +13,26 @@ export default function SiteNav() {
   const router = useRouter()
   const pathname = usePathname()
   const [status, setStatus] = useState<SessionStatus>('checking')
-  const [dashboardHref, setDashboardHref] = useState('/dashboard')
   const [account, setAccount] = useState<SessionUser | null>(null)
   const [loggingOut, setLoggingOut] = useState(false)
   const [logoutError, setLogoutError] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const accountMenuRef = useRef<HTMLDetailsElement | null>(null)
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: PointerEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) accountMenuRef.current?.removeAttribute('open')
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') accountMenuRef.current?.removeAttribute('open')
+    }
+    document.addEventListener('pointerdown', closeOnOutsideClick)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('pointerdown', closeOnOutsideClick)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -35,7 +50,6 @@ export default function SiteNav() {
         const role = data.user?.role
         if (!cancelled) {
           if (role === 'student' || role === 'teacher') {
-            setDashboardHref(role === 'teacher' ? '/awards' : '/dashboard')
             setAccount(data.user)
             setStatus('authenticated')
           } else {
@@ -88,31 +102,28 @@ export default function SiteNav() {
   const firstName = account?.name.trim().split(/\s+/)[0] || 'Akun'
 
   return <div className="site-nav-shell"><header className="site-nav-bar">
-    <Link className="site-brand" href="/" aria-label="Telkom Student Creation — Beranda"><img className="site-brand-logo" src="/brand/telkom-schools.png" width="160" height="53" alt="Telkom Schools — SMK Telkom Jakarta" /><span className="site-brand-name">Telkom Student Creation</span></Link>
+    <Link className="site-brand" href="/" aria-label="TEL-CREATION — Beranda"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></Link>
     <button type="button" className="site-nav-toggle" aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><span /><span /><span /></button>
     <nav className={menuOpen ? 'site-nav-links is-open' : 'site-nav-links'} aria-label="Navigasi utama">
       <Link aria-current={pathname === '/karya' || pathname.startsWith('/karya/') ? 'page' : undefined} href="/karya" onClick={() => setMenuOpen(false)}>Karya</Link>
+      <Link aria-current={pathname === '/proyek' || pathname.startsWith('/proyek/') ? 'page' : undefined} href="/proyek" onClick={() => setMenuOpen(false)}>Proyek kolaborasi</Link>
       <Link aria-current={pathname === '/awards' ? 'page' : undefined} href="/awards" onClick={() => setMenuOpen(false)}>Penghargaan</Link>
       <Link aria-current={pathname === '/leaderboard' ? 'page' : undefined} href="/leaderboard" onClick={() => setMenuOpen(false)}>Peringkat</Link>
       <Link aria-current={pathname === '/peluang' ? 'page' : undefined} href="/peluang" onClick={() => setMenuOpen(false)}>Peluang</Link>
-      {status === 'authenticated' && account?.role === 'teacher' && <>
-        <Link aria-current={pathname.startsWith('/mentor') ? 'page' : undefined} href="/mentor" onClick={() => setMenuOpen(false)}>Verifikasi</Link>
-        <Link aria-current={pathname.startsWith('/dampak') ? 'page' : undefined} href="/dampak" onClick={() => setMenuOpen(false)}>Dampak</Link>
-      </>}
     </nav>
     <GlobalSearch />
     {status === 'checking' ? <span className="site-nav-session-skeleton" role="status" aria-label="Memeriksa sesi"><span className="sk" aria-hidden="true" /></span>
       : status === 'unavailable' ? <button type="button" onClick={() => window.dispatchEvent(new Event('karyakita-session-change'))}>Coba lagi</button>
-        : status === 'authenticated' && account ? <details className="site-account-menu">
+        : status === 'authenticated' && account ? <details ref={accountMenuRef} className="site-account-menu">
           <summary className="site-account-trigger" aria-label={`Menu akun ${firstName}`}>
             {account.profilePhoto ? <SkeletonImage className="site-account-avatar" src={account.profilePhoto} alt="" /> : <span className="site-account-avatar site-account-initial" aria-hidden="true">{firstName.slice(0, 1).toUpperCase()}</span>}
             <span>{firstName}</span>
           </summary>
           <div className="site-account-dropdown">
+            <Link href={account.role === 'teacher' ? '/portal/guru' : '/portal/siswa'} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>{account.role === 'teacher' ? 'Portal Guru' : 'Portal Siswa'}</Link>
             {account.role === 'student' && <Link href={`/siswa/${account.id}`} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Profil</Link>}
             {account.role === 'teacher' && <>
               <Link href={`/guru/${account.id}`} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Profil</Link>
-              <Link href="/mentor" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Ruang Guru</Link>
             </>}
             <button type="button" onClick={() => void logout()} disabled={loggingOut}>{loggingOut ? 'Keluar…' : 'Keluar'}</button>
             {logoutError && <p role="alert">{logoutError}</p>}

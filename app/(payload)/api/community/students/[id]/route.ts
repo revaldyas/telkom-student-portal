@@ -14,14 +14,21 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   try {
     const student = await payload.findByID({ collection: 'users', id, depth: 1, overrideAccess: true })
     if (student.role !== 'student') return NextResponse.json({ message: 'Profil siswa tidak ditemukan.' }, { status: 404 })
-    const portfoliosResponse = await payload.find({
+    const [portfoliosResponse, projectsResponse] = await Promise.all([payload.find({
       collection: 'portfolios',
       where: { and: [{ student: { equals: student.id } }, { status: { equals: 'published' } }] },
       depth: 2,
       limit: 1000,
       sort: '-createdAt',
       overrideAccess: true,
-    })
+    }), payload.find({
+      collection: 'projects',
+      where: { and: [{ 'members.member': { equals: student.id } }, { status: { equals: 'published' } }] },
+      depth: 2,
+      limit: 1000,
+      sort: '-createdAt',
+      overrideAccess: true,
+    })])
     const portfolios = await Promise.all(portfoliosResponse.docs.map(async (portfolio) => {
       const [likes, comments] = await Promise.all([
         payload.count({ collection: 'portfolio-likes', where: { portfolio: { equals: portfolio.id } }, overrideAccess: true }),
@@ -85,6 +92,21 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       isNominee: nomineePortfolioIDs.has(String(portfolio.id)),
     }))
 
+    const projects = projectsResponse.docs.map((project) => ({
+      id: project.id,
+      slug: project.slug,
+      title: project.title,
+      summary: project.summary,
+      year: project.year,
+      coverImage: typeof project.coverImage === 'object' && project.coverImage ? { url: project.coverImage.url, alt: project.coverImage.alt } : null,
+      category: typeof project.categoryRef === 'object' && project.categoryRef ? project.categoryRef.name : null,
+      members: Array.isArray(project.members) ? project.members.map((entry) => ({
+        id: typeof entry.member === 'object' && entry.member ? entry.member.id : entry.member,
+        name: typeof entry.member === 'object' && entry.member ? entry.member.name : 'Siswa',
+        contribution: entry.contribution,
+      })) : [],
+    }))
+
     const totalLikes = portfolios.reduce((sum, portfolio) => sum + portfolio.likeCount, 0)
     const totalComments = portfolios.reduce((sum, portfolio) => sum + portfolio.commentCount, 0)
     const badges = portfolios.flatMap((portfolio) => [
@@ -126,6 +148,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       },
       totals: { likes: totalLikes, comments: totalComments, portfolios: portfolios.length },
       portfolios: portfoliosWithNomineeStatus,
+      projects,
       nomineeAwards,
       winningAwards,
       badges,

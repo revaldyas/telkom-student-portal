@@ -12,6 +12,8 @@
     "seed:students": "tsx scripts/seed-students.mts",
     "seed:categories": "tsx scripts/seed-categories.mts",
     "seed:portfolios": "tsx scripts/seed-portfolios.mts",
+    "seed:demo-content": "tsx scripts/seed-demo-content.mts",
+    "seed:home-banners": "tsx scripts/seed-home-banners.mts",
     "seed:avatars": "tsx scripts/seed-student-avatars.mts",
     "seed:bios": "tsx scripts/seed-student-bios.mts",
     "seed:community": "tsx scripts/seed-community-interactions.mts",
@@ -19,6 +21,11 @@
     "seed:cms-admin": "tsx scripts/seed-cms-admin.mts"
   },
   "dependencies": {
+    "@lexical/link": "0.50.0",
+    "@lexical/list": "0.50.0",
+    "@lexical/react": "0.50.0",
+    "@lexical/rich-text": "0.50.0",
+    "@lexical/selection": "0.50.0",
     "@payloadcms/db-postgres": "3.90.2",
     "@payloadcms/next": "3.90.2",
     "@payloadcms/richtext-lexical": "3.90.2",

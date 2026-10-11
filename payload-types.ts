@@ -68,7 +68,9 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'home-banners': HomeBanner;
     portfolios: Portfolio;
+    projects: Project;
     'portfolio-categories': PortfolioCategory;
     awards: Award;
     users: User;
@@ -91,7 +93,9 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'home-banners': HomeBannersSelect<false> | HomeBannersSelect<true>;
     portfolios: PortfoliosSelect<false> | PortfoliosSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'portfolio-categories': PortfolioCategoriesSelect<false> | PortfolioCategoriesSelect<true>;
     awards: AwardsSelect<false> | AwardsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -166,6 +170,51 @@ export interface AdminAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-banners".
+ */
+export interface HomeBanner {
+  id: number;
+  eyebrow: string;
+  title: string;
+  description: string;
+  /**
+   * Opsional. Banner tanpa gambar akan menampilkan placeholder skeleton.
+   */
+  image?: (number | null) | Upload;
+  primaryButtonLabel: string;
+  primaryButtonUrl: string;
+  secondaryButtonLabel?: string | null;
+  secondaryButtonUrl?: string | null;
+  /**
+   * Angka lebih kecil ditampilkan lebih dahulu.
+   */
+  sortOrder: number;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "uploads".
+ */
+export interface Upload {
+  id: number;
+  alt: string;
+  _objectKey?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "portfolios".
  */
 export interface Portfolio {
@@ -177,12 +226,63 @@ export interface Portfolio {
   slug: string;
   student: number | User;
   categoryRef: number | PortfolioCategory;
-  category?: ('UI/UX' | 'Web Development' | 'Branding' | 'Graphic Design' | 'Photography' | 'Motion') | null;
+  category?:
+    | (
+        | 'UI/UX'
+        | 'Web Development'
+        | 'Branding'
+        | 'Graphic Design'
+        | 'Photography'
+        | 'Motion'
+        | 'TR-TRANSMISI'
+        | 'TR-OPTIK'
+        | 'TR-SINYAL'
+        | 'TR-TELEKOM'
+        | 'TJKT-TOPOLOGI'
+        | 'TJKT-SERVER'
+        | 'TJKT-KEAMANAN'
+        | 'TJKT-HARDWARE'
+        | 'TJA-FTTH'
+        | 'TJA-ODP'
+        | 'TJA-WIRELESS'
+        | 'TJA-LAYANAN'
+        | 'PPLG-WEB'
+        | 'PPLG-MOBILE'
+        | 'PPLG-GAME'
+        | 'PPLG-UIUX'
+        | 'DKV-BRAND'
+        | 'DKV-GRAFIS'
+        | 'DKV-FOTO'
+        | 'DKV-MOTION'
+      )
+    | null;
   summary: string;
+  /**
+   * Penjelasan lengkap proses, tujuan, dan hasil karya. Format teks dapat diatur melalui editor.
+   */
+  details?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   /**
    * Unggah gambar sampul dalam format JPG, PNG, atau WebP.
    */
   coverImage?: (number | null) | Upload;
+  /**
+   * Unggah gambar tambahan untuk ditampilkan pada halaman detail karya.
+   */
+  galleryImages?: (number | Upload)[] | null;
   year?: number | null;
   tools?: string[] | null;
   projectUrl?: string | null;
@@ -275,26 +375,6 @@ export interface Program {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "uploads".
- */
-export interface Upload {
-  id: number;
-  alt: string;
-  _objectKey?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "portfolio-categories".
  */
 export interface PortfolioCategory {
@@ -302,6 +382,79 @@ export interface PortfolioCategory {
   name: string;
   code: string;
   description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  title: string;
+  /**
+   * Dibuat otomatis dari nama proyek.
+   */
+  slug: string;
+  summary: string;
+  /**
+   * Jelaskan tujuan, proses kolaborasi, dan hasil proyek.
+   */
+  details?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  categoryRef?: (number | null) | PortfolioCategory;
+  members?:
+    | {
+        member: number | User;
+        contribution: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Satu mentor utama mengambil keputusan akhir. Mentor pendamping dapat memberi masukan.
+   */
+  mentorAssignments?:
+    | {
+        mentor: number | User;
+        assignmentRole: 'primary' | 'supporting';
+        response: 'invited' | 'accepted' | 'declined';
+        id?: string | null;
+      }[]
+    | null;
+  reviewHistory?:
+    | {
+        reviewer: number | User;
+        reviewerRole: 'primary' | 'supporting';
+        decision: 'comment' | 'verified' | 'revision-requested';
+        feedback: string;
+        reviewedAt: string;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  coverImage?: (number | null) | Upload;
+  galleryImages?: (number | Upload)[] | null;
+  year?: number | null;
+  tools?: string[] | null;
+  projectUrl?: string | null;
+  verificationStatus?: ('unreviewed' | 'submitted' | 'verified' | 'revision-requested') | null;
+  verifiedBy?: (number | null) | User;
+  verifiedAt?: string | null;
+  reviewFeedback?: string | null;
+  status: 'draft' | 'published';
   updatedAt: string;
   createdAt: string;
 }
@@ -494,8 +647,16 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'home-banners';
+        value: number | HomeBanner;
+      } | null)
+    | ({
         relationTo: 'portfolios';
         value: number | Portfolio;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null)
     | ({
         relationTo: 'portfolio-categories';
@@ -611,6 +772,24 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-banners_select".
+ */
+export interface HomeBannersSelect<T extends boolean = true> {
+  eyebrow?: T;
+  title?: T;
+  description?: T;
+  image?: T;
+  primaryButtonLabel?: T;
+  primaryButtonUrl?: T;
+  secondaryButtonLabel?: T;
+  secondaryButtonUrl?: T;
+  sortOrder?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "portfolios_select".
  */
 export interface PortfoliosSelect<T extends boolean = true> {
@@ -620,7 +799,9 @@ export interface PortfoliosSelect<T extends boolean = true> {
   categoryRef?: T;
   category?: T;
   summary?: T;
+  details?: T;
   coverImage?: T;
+  galleryImages?: T;
   year?: T;
   tools?: T;
   projectUrl?: T;
@@ -631,6 +812,55 @@ export interface PortfoliosSelect<T extends boolean = true> {
   reviewFeedback?: T;
   status?: T;
   featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  summary?: T;
+  details?: T;
+  categoryRef?: T;
+  members?:
+    | T
+    | {
+        member?: T;
+        contribution?: T;
+        id?: T;
+      };
+  mentorAssignments?:
+    | T
+    | {
+        mentor?: T;
+        assignmentRole?: T;
+        response?: T;
+        id?: T;
+      };
+  reviewHistory?:
+    | T
+    | {
+        reviewer?: T;
+        reviewerRole?: T;
+        decision?: T;
+        feedback?: T;
+        reviewedAt?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  coverImage?: T;
+  galleryImages?: T;
+  year?: T;
+  tools?: T;
+  projectUrl?: T;
+  verificationStatus?: T;
+  verifiedBy?: T;
+  verifiedAt?: T;
+  reviewFeedback?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

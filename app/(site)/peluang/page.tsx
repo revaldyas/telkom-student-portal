@@ -87,7 +87,7 @@ export default function OpportunitiesPage() {
           : <div className="opportunity-grid">{filtered.map((opportunity) => {
             const image = typeof opportunity.coverImage === 'object' ? opportunity.coverImage?.url : null
             const isOpen = opportunity.status === 'open'
-            return <article className="opportunity-card" key={opportunity.id}>
+            return <article className="opportunity-card" id={`peluang-${opportunity.id}`} key={opportunity.id}>
               {image && <img className="opportunity-cover" src={image} alt="" />}
               <div className="opportunity-card-body"><div className="opportunity-card-labels"><span className="lowfi-badge">{labels[opportunity.type] || 'Peluang'}</span><span className={`opportunity-status ${isOpen ? 'is-open' : 'is-closed'}`}>{isOpen ? 'DIBUKA' : 'DITUTUP'}</span></div>
                 <h2>{opportunity.title}</h2><p className="opportunity-organizer">{opportunity.organizer}</p><p>{opportunity.summary}</p>
@@ -100,6 +100,6 @@ export default function OpportunitiesPage() {
           })}</div>}
     </section>
     {role === 'teacher' && <p className="opportunity-manage-note">Kelola peluang di panel Guru atau CMS.</p>}
-    <p className="opportunity-manage-note"><Link href="/mentor">Informasi mentoring dan verifikasi karya</Link></p>
+    <p className="opportunity-manage-note">Guru dapat mengelola peluang dan verifikasi karya melalui Portal Guru.</p>
   </main>
 }
