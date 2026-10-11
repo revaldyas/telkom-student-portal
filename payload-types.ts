@@ -280,6 +280,7 @@ export interface Program {
 export interface Upload {
   id: number;
   alt: string;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -747,6 +748,7 @@ export interface ClassesSelect<T extends boolean = true> {
  */
 export interface UploadsSelect<T extends boolean = true> {
   alt?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

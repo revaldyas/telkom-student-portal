@@ -33,7 +33,9 @@ export default buildConfig({
   collections: [Portfolio, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
   plugins: [
     vercelBlobStorage({
-      enabled: process.env.VERCEL === '1' && Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      // Use the same storage adapter locally when a Blob token is configured;
+      // otherwise Payload builds local /media URLs for files that only exist in Blob.
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       collections: { uploads: true },
       token: process.env.BLOB_READ_WRITE_TOKEN,
     }),
