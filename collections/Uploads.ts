@@ -8,7 +8,7 @@ export const Uploads: CollectionConfig = {
   labels: { singular: 'Berkas', plural: 'Berkas' },
   upload: {
     staticDir: 'public/media',
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm', 'application/pdf'],
   },
   admin: { group: 'Media', useAsTitle: 'filename', defaultColumns: ['filename', 'mimeType', 'filesize', 'createdAt'] },
   hooks: {
@@ -16,6 +16,7 @@ export const Uploads: CollectionConfig = {
       if (operation !== 'create' && operation !== 'update') return
       const file = req.file
       if (!file) return
+      if (!file.mimetype.startsWith('image/')) return
 
       const source = file.tempFilePath ? await readFile(file.tempFilePath) : file.data
       const compressed = await sharp(source, { failOn: 'none' })

@@ -1,6 +1,13 @@
 import { isCMSAdmin } from '../lib/isCMSAdmin'
 import { isStudentUser } from '../lib/isStudentUser'
+import { isTeacherUser } from '../lib/isTeacherUser'
 import type { AccessResult, CollectionConfig, PayloadRequest } from 'payload'
+
+const relationID = (value: unknown): string | number | undefined => {
+  if (typeof value === 'string' || typeof value === 'number') return value
+  if (value && typeof value === 'object' && 'id' in value) return relationID((value as { id: unknown }).id)
+  return undefined
+}
 
 const createSlug = (value: string) => value
   .normalize('NFKD')
@@ -17,16 +24,17 @@ export const Portfolio: CollectionConfig = {
     read: ({ req }): AccessResult => {
       if (isCMSAdmin(req.user)) return true
       if (!req.user) return { status: { equals: 'published' } }
+      if (isTeacherUser(req.user)) return { status: { equals: 'published' } }
       return { or: [{ status: { equals: 'published' } }, { student: { equals: req.user.id } }] }
     },
     create: ({ req }) => isCMSAdmin(req.user) || isStudentUser(req.user),
-    update: ({ req }) => isCMSAdmin(req.user) ? true : { student: { equals: req.user?.id } },
+    update: ({ req }) => isCMSAdmin(req.user) ? true : isTeacherUser(req.user) ? false : { student: { equals: req.user?.id } },
     delete: ({ req }) => isCMSAdmin(req.user) ? true : { student: { equals: req.user?.id } },
   },
   hooks: {
     beforeChange: [async ({ data, originalDoc, req }) => {
       const nextData = { ...data }
-      if (req.user && !isCMSAdmin(req.user)) nextData.student = req.user.id
+      if (isStudentUser(req.user)) nextData.student = req.user.id
 
       const categoryRef = nextData.categoryRef ?? originalDoc?.categoryRef
       if (categoryRef) {
@@ -103,7 +111,36 @@ export const Portfolio: CollectionConfig = {
     },
     { name: 'year', label: 'Tahun', type: 'number', defaultValue: new Date().getFullYear() },
     { name: 'tools', label: 'Perangkat yang Digunakan', type: 'text', hasMany: true },
-    { name: 'projectUrl', label: 'Tautan Karya', type: 'text' },
+    {
+      name: 'projectUrl', label: 'Tautan Karya', type: 'text',
+      validate: (value: unknown) => {
+        if (!value) return true
+        try { return ['http:', 'https:'].includes(new URL(String(value)).protocol) ? true : 'Tautan karya harus memakai HTTP atau HTTPS.' }
+        catch { return 'Masukkan tautan karya yang valid.' }
+      },
+    },
+    { name: 'projectFile', label: 'Video atau Dokumen Pendukung', type: 'upload', relationTo: 'uploads', admin: { description: 'Opsional. Unggah video MP4/WebM atau dokumen PDF sebagai bukti karya.' } },
+    {
+      name: 'verificationStatus', label: 'Status Verifikasi', type: 'select', defaultValue: 'unreviewed',
+      access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) },
+      options: [
+        { label: 'Belum ditinjau', value: 'unreviewed' },
+        { label: 'Terverifikasi', value: 'verified' },
+        { label: 'Perlu revisi', value: 'revision-requested' },
+      ],
+      admin: { readOnly: true, position: 'sidebar' },
+    },
+    { name: 'verifiedBy', label: 'Diverifikasi oleh', type: 'relationship', relationTo: 'users', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
+    { name: 'verifiedAt', label: 'Tanggal Verifikasi', type: 'date', access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) }, admin: { readOnly: true, position: 'sidebar' } },
+    {
+      name: 'reviewFeedback', label: 'Umpan Balik Guru', type: 'textarea', maxLength: 3000,
+      access: {
+        create: ({ req }) => isCMSAdmin(req.user),
+        update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user),
+        read: ({ req, doc }) => isCMSAdmin(req.user) || (isStudentUser(req.user) && String(relationID(doc?.student)) === String(req.user.id)),
+      },
+      admin: { readOnly: true },
+    },
     {
       name: 'status',
       label: 'Status Publikasi',

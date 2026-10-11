@@ -81,6 +81,9 @@ export interface Config {
     'portfolio-likes': PortfolioLike;
     'portfolio-comments': PortfolioComment;
     'award-votes': AwardVote;
+    'portfolio-reviews': PortfolioReview;
+    opportunities: Opportunity;
+    'opportunity-interests': OpportunityInterest;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -101,6 +104,9 @@ export interface Config {
     'portfolio-likes': PortfolioLikesSelect<false> | PortfolioLikesSelect<true>;
     'portfolio-comments': PortfolioCommentsSelect<false> | PortfolioCommentsSelect<true>;
     'award-votes': AwardVotesSelect<false> | AwardVotesSelect<true>;
+    'portfolio-reviews': PortfolioReviewsSelect<false> | PortfolioReviewsSelect<true>;
+    opportunities: OpportunitiesSelect<false> | OpportunitiesSelect<true>;
+    'opportunity-interests': OpportunityInterestsSelect<false> | OpportunityInterestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -180,6 +186,14 @@ export interface Portfolio {
   year?: number | null;
   tools?: string[] | null;
   projectUrl?: string | null;
+  /**
+   * Opsional. Unggah video MP4/WebM atau dokumen PDF sebagai bukti karya.
+   */
+  projectFile?: (number | null) | Upload;
+  verificationStatus?: ('unreviewed' | 'verified' | 'revision-requested') | null;
+  verifiedBy?: (number | null) | User;
+  verifiedAt?: string | null;
+  reviewFeedback?: string | null;
   status: 'draft' | 'published';
   featured?: boolean | null;
   updatedAt: string;
@@ -196,6 +210,15 @@ export interface User {
    * Opsional. Tampil pada halaman profil siswa.
    */
   bio?: string | null;
+  /**
+   * Bidang yang ingin dipelajari atau dikembangkan.
+   */
+  interests?: string[] | null;
+  skills?: string[] | null;
+  /**
+   * Satu pengalaman per baris, misalnya: Aplikasi Kasir — UI designer, 2025.
+   */
+  experiences?: string[] | null;
   role: 'student' | 'teacher';
   /**
    * Wajib diisi dan harus terdaftar pada Data Siswa.
@@ -257,7 +280,6 @@ export interface Program {
 export interface Upload {
   id: number;
   alt: string;
-  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -399,6 +421,55 @@ export interface AwardVote {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-reviews".
+ */
+export interface PortfolioReview {
+  id: number;
+  portfolio: number | Portfolio;
+  reviewer: number | User;
+  reviewKey: string;
+  decision: 'verified' | 'revision-requested';
+  feedback: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunities".
+ */
+export interface Opportunity {
+  id: number;
+  title: string;
+  type: 'competition' | 'exhibition' | 'challenge' | 'mentoring' | 'collaboration' | 'other';
+  organizer: string;
+  summary: string;
+  requirements?: string | null;
+  coverImage?: (number | null) | Upload;
+  targetPrograms?: (number | Program)[] | null;
+  opensAt?: string | null;
+  deadline?: string | null;
+  url?: string | null;
+  contact?: string | null;
+  status: 'draft' | 'open' | 'closed';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunity-interests".
+ */
+export interface OpportunityInterest {
+  id: number;
+  opportunity: number | Opportunity;
+  student: number | User;
+  interestKey: string;
+  note?: string | null;
+  status?: ('interested' | 'contacted' | 'completed') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -472,6 +543,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'award-votes';
         value: number | AwardVote;
+      } | null)
+    | ({
+        relationTo: 'portfolio-reviews';
+        value: number | PortfolioReview;
+      } | null)
+    | ({
+        relationTo: 'opportunities';
+        value: number | Opportunity;
+      } | null)
+    | ({
+        relationTo: 'opportunity-interests';
+        value: number | OpportunityInterest;
       } | null);
   globalSlug?: string | null;
   user:
@@ -540,6 +623,11 @@ export interface PortfoliosSelect<T extends boolean = true> {
   year?: T;
   tools?: T;
   projectUrl?: T;
+  projectFile?: T;
+  verificationStatus?: T;
+  verifiedBy?: T;
+  verifiedAt?: T;
+  reviewFeedback?: T;
   status?: T;
   featured?: T;
   updatedAt?: T;
@@ -577,6 +665,9 @@ export interface AwardsSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   bio?: T;
+  interests?: T;
+  skills?: T;
+  experiences?: T;
   role?: T;
   nis?: T;
   class?: T;
@@ -656,7 +747,6 @@ export interface ClassesSelect<T extends boolean = true> {
  */
 export interface UploadsSelect<T extends boolean = true> {
   alt?: T;
-  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -724,6 +814,52 @@ export interface AwardVotesSelect<T extends boolean = true> {
   portfolio?: T;
   voter?: T;
   voteKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-reviews_select".
+ */
+export interface PortfolioReviewsSelect<T extends boolean = true> {
+  portfolio?: T;
+  reviewer?: T;
+  reviewKey?: T;
+  decision?: T;
+  feedback?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunities_select".
+ */
+export interface OpportunitiesSelect<T extends boolean = true> {
+  title?: T;
+  type?: T;
+  organizer?: T;
+  summary?: T;
+  requirements?: T;
+  coverImage?: T;
+  targetPrograms?: T;
+  opensAt?: T;
+  deadline?: T;
+  url?: T;
+  contact?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunity-interests_select".
+ */
+export interface OpportunityInterestsSelect<T extends boolean = true> {
+  opportunity?: T;
+  student?: T;
+  interestKey?: T;
+  note?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

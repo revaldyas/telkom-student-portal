@@ -29,6 +29,27 @@ export const Users: CollectionConfig = {
       },
     },
     {
+      name: 'interests',
+      label: 'Minat',
+      type: 'text',
+      hasMany: true,
+      admin: { condition: (_, siblingData) => siblingData?.role === 'student', description: 'Bidang yang ingin dipelajari atau dikembangkan.' },
+    },
+    {
+      name: 'skills',
+      label: 'Keterampilan',
+      type: 'text',
+      hasMany: true,
+      admin: { condition: (_, siblingData) => siblingData?.role === 'student' },
+    },
+    {
+      name: 'experiences',
+      label: 'Pengalaman Proyek',
+      type: 'text',
+      hasMany: true,
+      admin: { condition: (_, siblingData) => siblingData?.role === 'student', description: 'Satu pengalaman per baris, misalnya: Aplikasi Kasir — UI designer, 2025.' },
+    },
+    {
       name: 'role',
       label: 'Jenis Akun',
       type: 'select',

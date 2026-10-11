@@ -11,6 +11,9 @@ import { Portfolio } from './collections/Portfolio'
 import { PortfolioCategories } from './collections/PortfolioCategories'
 import { PortfolioComments } from './collections/PortfolioComments'
 import { PortfolioLikes } from './collections/PortfolioLikes'
+import { PortfolioReviews } from './collections/PortfolioReviews'
+import { OpportunityInterests } from './collections/OpportunityInterests'
+import { Opportunities } from './collections/Opportunities'
 import { Programs } from './collections/Programs'
 import { Students } from './collections/Students'
 import { StudentRecords } from './collections/StudentRecords'
@@ -27,7 +30,7 @@ export default buildConfig({
     components: { Nav: '@/components/payload/PayloadNav' },
     importMap: { baseDir: process.cwd() },
   },
-  collections: [Portfolio, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes],
+  collections: [Portfolio, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
   plugins: [
     vercelBlobStorage({
       enabled: process.env.VERCEL === '1' && Boolean(process.env.BLOB_READ_WRITE_TOKEN),
@@ -40,6 +43,10 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: './payload-types.ts' },
   db: postgresAdapter({
+    // The local Payload schema omits Vercel Blob's internal `_objectkey` column
+    // when the Blob plugin is disabled. Keep schema push off so development
+    // startup cannot drop that production-only column from the shared database.
+    push: false,
     pool: {
       connectionString: databaseURL,
       max: poolMax,
