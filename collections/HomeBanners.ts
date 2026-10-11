@@ -24,12 +24,12 @@ export const HomeBanners: CollectionConfig = {
     { name: 'title', label: 'Judul banner', type: 'text', required: true, maxLength: 120 },
     { name: 'description', label: 'Deskripsi', type: 'textarea', required: true, maxLength: 260 },
     { name: 'image', label: 'Gambar banner', type: 'upload', relationTo: 'uploads', admin: { description: 'Opsional. Banner tanpa gambar akan menampilkan placeholder skeleton.' } },
-    { name: 'primaryButtonLabel', label: 'Teks tombol utama', dbName: 'primary_button_label', type: 'text', required: true, maxLength: 32 },
+    { name: 'primaryButtonLabel', label: 'Teks tombol utama', type: 'text', required: true, maxLength: 32 },
     {
       name: 'primaryButtonUrl', label: 'Tautan tombol utama', type: 'text', required: true,
       validate: (value: unknown) => validButtonURL(value) ? true : 'Masukkan path internal (contoh: /karya) atau URL HTTPS.',
     },
-    { name: 'secondaryButtonLabel', label: 'Teks tombol kedua', dbName: 'secondary_button_label', type: 'text', maxLength: 32 },
+    { name: 'secondaryButtonLabel', label: 'Teks tombol kedua', type: 'text', maxLength: 32 },
     {
       name: 'secondaryButtonUrl', label: 'Tautan tombol kedua', type: 'text',
       validate: (value: unknown) => !value || validButtonURL(value) ? true : 'Masukkan path internal (contoh: /awards) atau URL HTTPS.',
