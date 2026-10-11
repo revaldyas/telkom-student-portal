@@ -24,8 +24,8 @@ export const Users: CollectionConfig = {
       label: 'Bio',
       type: 'textarea',
       admin: {
-        condition: (_, siblingData) => siblingData?.role === 'student',
-        description: 'Opsional. Tampil pada halaman profil siswa.',
+        condition: (_, siblingData) => ['student', 'teacher'].includes(String(siblingData?.role)),
+        description: 'Opsional. Tampil pada profil publik.',
       },
     },
     {
@@ -33,21 +33,21 @@ export const Users: CollectionConfig = {
       label: 'Minat',
       type: 'text',
       hasMany: true,
-      admin: { condition: (_, siblingData) => siblingData?.role === 'student', description: 'Bidang yang ingin dipelajari atau dikembangkan.' },
+      admin: { condition: (_, siblingData) => ['student', 'teacher'].includes(String(siblingData?.role)), description: 'Bidang yang ingin dipelajari atau dikembangkan.' },
     },
     {
       name: 'skills',
       label: 'Keterampilan',
       type: 'text',
       hasMany: true,
-      admin: { condition: (_, siblingData) => siblingData?.role === 'student' },
+      admin: { condition: (_, siblingData) => ['student', 'teacher'].includes(String(siblingData?.role)) },
     },
     {
       name: 'experiences',
       label: 'Pengalaman Proyek',
       type: 'text',
       hasMany: true,
-      admin: { condition: (_, siblingData) => siblingData?.role === 'student', description: 'Satu pengalaman per baris, misalnya: Aplikasi Kasir — UI designer, 2025.' },
+      admin: { condition: (_, siblingData) => ['student', 'teacher'].includes(String(siblingData?.role)), description: 'Satu pengalaman per baris, misalnya: Proyek Aplikasi — pembimbing, 2025.' },
     },
     {
       name: 'role',

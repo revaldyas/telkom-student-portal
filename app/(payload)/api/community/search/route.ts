@@ -10,9 +10,10 @@ export async function GET(request: Request) {
 
   const payload = await getPayload({ config })
   const contains = { contains: query }
-  const [works, students, classes, programs, categories, awards, opportunities] = await Promise.all([
+  const [works, students, teachers, classes, programs, categories, awards, opportunities] = await Promise.all([
     payload.find({ collection: 'portfolios', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
     payload.find({ collection: 'users', where: { and: [{ role: { equals: 'student' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
+    payload.find({ collection: 'users', where: { and: [{ role: { equals: 'teacher' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
     payload.find({ collection: 'classes', where: { name: contains }, depth: 1, limit: 3, overrideAccess: true }),
     payload.find({ collection: 'programs', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
     payload.find({ collection: 'portfolio-categories', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
 
   const items: SearchItem[] = [
     ...students.docs.map((student) => ({ type: 'Profil siswa', label: student.name, detail: 'Siswa', href: `/siswa/${student.id}` })),
+    ...teachers.docs.map((teacher) => ({ type: 'Profil Guru / Mentor', label: teacher.name, detail: 'Guru pembimbing', href: `/guru/${teacher.id}` })),
     ...works.docs.map((work) => ({ type: 'Karya', label: work.title, detail: typeof work.student === 'object' ? work.student.name || 'Siswa' : 'Portofolio siswa', href: `/karya/${work.slug}` })),
     ...classes.docs.map((item) => ({ type: 'Kelas', label: item.name, detail: 'Lihat karya siswa di kelas ini', href: `/karya?kelas=${item.id}` })),
     ...programs.docs.map((item) => ({ type: 'Program keahlian', label: item.name, detail: item.code, href: `/karya?program=${item.id}` })),

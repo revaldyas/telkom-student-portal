@@ -110,7 +110,10 @@ export default function SiteNav() {
           </summary>
           <div className="site-account-dropdown">
             {account.role === 'student' && <Link href={`/siswa/${account.id}`} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Profil</Link>}
-            {account.role === 'teacher' && <Link href="/mentor" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Ruang Guru</Link>}
+            {account.role === 'teacher' && <>
+              <Link href={`/guru/${account.id}`} onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Profil</Link>
+              <Link href="/mentor" onClick={(event) => { event.currentTarget.closest('details')?.removeAttribute('open') }}>Ruang Guru</Link>
+            </>}
             <button type="button" onClick={() => void logout()} disabled={loggingOut}>{loggingOut ? 'Keluar…' : 'Keluar'}</button>
             {logoutError && <p role="alert">{logoutError}</p>}
           </div>

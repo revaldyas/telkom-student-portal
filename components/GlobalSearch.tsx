@@ -81,11 +81,11 @@ export default function GlobalSearch() {
       <input
         type="search"
         role="combobox"
-        aria-label="Cari siswa, karya, kategori, kelas, atau award"
+        aria-label="Cari siswa, Guru, karya, kategori, kelas, atau award"
         aria-expanded={open}
         aria-controls="global-search-results"
         aria-autocomplete="list"
-        placeholder="Cari siswa, karya, kategori…"
+        placeholder="Cari siswa, Guru, karya, kategori…"
         value={query}
         onFocus={openRecommendations}
         onChange={(event) => { setQuery(event.target.value); setOpen(true) }}
@@ -100,7 +100,7 @@ export default function GlobalSearch() {
       <p className="global-search-heading">{query.trim().length < 2 ? 'Pencarian populer' : loading ? 'Mencari…' : 'Hasil pencarian'}</p>
       {loading && query.trim().length >= 2 ? <SearchResultsSkeleton /> : visibleRecommendations.length ? visibleRecommendations.map((item) => <Link className="global-search-result" href={item.href} key={`${item.type}:${item.href}:${item.label}`} role="option" onClick={() => setOpen(false)}>
         <span><small>{item.type}</small><strong>{item.label}</strong><em>{item.detail}</em></span><span aria-hidden="true">↗</span>
-      </Link>) : !loading && <p className="global-search-empty">Tidak ada hasil. Coba nama siswa, judul karya, kelas, kategori, atau award.</p>}
+      </Link>) : !loading && <p className="global-search-empty">Tidak ada hasil. Coba nama siswa atau Guru, judul karya, kelas, kategori, atau award.</p>}
       {query.trim().length >= 2 && <Link className="global-search-all" href={`/karya?q=${encodeURIComponent(query.trim())}`} onClick={() => setOpen(false)}>Cari “{query.trim()}” di semua karya</Link>}
     </div>}
   </div>

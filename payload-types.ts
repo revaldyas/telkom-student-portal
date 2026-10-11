@@ -207,7 +207,7 @@ export interface User {
   id: number;
   name: string;
   /**
-   * Opsional. Tampil pada halaman profil siswa.
+   * Opsional. Tampil pada profil publik.
    */
   bio?: string | null;
   /**
@@ -216,7 +216,7 @@ export interface User {
   interests?: string[] | null;
   skills?: string[] | null;
   /**
-   * Satu pengalaman per baris, misalnya: Aplikasi Kasir — UI designer, 2025.
+   * Satu pengalaman per baris, misalnya: Proyek Aplikasi — pembimbing, 2025.
    */
   experiences?: string[] | null;
   role: 'student' | 'teacher';
