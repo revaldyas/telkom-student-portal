@@ -138,5 +138,6 @@ export async function GET(request: Request) {
         return [{ id: nominee.id, title: nominee.title, slug: nominee.slug, coverImage: coverImage?.url || null }]
       }) : [],
     }))
-  return NextResponse.json({ portfolios, projects, opportunities, awards, heroSlides }, { headers: { 'Cache-Control': 'no-store' } })
+  const totals = { portfolios: works.totalDocs, projects: projectResponse.totalDocs, opportunities: opportunityResponse.totalDocs, awards: awards.length }
+  return NextResponse.json({ portfolios, projects, opportunities, awards, heroSlides, totals }, { headers: { 'Cache-Control': 'no-store' } })
 }

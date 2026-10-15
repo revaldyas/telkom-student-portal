@@ -69,7 +69,6 @@ h1,h2,h3 { letter-spacing: -.048em; }
 .lowfi-work-card .work-card-media img { display: block; width: 100%; height: 100%; aspect-ratio: 16/12; object-fit: contain; transition: transform .3s ease; }
 .lowfi-work-card:hover .work-card-media img { transform: scale(1.025); }
 .work-card-media .lowfi-badge { position: absolute; top: 11px; left: 11px; padding: 5px 8px; border: 0; border-radius: 5px; background: rgba(255,255,255,.96); color: #ae0714; box-shadow: 0 3px 10px rgba(0,0,0,.1); }
-.work-card-media .verified-badge{position:absolute;top:11px;right:11px;padding:5px 8px;border:1px solid rgba(23,107,57,.15);background:rgba(245,255,248,.96);box-shadow:0 3px 10px rgba(0,0,0,.1)}
 .work-card-placeholder { color: #9e9e9b; font-size: clamp(16px,2vw,22px); font-weight: 800; letter-spacing: -.05em; line-height: 1.1; text-align: center; text-wrap: balance; padding: 16px; }
 .work-card-body { padding: 15px 8px 10px; }
 .work-card-category { margin: 0 0 7px !important; color: #9a111b !important; font-size: 10px !important; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
@@ -496,3 +495,9 @@ h1,h2,h3 { letter-spacing: -.048em; }
   .tel-creation-mark { width: 31px; height: 31px; font-size: 18px; }
   .tel-creation-wordmark { font-size: 15px; }
 }
+.work-card-footer .work-author-details { display: grid; gap: 2px; min-width: 0; }
+.work-card-footer .work-author-details .work-author-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.work-card-footer .work-author-details .work-author-major { overflow: hidden; color: #77797d; font-size: 10px; font-weight: 500; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+.karya-list-grid .lowfi-work-card .work-card-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.karya-list-grid .work-card-body h2 { display: block; min-height: 0; margin: 0 0 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.karya-list-grid .work-card-summary { display: block; overflow: hidden; margin: 0 0 12px; color: #686a6e; font-size: 12px; line-height: 1.45; text-overflow: ellipsis; white-space: nowrap; }

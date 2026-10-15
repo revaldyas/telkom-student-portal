@@ -26,6 +26,12 @@ type FilterOption = { id: string | number; name: string; program?: { id: string 
 
 const studentID = (student: Portfolio['student']) => typeof student === 'object' && student ? student.id : student
 const studentName = (student: Portfolio['student']) => typeof student === 'object' && student ? student.name || 'Siswa' : 'Siswa'
+const studentClassInfo = (student: Portfolio['student']) => {
+  if (typeof student !== 'object' || !student) return ''
+  const className = typeof student.class === 'object' && student.class ? student.class.name || '' : ''
+  const programName = typeof student.program === 'object' && student.program ? student.program.name || '' : ''
+  return [className, programName].filter(Boolean).join(' · ')
+}
 const studentPhoto = (student: Portfolio['student']) => typeof student === 'object' && student ? student.profilePhoto || null : null
 
 export default function AllWorksPage() {
@@ -87,16 +93,16 @@ export default function AllWorksPage() {
         <label className="listing-checkbox"><input type="checkbox" checked={nomineesOnly} onChange={(event) => setNomineesOnly(event.target.checked)} />Karya nominee</label>
         {(query || categoryFilter || classFilter || programFilter || nomineesOnly) && <button type="button" onClick={() => { setQuery(''); setCategoryFilter(''); setClassFilter(''); setProgramFilter(''); setNomineesOnly(false) }}>Hapus filter</button>}
       </div>
-      {loading ? <WorkGridSkeleton count={9} /> : filteredPortfolios.length ? <div className="lowfi-work-grid">{filteredPortfolios.map((work) => {
+      {loading ? <WorkGridSkeleton count={9} /> : filteredPortfolios.length ? <div className="lowfi-work-grid karya-list-grid">{filteredPortfolios.map((work) => {
         const image = typeof work.coverImage === 'object' && work.coverImage ? work.coverImage.url : null
         const authorID = studentID(work.student)
         const photo = studentPhoto(work.student)
         const rankIndex = mvsStudents.findIndex((student) => String(student.id) === String(authorID))
         const rank = rankIndex >= 0 && rankIndex < 3 && (mvsStudents[rankIndex].score || 0) > 0 ? rankIndex + 1 : 0
-        const author = <>{photo ? <span className="mvs-avatar"><SkeletonImage src={photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{studentName(work.student).slice(0, 1).toUpperCase()}</span>}<span>{studentName(work.student)}{rank > 0 && <small className="work-author-rank">MVS #{rank}</small>}</span></>
+        const author = <>{photo ? <span className="mvs-avatar"><SkeletonImage src={photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{studentName(work.student).slice(0, 1).toUpperCase()}</span>}<span className="work-author-details"><span className="work-author-name">{studentName(work.student)}{rank > 0 && <small className="work-author-rank">MVS #{rank}</small>}</span>{studentClassInfo(work.student) && <small className="work-author-major" title={studentClassInfo(work.student)}>{studentClassInfo(work.student)}</small>}</span></>
         return <article className="lowfi-work-card" key={work.id}>
-          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} loading="lazy" /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}{work.verificationStatus === 'verified' && <span className="verified-badge">TERVERIFIKASI</span>}</Link>
-          <div className="work-card-body"><p className="work-card-category">{typeof work.categoryRef === 'object' && work.categoryRef ? work.categoryRef.name || work.categoryRef.code : 'Karya'}{work.year ? ` / ${work.year}` : ''}</p><h2><Link href={`/karya/${work.slug}`}>{displayTitle(work.title, studentName(work.student))}</Link></h2><div className="work-card-footer"><p className="work-author">{authorID ? <Link href={`/siswa/${authorID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-arrow" aria-hidden="true">↗</span></div></div>
+          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} loading="lazy" /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}</Link>
+          <div className="work-card-body"><p className="work-card-category">{typeof work.categoryRef === 'object' && work.categoryRef ? work.categoryRef.name || work.categoryRef.code : 'Karya'}{work.year ? ` / ${work.year}` : ''}</p><h2><Link href={`/karya/${work.slug}`}>{displayTitle(work.title, studentName(work.student))}</Link></h2>{work.summary && <p className="work-card-summary">{work.summary}</p>}<div className="work-card-footer"><p className="work-author">{authorID ? <Link href={`/siswa/${authorID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-arrow" aria-hidden="true">↗</span></div></div>
         </article>
       })}</div> : <p>Tidak ada karya yang cocok dengan pencarian atau filter ini.</p>}
     </section>
