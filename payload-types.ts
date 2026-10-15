@@ -199,6 +199,9 @@ export interface HomeBanner {
  */
 export interface Upload {
   id: number;
+  /**
+   * Dibuat otomatis (telkom-student-xxxxxxxx). Boleh diubah.
+   */
   alt: string;
   _objectKey?: string | null;
   updatedAt: string;
