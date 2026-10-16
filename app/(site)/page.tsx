@@ -31,9 +31,8 @@ type StudyShortcut = { id: string | number; name: string; code?: string }
 const idOf = (value: Portfolio['student']) => typeof value === 'object' && value ? value.id : value
 const nameOf = (value: Portfolio['student']) => typeof value === 'object' && value ? value.name || 'Siswa' : 'Siswa'
 const photoOf = (value: Portfolio['student']) => typeof value === 'object' && value ? value.profilePhoto || null : null
-const studentStudyInfo = (value: Portfolio['student']) => typeof value === 'object' && value
-  ? (() => { const grade = (value.class?.name || '').trim().match(/^(XII|XI|X)\b/i)?.[1]; return grade ? `Kelas ${grade.toUpperCase()}` : '' })()
-  : ''
+// Nama kelas lengkap (mis. "X PPLG 1"), bukan hanya tingkatnya.
+const studentStudyInfo = (value: Portfolio['student']) => typeof value === 'object' && value ? (value.class?.name || '').trim() : ''
 const opportunityTypeLabel: Record<string, string> = { competition: 'Kompetisi', exhibition: 'Pameran', challenge: 'Tantangan proyek', mentoring: 'Mentoring', collaboration: 'Kolaborasi industri', other: 'Peluang' }
 const selectRecentByProgram = (works: Portfolio[]) => {
   const perProgram = new Map<string, Portfolio[]>()
@@ -142,8 +141,9 @@ export default function Home() {
         const studyInfo = studentStudyInfo(work.student)
         const author = <>{photo ? <span className="mvs-avatar"><SkeletonImage src={photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{nameOf(work.student).slice(0, 1).toUpperCase()}</span>}<span className="work-author-details"><span className="work-author-name">{nameOf(work.student)}{rank > 0 && <small className="work-author-rank">MVS #{rank}</small>}</span>{studyInfo && <small className="work-author-major">{studyInfo}</small>}</span></>
         return <article className="lowfi-work-card" key={work.id}>
-          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}<span className="work-card-chip">{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Karya'}</span></Link>
-          <div className="work-card-body"><h3><Link href={`/karya/${work.slug}`}>{displayTitle(work.title, nameOf(work.student))}</Link></h3>{work.summary && <p className="work-card-summary">{work.summary}</p>}<div className="work-card-footer"><p className="work-author">{studentID ? <Link href={`/siswa/${studentID}`}>{author}</Link> : <span>{author}</span>}</p>{work.year && <span className="work-card-year">{work.year}</span>}</div></div>
+          <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}</Link>
+          <div className="work-card-body"><h3><Link href={`/karya/${work.slug}`} title={displayTitle(work.title, nameOf(work.student))}>{displayTitle(work.title, nameOf(work.student))}</Link></h3><span className="work-card-badge">{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Karya'}</span></div>
+          <div className="work-card-footer work-card-top"><p className="work-author">{studentID ? <Link href={`/siswa/${studentID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-counts" aria-label={`${work.likes ?? 0} suka, ${work.comments ?? 0} komentar`}><span aria-hidden="true">♡ {work.likes ?? 0}</span><span aria-hidden="true">◉ {work.comments ?? 0}</span></span></div>
         </article>
       })}</div> : <p>Belum ada karya terbit.</p>}
       <button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => scrollRecentWorks(1)}>›</button></div>

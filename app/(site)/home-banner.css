@@ -76,24 +76,29 @@
 @media(min-width:601px){.home-slide::after{display:none}}
 @media(min-width:601px){.home-slide-content{justify-content:center;padding-top:clamp(28px,4vw,58px);padding-bottom:clamp(28px,4vw,58px)}}
 #karya .home-recent-track .work-card-body h3{display:block;height:auto;min-height:0;margin:0 0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#karya .home-recent-track .work-card-summary{display:block;overflow:hidden;margin:0 0 12px;color:#686a6e;font-size:12px;line-height:1.45;text-overflow:ellipsis;white-space:nowrap}
 
 /* Kartu "Karya Terbaru" (hanya #karya): gambar jadi fokus, tanpa bingkai kartu, teks langsung di bawah gambar. */
-#karya .home-recent-track .lowfi-work-card{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
-#karya .home-recent-track .lowfi-work-card:hover,#karya .home-recent-track .lowfi-work-card:focus-within{border:0;box-shadow:none;transform:none}
-#karya .home-recent-track .work-card-media{aspect-ratio:4/3;border-radius:18px;box-shadow:0 1px 2px rgba(24,28,36,.06),0 10px 26px rgba(24,28,36,.1);transition:transform .28s ease,box-shadow .28s ease}
-#karya .home-recent-track .lowfi-work-card:hover .work-card-media,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media{transform:translateY(-4px);box-shadow:0 2px 4px rgba(24,28,36,.08),0 18px 38px rgba(24,28,36,.18)}
-#karya .home-recent-track .lowfi-work-card:hover .work-card-media img,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media img{transform:scale(1.05)}
-#karya .home-recent-track .work-card-media img{aspect-ratio:auto;object-fit:cover}
-#karya .home-recent-track .work-card-chip{position:absolute;bottom:12px;left:12px;z-index:1;max-width:calc(100% - 24px);overflow:hidden;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.94);box-shadow:0 4px 14px rgba(0,0,0,.14);color:#8f0f1a;font-size:10px;font-weight:800;letter-spacing:.06em;line-height:1.2;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
-#karya .home-recent-track .work-card-body{padding:15px 2px 0}
-#karya .home-recent-track .work-card-body h3{display:-webkit-box;height:auto;min-height:2.6em;margin:0 0 8px;overflow:hidden;font-size:18px;font-weight:800;letter-spacing:-.015em;line-height:1.3;text-overflow:clip;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2}
-#karya .home-recent-track .work-card-summary{display:-webkit-box;margin:0 0 14px;overflow:hidden;color:#62646a;font-size:13px;line-height:1.5;text-overflow:clip;white-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+/* Ruang untuk bayangan kartu: track menyembunyikan overflow, jadi padding ditambah dan dikompensasi margin negatif agar posisi tidak bergeser. */
+#karya .home-recent-track{margin:-16px -14px -35px;padding:16px 14px 48px;scroll-padding-inline:14px}
+#karya .home-recent-track .lowfi-work-card{overflow:hidden;padding:0;border:1px solid #d2d3d0;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(24,28,36,.06),0 8px 20px rgba(24,28,36,.09);transition:border-color .2s ease,box-shadow .2s ease}
+#karya .home-recent-track .lowfi-work-card:hover,#karya .home-recent-track .lowfi-work-card:focus-within{border-color:#b9bab6;box-shadow:0 2px 4px rgba(24,28,36,.08),0 12px 28px rgba(24,28,36,.14);transform:none}
+#karya .home-recent-track .work-card-media{aspect-ratio:4/3;border-radius:0;box-shadow:none;transition:transform .28s ease}
+#karya .home-recent-track .lowfi-work-card:hover .work-card-media,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media{transform:none}
+#karya .home-recent-track .lowfi-work-card:hover .work-card-media img,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media img{transform:scale(1.015)}
+#karya .home-recent-track .work-card-media img{aspect-ratio:auto;object-fit:cover;transition:transform .5s ease}
+#karya .home-recent-track .work-card-counts{display:inline-flex;flex:0 0 auto;gap:9px;color:#6b6d73;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
+#karya .home-recent-track .work-card-badge{align-self:flex-start;max-width:100%;margin:0;overflow:hidden;color:#6b6d73;font-size:12px;font-weight:500;line-height:1.3;text-overflow:ellipsis;white-space:nowrap}
+#karya .home-recent-track .work-card-body{padding:12px 14px}
+#karya .home-recent-track .work-card-body h3{display:block;height:auto;min-height:0;margin:0 0 8px;overflow:hidden;font-size:15px;font-weight:800;letter-spacing:-.01em;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
 #karya .home-recent-track .work-card-footer{padding-top:0;border-top:0}
+#karya .home-recent-track .work-card-top{margin:0;padding:12px 14px;border:0;border-top:1px solid #eeeeec;background:transparent}
 #karya .home-recent-track .work-card-footer .work-author img,#karya .home-recent-track .work-card-footer .work-author-placeholder{width:32px;height:32px}
 #karya .home-recent-track .work-author-name{font-size:12px}
-#karya .home-recent-track .work-card-year{flex:0 0 auto;color:#8b8d92;font-size:12px;font-weight:700}
-#karya .skeleton-work-card{padding:0;border:0;background:transparent;box-shadow:none}
-#karya .skeleton-work-media{aspect-ratio:4/3;border-radius:18px}
-#karya .skeleton-work-body{padding:15px 2px 0}
-@media(max-width:600px){#karya .home-recent-track .work-card-body h3{font-size:17px}}
+#karya .skeleton-work-media{aspect-ratio:4/3}
+#karya .skeleton-work-card{display:flex;flex-direction:column;overflow:hidden;padding:0;border:1px solid #d2d3d0;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(24,28,36,.06),0 8px 20px rgba(24,28,36,.09)}
+#karya .skeleton-work-media{border-radius:0}
+#karya .skeleton-work-body{display:contents}
+#karya .skeleton-work-author{order:2;width:100%;box-sizing:border-box;margin:14px 0 0;padding:12px 14px;border:0;border-top:1px solid #eeeeec}
+#karya .skeleton-work-body>.sk{order:1;margin:11px 14px 0}
+#karya .skeleton-work-body>.sk:first-child{margin-top:12px}
+@media(max-width:600px){#karya .home-recent-track .work-card-body h3{font-size:15px}}
