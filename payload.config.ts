@@ -3,6 +3,7 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { id } from '@payloadcms/translations/languages/id'
 import { buildConfig } from 'payload'
+import sharp from 'sharp'
 import { Classes } from './collections/Classes'
 import { Admins } from './collections/Admins'
 import { HomeBanners } from './collections/HomeBanners'
@@ -43,6 +44,8 @@ export default buildConfig({
     }),
   ],
   editor: lexicalEditor(),
+  // Wajib untuk crop, titik fokus, dan resize dari editor gambar admin; tanpa ini Payload melewati pemrosesan gambar tanpa error.
+  sharp,
   i18n: { fallbackLanguage: 'id', supportedLanguages: { id } },
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: './payload-types.ts' },
