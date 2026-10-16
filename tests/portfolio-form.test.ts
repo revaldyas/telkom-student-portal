@@ -34,8 +34,9 @@ describe('Form karya: membuat karya', () => {
     it('menolak ID kategori berupa string', async () => {
       await expect(create(valid({ categoryRef: String(w.category.id) }))).rejects.toThrow(/Kategori/)
     })
-    it('menolak karya tanpa kategori', async () => {
-      await expect(create(valid({ categoryRef: null }))).rejects.toThrow(/Kategori/)
+    it('draf boleh tanpa kategori, tetapi karya yang diajukan wajib punya kategori', async () => {
+      await expect(create(valid({ categoryRef: null }))).resolves.toBeTruthy()
+      await expect(create(valid({ categoryRef: null, submitForReview: true }))).rejects.toThrow(/Kategori/)
     })
     it('menolak kategori yang tidak ada', async () => {
       await expect(create(valid({ categoryRef: 99999999 }))).rejects.toThrow()
@@ -44,7 +45,10 @@ describe('Form karya: membuat karya', () => {
 
   describe('validasi isian', () => {
     it('judul wajib', async () => { await expect(create(valid({ title: '' }))).rejects.toThrow(/Judul/) })
-    it('ringkasan wajib', async () => { await expect(create(valid({ summary: '' }))).rejects.toThrow(/Ringkasan/) })
+    it('draf boleh tanpa ringkasan, tetapi karya yang diajukan wajib punya ringkasan', async () => {
+      await expect(create(valid({ summary: '' }))).resolves.toBeTruthy()
+      await expect(create(valid({ summary: '   ', submitForReview: true }))).rejects.toThrow(/Ringkasan/)
+    })
     it('judul yang menghasilkan slug sama ditolak', async () => {
       const shared = title('Duplikat')
       await create(valid({ title: shared }))
@@ -85,6 +89,63 @@ describe('Form karya: membuat karya', () => {
     it('pengunjung tanpa login tidak bisa membuat karya', async () => {
       await expect(w.payload.create({ collection: 'portfolios', data: valid() as never, overrideAccess: false })).rejects.toThrow()
     })
+  })
+})
+
+describe('Form karya: draf dan pengajuan', () => {
+  const stateOf = (doc: { id: number }) => w.payload.findByID({ collection: 'portfolios', id: doc.id, depth: 0, overrideAccess: true }) as unknown as Promise<Record<string, any>>
+
+  it('karya baru tersimpan sebagai draf pribadi: belum diajukan', async () => {
+    const doc = await create(valid())
+    expect(doc).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
+  })
+  it('draf hanya perlu judul', async () => {
+    const doc = await create({ title: title('Hanya judul') })
+    expect(doc).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
+    expect(doc.summary ?? null).toBeNull()
+    expect(doc.categoryRef ?? null).toBeNull()
+  })
+  it('judul tetap wajib walau hanya draf', async () => {
+    await expect(create({ title: '', summary: 'x' })).rejects.toThrow(/Judul/)
+  })
+  it('draf dilanjutkan lalu diajukan: status menjadi menunggu verifikasi', async () => {
+    const draft = await create({ title: title('Lanjut') })
+    await w.payload.update({ collection: 'portfolios', id: draft.id, data: { summary: 'Sudah lengkap', categoryRef: w.category.id }, ...as(w.studentA) })
+    expect((await stateOf(draft)).verificationStatus).toBe('unreviewed')
+    await w.payload.update({ collection: 'portfolios', id: draft.id, data: { submitForReview: true } as never, ...as(w.studentA) })
+    expect(await stateOf(draft)).toMatchObject({ status: 'draft', verificationStatus: 'submitted' })
+  })
+  it('mengajukan draf yang belum lengkap ditolak dan statusnya tetap draf', async () => {
+    const draft = await create({ title: title('Belum lengkap') })
+    await expect(w.payload.update({ collection: 'portfolios', id: draft.id, data: { submitForReview: true } as never, ...as(w.studentA) })).rejects.toThrow(/Ringkasan/)
+    expect((await stateOf(draft)).verificationStatus).toBe('unreviewed')
+  })
+  it('membuat dan langsung mengajukan dalam satu langkah', async () => {
+    const doc = await create(valid({ submitForReview: true }))
+    expect(doc).toMatchObject({ status: 'draft', verificationStatus: 'submitted' })
+  })
+  it('flag submitForReview bukan kolom: tidak tersimpan dan tidak ikut terbaca', async () => {
+    const doc = await create(valid({ submitForReview: true }))
+    expect((await stateOf(doc)).submitForReview).toBeUndefined()
+  })
+  it('menyimpan perubahan pada karya yang menunggu verifikasi tidak mengubah statusnya', async () => {
+    const doc = await create(valid({ submitForReview: true }))
+    await w.payload.update({ collection: 'portfolios', id: doc.id, data: { summary: 'Direvisi sedikit' }, ...as(w.studentA) })
+    expect((await stateOf(doc)).verificationStatus).toBe('submitted')
+  })
+  it('siswa tidak bisa memalsukan status verifikasi lewat data biasa', async () => {
+    const doc = await create(valid())
+    await w.payload.update({ collection: 'portfolios', id: doc.id, data: { verificationStatus: 'verified', status: 'published' } as never, ...as(w.studentA) })
+    expect(await stateOf(doc)).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
+  })
+  it('karya terbit yang diedit lalu diajukan ulang: menunggu verifikasi dan tidak tampil publik', async () => {
+    const published = await createPublishedWork(w, w.studentA, 'Ajukan ulang')
+    await w.payload.update({ collection: 'portfolios', id: published.id, data: { summary: 'Versi baru', submitForReview: true } as never, ...as(w.studentA) })
+    expect(await stateOf(published)).toMatchObject({ status: 'draft', verificationStatus: 'submitted' })
+  })
+  it('draf tidak terlihat guru melalui akses koleksi, dan tidak bisa ditinjau sebelum diajukan', async () => {
+    const draft = await create(valid())
+    await expect(w.payload.create({ collection: 'portfolio-reviews', ...as(w.teacher), data: { portfolio: draft.id, decision: 'verified', feedback: 'Disetujui' } as never })).rejects.toThrow(/belum diajukan/)
   })
 })
 

@@ -78,7 +78,7 @@ export async function GET(request: Request) {
         payload.find({ collection: 'opportunity-interests', where: { status: { equals: 'interested' } }, depth: 2, limit: 500, sort: '-createdAt', overrideAccess: true }),
       ])
       for (const work of works.docs) {
-        if (work.verificationStatus !== 'unreviewed') continue
+        if (work.verificationStatus !== 'submitted') continue
         const student = typeof work.student === 'object' && work.student ? work.student : null
         const studentClass = student?.class && typeof student.class === 'object' ? student.class : null
         const studentProgram = relationID(student?.program) ?? relationID(studentClass?.program)

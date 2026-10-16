@@ -57,6 +57,37 @@ describe('Form peluang (guru)', () => {
     if (ok) await expect(promise).resolves.toBeTruthy()
     else await expect(promise).rejects.toThrow(/[Tt]autan/)
   })
+  describe('draf peluang', () => {
+    it('draf cukup bernama: jenis, penyelenggara, dan deskripsi boleh kosong', async () => {
+      const doc = await createOpportunity({ title: `Draf peluang ${w.suffix} ${++counter}`, status: 'draft' })
+      expect(doc.status).toBe('draft')
+      expect(doc.organizer ?? null).toBeNull()
+      expect(doc.summary ?? null).toBeNull()
+    })
+    it('nama tetap wajib walau hanya draf', async () => {
+      await expect(createOpportunity({ title: '', status: 'draft' })).rejects.toThrow(/Nama Peluang/)
+    })
+    it('menerbitkan (open) tanpa penyelenggara dan deskripsi ditolak', async () => {
+      await expect(createOpportunity({ title: `Terbit tanpa isi ${w.suffix} ${++counter}`, status: 'open' })).rejects.toThrow(/Jenis Peluang|Penyelenggara|Deskripsi/)
+    })
+    it('draf dilengkapi lalu diterbitkan', async () => {
+      const draft = await createOpportunity({ title: `Lengkapi ${w.suffix} ${++counter}`, status: 'draft' })
+      await expect(w.payload.update({ collection: 'opportunities', id: draft.id, data: { status: 'open' }, ...as(w.teacher) })).rejects.toThrow()
+      const published = await w.payload.update({ collection: 'opportunities', id: draft.id, data: { status: 'open', type: 'competition', organizer: 'Panitia', summary: 'Siap diterbitkan' }, ...as(w.teacher) })
+      expect(published.status).toBe('open')
+    })
+    it('draf tidak bisa didaftar siswa dan tidak terlihat siswa', async () => {
+      const draft = await createOpportunity({ title: `Draf tersembunyi ${w.suffix} ${++counter}`, status: 'draft' })
+      const visible = await w.payload.find({ collection: 'opportunities', where: { id: { equals: draft.id } }, depth: 0, ...as(w.studentA) })
+      expect(visible.totalDocs).toBe(0)
+      await expect(w.payload.create({ collection: 'opportunity-interests', data: { opportunity: draft.id } as never, ...as(w.studentA) })).rejects.toThrow()
+    })
+    it('menutup peluang yang sudah berjalan tidak mewajibkan isian baru', async () => {
+      const open = await openOpportunity()
+      const closed = await w.payload.update({ collection: 'opportunities', id: open.id, data: { status: 'closed' }, ...as(w.teacher) })
+      expect(closed.status).toBe('closed')
+    })
+  })
   it('guru dapat menutup peluang', async () => {
     const doc = await createOpportunity(formData())
     const closed = await w.payload.update({ collection: 'opportunities', id: doc.id, data: { status: 'closed' }, ...as(w.teacher) })

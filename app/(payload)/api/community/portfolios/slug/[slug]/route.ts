@@ -37,7 +37,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   const student = typeof work.student === 'object' && work.student ? work.student as unknown as Record<string, unknown> : null
   const owner = Boolean(sessionUser && student && String(sessionUser.id) === String(student.id) && !isTeacherUser(sessionUser))
   let mentor = false
-  if (sessionUser && isTeacherUser(sessionUser) && student && work.status !== 'published') {
+  // Draf yang belum diajukan bersifat pribadi: guru baru bisa melihatnya setelah siswa mengajukan.
+  if (sessionUser && isTeacherUser(sessionUser) && student && work.status !== 'published' && (work.verificationStatus ?? 'unreviewed') !== 'unreviewed') {
     const teacher = await payload.findByID({ collection: 'users', id: sessionUser.id, depth: 1, overrideAccess: true })
     mentor = teacherCanReview(teacher as unknown as Record<string, unknown>, student)
   }

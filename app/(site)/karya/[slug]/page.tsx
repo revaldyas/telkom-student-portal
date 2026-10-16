@@ -226,7 +226,7 @@ export default function WorkPage() {
       {message && <p className="mentor-message" role="status">{message}</p>}
       <div className="work-review-sidebar-section"><span className="section-kicker">STATUS KARYA</span><div className="work-status-strip" aria-label="Status karya">
         <span className="work-state work-state--draft">DRAF</span>
-        <span className={portfolio.verificationStatus === 'verified' ? 'work-state work-state--verified' : portfolio.verificationStatus === 'revision-requested' ? 'work-state work-state--revision' : 'work-state work-state--pending'}>{portfolio.verificationStatus === 'verified' ? 'TERVERIFIKASI' : portfolio.verificationStatus === 'revision-requested' ? 'PERLU REVISI' : 'MENUNGGU VERIFIKASI'}</span>
+        <span className={portfolio.verificationStatus === 'verified' ? 'work-state work-state--verified' : portfolio.verificationStatus === 'revision-requested' ? 'work-state work-state--revision' : 'work-state work-state--pending'}>{portfolio.verificationStatus === 'verified' ? 'TERVERIFIKASI' : portfolio.verificationStatus === 'revision-requested' ? 'PERLU REVISI' : portfolio.verificationStatus === 'unreviewed' ? 'DRAF' : 'MENUNGGU VERIFIKASI'}</span>
       </div></div>
       {portfolio.verificationStatus === 'verified' && <p className="verified-callout">Terverifikasi oleh {portfolio.verifiedBy?.name || 'Guru pembimbing'} · menunggu publikasi</p>}
       {portfolio.reviewFeedback && <section className="work-review-latest"><span className="section-kicker">PESAN TERAKHIR</span><p>{portfolio.reviewFeedback}</p></section>}
@@ -243,7 +243,7 @@ export default function WorkPage() {
       <p>{category} · {portfolio.year}</p>
       {!isDraft && <div className="work-status-strip" aria-label="Status karya">
         <span className={portfolio.status === 'published' ? 'work-state work-state--published' : 'work-state work-state--draft'}>{portfolio.status === 'published' ? 'TERBIT' : 'DRAF'}</span>
-        <span className={portfolio.verificationStatus === 'verified' ? 'work-state work-state--verified' : portfolio.verificationStatus === 'revision-requested' ? 'work-state work-state--revision' : 'work-state work-state--pending'}>{portfolio.verificationStatus === 'verified' ? 'TERVERIFIKASI' : portfolio.verificationStatus === 'revision-requested' ? 'PERLU REVISI' : 'MENUNGGU VERIFIKASI'}</span>
+        <span className={portfolio.verificationStatus === 'verified' ? 'work-state work-state--verified' : portfolio.verificationStatus === 'revision-requested' ? 'work-state work-state--revision' : 'work-state work-state--pending'}>{portfolio.verificationStatus === 'verified' ? 'TERVERIFIKASI' : portfolio.verificationStatus === 'revision-requested' ? 'PERLU REVISI' : portfolio.verificationStatus === 'unreviewed' ? 'DRAF' : 'MENUNGGU VERIFIKASI'}</span>
       </div>}
       <p className="work-author">Oleh <Link href={`/siswa/${authorId}`}>{authorPhoto ? <span className="mvs-avatar"><SkeletonImage className="work-author-placeholder" src={authorPhoto} alt="" />{mvsRank > 0 && <small className="mvs-rank-badge">MVS #{mvsRank}</small>}</span> : mvsRank > 0 ? <span className="mvs-avatar work-author-placeholder">{(author?.name || 'Siswa').slice(0, 1).toUpperCase()}<small className="mvs-rank-badge">MVS #{mvsRank}</small></span> : null}{author?.name || 'Siswa'}</Link></p>
       </header>

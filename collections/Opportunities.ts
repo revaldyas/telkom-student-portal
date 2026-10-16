@@ -1,6 +1,6 @@
 import { isCMSAdmin } from '../lib/isCMSAdmin'
 import { isTeacherUser } from '../lib/isTeacherUser'
-import type { CollectionConfig } from 'payload'
+import { ValidationError, type CollectionConfig } from 'payload'
 
 const canManage = (user: unknown) => isCMSAdmin(user) || isTeacherUser(user)
 
@@ -14,15 +14,30 @@ export const Opportunities: CollectionConfig = {
     update: ({ req }) => canManage(req.user),
     delete: ({ req }) => isCMSAdmin(req.user),
   },
+  hooks: {
+    // Draf cukup bernama; peluang yang dibuka atau ditutup harus lengkap.
+    beforeChange: [({ data, originalDoc, req }) => {
+      const pick = (key: 'type' | 'organizer' | 'summary') => key in data ? data[key] : originalDoc?.[key]
+      const status = 'status' in data ? data.status : originalDoc?.status
+      if (status === 'draft') return data
+      const labels = { type: 'Jenis Peluang', organizer: 'Penyelenggara', summary: 'Deskripsi' } as const
+      const missing = (Object.keys(labels) as Array<keyof typeof labels>)
+        .filter((key) => !String(pick(key) ?? '').trim())
+        .map((key) => ({ label: labels[key], message: 'Isian ini wajib diisi.', path: key }))
+      if (missing.length) throw new ValidationError({ collection: 'opportunities', errors: missing }, req.t)
+      return data
+    }],
+  },
   fields: [
     { name: 'title', label: 'Nama Peluang', type: 'text', required: true },
-    { name: 'type', label: 'Jenis Peluang', type: 'select', required: true, options: [
+    // type, organizer, dan summary tidak wajib di level field agar draf bisa disimpan (dicek hook di atas).
+    { name: 'type', label: 'Jenis Peluang', type: 'select', options: [
       { label: 'Kompetisi', value: 'competition' }, { label: 'Pameran', value: 'exhibition' },
       { label: 'Tantangan Proyek', value: 'challenge' }, { label: 'Mentoring', value: 'mentoring' },
       { label: 'Kolaborasi Industri', value: 'collaboration' }, { label: 'Lainnya', value: 'other' },
     ] },
-    { name: 'organizer', label: 'Penyelenggara', type: 'text', required: true },
-    { name: 'summary', label: 'Deskripsi', type: 'textarea', required: true },
+    { name: 'organizer', label: 'Penyelenggara', type: 'text' },
+    { name: 'summary', label: 'Deskripsi', type: 'textarea' },
     { name: 'requirements', label: 'Syarat dan Informasi', type: 'textarea' },
     { name: 'coverImage', label: 'Gambar Sampul', type: 'upload', relationTo: 'uploads' },
     { name: 'targetPrograms', label: 'Program Keahlian Sasaran', type: 'relationship', relationTo: 'programs', hasMany: true },

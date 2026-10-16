@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 import PortfolioDetailEditor from '../../../../../components/PortfolioDetailEditor'
 import { siteFetch } from '../../../../../lib/siteFetch'
+import { workState } from '../../../../../lib/workState'
 
 export type PortfolioEditorCategory = { id: string | number; name: string; code: string }
 export type PortfolioEditorWork = {
@@ -21,19 +22,22 @@ export type PortfolioEditorWork = {
   tools?: string[]
   projectUrl?: string
   status?: string
+  verificationStatus?: string
 }
 
-type Props = { categories: PortfolioEditorCategory[]; work?: PortfolioEditorWork | null }
+type Props = { categories: PortfolioEditorCategory[]; work?: PortfolioEditorWork | null; notice?: string }
 const relationID = (value: PortfolioEditorWork['coverImage']) => value && typeof value === 'object' ? value.id : typeof value === 'string' || typeof value === 'number' ? value : undefined
 
-export default function PortfolioEditorPage({ categories, work = null }: Props) {
+export default function PortfolioEditorPage({ categories, work = null, notice: initialNotice = '' }: Props) {
   const router = useRouter()
   const [details, setDetails] = useState<SerializedEditorState | null>(work?.details || null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState(initialNotice)
   const [coverPreview, setCoverPreview] = useState('')
   const [tools, setTools] = useState<string[]>(work?.tools || [])
   const [toolInput, setToolInput] = useState('')
+  const state = work ? workState(work) : 'draft'
 
   function addTools(value: string) {
     const additions = value.split(/[\n,]/).map((item) => item.trim()).filter(Boolean)
@@ -61,18 +65,23 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    // Tombol yang ditekan menentukan niat: "draft" menyimpan saja, "submit" mengajukan ke Guru.
+    const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null
+    const submitForReview = submitter?.value === 'submit'
     const form = new FormData(event.currentTarget)
     const title = String(form.get('title') || '').trim()
     const categoryRef = String(form.get('categoryRef') || '')
     const summary = String(form.get('summary') || '').trim()
     const coverFile = form.get('coverImage')
     const projectFile = form.get('projectFile')
-    if (!title || !categoryRef || !summary) {
-      setError('Lengkapi judul, kategori, dan ringkasan karya terlebih dahulu.')
+    if (!title) { setError('Isi judul karya terlebih dahulu.'); return }
+    if (submitForReview && (!categoryRef || !summary)) {
+      setError('Untuk mengajukan verifikasi, lengkapi kategori dan ringkasan karya. Atau simpan sebagai draf dulu.')
       return
     }
     setBusy(true)
     setError('')
+    setNotice('')
     try {
       const coverID = coverFile instanceof File && coverFile.size
         ? await uploadFile(coverFile, `Gambar sampul ${title}`)
@@ -87,8 +96,9 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
       }
       const data = {
         title,
-        categoryRef: categories.find((category) => String(category.id) === categoryRef)?.id ?? categoryRef,
+        categoryRef: categories.find((category) => String(category.id) === categoryRef)?.id ?? null,
         summary,
+        submitForReview,
         details: details || undefined,
         coverImage: coverID,
         galleryImages: galleryIDs,
@@ -104,8 +114,16 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
       })
       const result = await response.json()
       if (!response.ok) throw new Error(result.errors?.[0]?.message || result.message || 'Karya belum berhasil disimpan.')
-      router.push('/portal/siswa/karya')
-      router.refresh()
+      if (submitForReview) {
+        router.push('/portal/siswa/karya')
+        router.refresh()
+      } else if (!work) {
+        // Draf baru: lanjut di halaman edit supaya pengerjaan bisa diteruskan.
+        router.replace(`/portal/siswa/karya/${result.doc?.id}/edit?saved=draft`)
+      } else {
+        setNotice(state === 'draft' || state === 'revision' || state === 'published' ? 'Draf tersimpan. Ajukan verifikasi saat karya siap.' : 'Perubahan tersimpan.')
+        router.refresh()
+      }
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : 'Karya belum berhasil disimpan.')
     } finally {
@@ -120,14 +138,16 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
 
   return <main className="portal-page portfolio-form-page">
     <nav className="portfolio-form-breadcrumb" aria-label="Breadcrumb"><Link href="/portal/siswa">Portal siswa</Link><span>/</span><Link href="/portal/siswa/karya">Karya saya</Link><span>/</span><span>{work ? 'Edit karya' : 'Karya baru'}</span></nav>
-    <header className="portal-page-heading portfolio-form-heading"><div><span className="section-kicker">RUANG KARYA SISWA</span><h1>{work ? 'Edit karya' : 'Buat karya baru'}</h1><p>{work ? 'Perbarui informasi dan kirim perubahan untuk ditinjau kembali.' : 'Lengkapi informasi dan detail proses agar Guru dapat meninjau karyamu.'}</p></div><Link className="button impact-secondary" href="/portal/siswa/karya">Kembali ke daftar</Link></header>
+    <header className="portal-page-heading portfolio-form-heading"><div><span className="section-kicker">RUANG KARYA SISWA</span><h1>{work ? (state === 'draft' ? 'Lanjutkan draf' : 'Edit karya') : 'Buat karya baru'}</h1><p>{work ? (state === 'published' ? 'Perbarui karya yang sudah terbit. Perubahan perlu diverifikasi ulang.' : 'Lanjutkan pengerjaan, simpan sebagai draf, atau ajukan saat sudah siap.') : 'Mulai dari draf: simpan kapan saja dan ajukan verifikasi saat karyamu siap.'}</p></div><Link className="button impact-secondary" href="/portal/siswa/karya">Kembali ke daftar</Link></header>
     <form className="portfolio-create-form" onSubmit={submit}>
       {error && <p className="portfolio-form-error" role="alert">{error}</p>}
+      {notice && <p className="portfolio-form-success" role="status">{notice}</p>}
+      {work && <p className="portfolio-form-state">Status: <strong>{state === 'published' ? 'Terbit' : state === 'submitted' ? 'Menunggu verifikasi' : state === 'revision' ? 'Perlu revisi' : 'Draf'}</strong></p>}
       <section className="portfolio-form-section"><div className="portfolio-form-section-heading"><span>01</span><div><h2>Informasi dasar</h2><p>Judul dan kategori membantu orang menemukan karya.</p></div></div>
         <div className="portfolio-form-grid"><label className="portfolio-form-field portfolio-form-field--wide"><span>Judul karya <i>*</i></span><input name="title" required maxLength={160} defaultValue={work?.title || ''} placeholder="Contoh: Identitas Visual Festival Kota" /></label>
-          <label className="portfolio-form-field"><span>Kategori <i>*</i></span><select name="categoryRef" required defaultValue={String(categoryID || '')}><option value="" disabled>Pilih kategori karya</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
-          <label className="portfolio-form-field"><span>Tahun karya <i>*</i></span><input name="year" type="number" min="2000" max={new Date().getFullYear() + 1} required defaultValue={work?.year || new Date().getFullYear()} /></label>
-          <label className="portfolio-form-field portfolio-form-field--wide"><span>Ringkasan karya <i>*</i></span><textarea name="summary" required maxLength={800} rows={4} defaultValue={work?.summary || ''} placeholder="Jelaskan karya ini secara singkat: masalah yang dijawab, tujuan, atau hasil utamanya." /><small>Ringkasan tampil pada kartu dan bagian awal halaman karya.</small></label>
+          <label className="portfolio-form-field"><span>Kategori</span><select name="categoryRef" defaultValue={String(categoryID || '')}><option value="">Pilih kategori karya</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
+          <label className="portfolio-form-field"><span>Tahun karya</span><input name="year" type="number" min="2000" max={new Date().getFullYear() + 1} required defaultValue={work?.year || new Date().getFullYear()} /></label>
+          <label className="portfolio-form-field portfolio-form-field--wide"><span>Ringkasan karya</span><textarea name="summary" maxLength={800} rows={4} defaultValue={work?.summary || ''} placeholder="Jelaskan karya ini secara singkat: masalah yang dijawab, tujuan, atau hasil utamanya." /><small>Ringkasan tampil pada kartu dan bagian awal halaman karya.</small></label>
         </div>
       </section>
 
@@ -161,8 +181,13 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
         </div>
       </section>
 
-      <aside className="portfolio-form-submit-note"><strong>{work ? 'Perubahan dikirim untuk ditinjau' : 'Karya masuk ke proses verifikasi'}</strong><p>{work?.status === 'published' ? 'Karya akan kembali menjadi draf setelah perubahan disimpan dan perlu diverifikasi Guru sebelum terbit lagi.' : 'Setelah dikirim, Guru pembimbing akan meninjau karya dan memberi kabar jika ada bagian yang perlu diperbaiki.'}</p></aside>
-      <footer className="portfolio-form-actions"><Link className="button impact-secondary" href="/portal/siswa/karya">Batal</Link><button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Mengirim…' : 'Submit Karya'}</button></footer>
+      <aside className="portfolio-form-submit-note"><strong>{state === 'submitted' ? 'Sedang menunggu verifikasi Guru' : state === 'published' ? 'Karya akan kembali menjadi draf' : state === 'revision' ? 'Perbaiki sesuai catatan Guru' : 'Draf hanya terlihat olehmu'}</strong><p>{state === 'submitted' ? 'Menyimpan perubahan tidak mengubah statusnya. Guru pembimbing akan memberi kabar setelah meninjau.' : state === 'published' ? 'Setelah disimpan, karya tidak tampil publik sampai diverifikasi Guru lagi. Pilih "Simpan & ajukan ulang" agar langsung masuk antrean.' : state === 'revision' ? 'Simpan perbaikan sebagai draf, lalu ajukan ulang agar Guru meninjaunya kembali.' : 'Guru baru meninjau setelah kamu menekan "Ajukan verifikasi". Untuk diajukan, karya wajib punya judul, kategori, dan ringkasan.'}</p></aside>
+      <footer className="portfolio-form-actions"><Link className="button impact-secondary" href="/portal/siswa/karya">Kembali</Link>
+        {state === 'submitted'
+          ? <button className="button button-primary" type="submit" name="intent" value="draft" disabled={busy}>{busy ? 'Menyimpan…' : 'Simpan perubahan'}</button>
+          : <><button className="button impact-secondary" type="submit" name="intent" value="draft" disabled={busy}>{busy ? 'Menyimpan…' : state === 'published' ? 'Simpan sebagai draf' : 'Simpan draf'}</button>
+            <button className="button button-primary" type="submit" name="intent" value="submit" disabled={busy}>{busy ? 'Mengirim…' : state === 'revision' ? 'Ajukan ulang' : state === 'published' ? 'Simpan & ajukan ulang' : 'Ajukan verifikasi'}</button></>}
+      </footer>
     </form>
   </main>
 }

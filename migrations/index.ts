@@ -12,6 +12,8 @@ import * as migration_20261011_210000_home_banner_project_locks from './20261011
 import * as migration_20261011_220000_portfolio_category_codes from './20261011_220000_portfolio_category_codes';
 import * as migration_20261011_230000_project_array_ids from './20261011_230000_project_array_ids';
 import * as migration_20261011_240000_home_banner_optional_image from './20261011_240000_home_banner_optional_image';
+import * as migration_20261017_100000_draft_support from './20261017_100000_draft_support';
+import * as migration_20261017_100100_existing_drafts_submitted from './20261017_100100_existing_drafts_submitted';
 
 export const migrations = [
   {
@@ -83,5 +85,15 @@ export const migrations = [
     up: migration_20261011_240000_home_banner_optional_image.up,
     down: migration_20261011_240000_home_banner_optional_image.down,
     name: '20261011_240000_home_banner_optional_image',
+  },
+  {
+    up: migration_20261017_100000_draft_support.up,
+    down: migration_20261017_100000_draft_support.down,
+    name: '20261017_100000_draft_support',
+  },
+  {
+    up: migration_20261017_100100_existing_drafts_submitted.up,
+    down: migration_20261017_100100_existing_drafts_submitted.down,
+    name: '20261017_100100_existing_drafts_submitted',
   },
 ];

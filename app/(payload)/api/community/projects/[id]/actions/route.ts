@@ -36,6 +36,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     data = { mentorAssignments: assignments.map((item) => String(relationID(item.mentor)) === String(user.id) ? { ...item, mentor: relationID(item.mentor), response: body.response } : { ...item, mentor: relationID(item.mentor) }) }
   } else if (body.action === 'submit') {
     if ((!isStudentUser(user) || !projectOwner) && !userIsAdmin) return NextResponse.json({ message: 'Hanya pengelola proyek yang dapat mengajukan verifikasi.' }, { status: 403 })
+    if (!String(project.summary || '').trim()) return NextResponse.json({ message: 'Lengkapi ringkasan proyek sebelum mengajukan verifikasi.' }, { status: 400 })
     const primary = assignments.find((item) => item.assignmentRole === 'primary')
     if (!primary || primary.response !== 'accepted') return NextResponse.json({ message: 'Undang dan tunggu persetujuan mentor utama sebelum mengajukan proyek.' }, { status: 400 })
     data = { verificationStatus: 'submitted', status: 'draft' }

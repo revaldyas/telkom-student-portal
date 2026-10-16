@@ -90,6 +90,15 @@ describe('Alur proyek: pengajuan verifikasi', () => {
     await respond(project, w.teacher, 'declined')
     expect((await act(project, w.studentA, { action: 'submit' })).status).toBe(400)
   })
+  it('ditolak bila ringkasan proyek masih kosong (draf belum lengkap)', async () => {
+    const project = await newProject()
+    await w.payload.update({ collection: 'projects', id: project.id, data: { summary: '' }, ...as(w.studentA) })
+    await respond(project, w.teacher, 'accepted')
+    const result = await act(project, w.studentA, { action: 'submit' })
+    expect(result.status).toBe(400)
+    expect((await result.json()).message).toMatch(/ringkasan/i)
+    expect((await reload(project)).verificationStatus).toBe('unreviewed')
+  })
   it('hanya mentor pendamping yang menerima tidak cukup', async () => {
     const project = await newProject({ supporting: true })
     await respond(project, w.outsiderTeacher, 'accepted')

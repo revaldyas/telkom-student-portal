@@ -1,7 +1,7 @@
 import { isCMSAdmin } from '../lib/isCMSAdmin'
 import { isStudentUser } from '../lib/isStudentUser'
 import { isTeacherUser } from '../lib/isTeacherUser'
-import type { AccessResult, CollectionConfig, PayloadRequest } from 'payload'
+import { ValidationError, type AccessResult, type CollectionConfig, type PayloadRequest } from 'payload'
 
 const relationID = (value: unknown): string | number | undefined => {
   if (typeof value === 'string' || typeof value === 'number') return value
@@ -34,23 +34,50 @@ export const Portfolio: CollectionConfig = {
   hooks: {
     beforeChange: [async ({ data, originalDoc, req }) => {
       const nextData = { ...data }
+      // Penanda niat dari form ("Ajukan verifikasi"); bukan kolom database.
+      const submitForReview = nextData.submitForReview === true
+      delete nextData.submitForReview
+
       if (isStudentUser(req.user)) {
         nextData.student = req.user.id
         nextData.status = 'draft'
-        if (originalDoc?.status === 'published') {
+        if (submitForReview) {
+          // Diajukan ke Guru (juga untuk pengajuan ulang setelah revisi atau setelah mengedit karya terbit).
+          nextData.verificationStatus = 'submitted'
+          nextData.verifiedBy = null
+          nextData.verifiedAt = null
+          if (originalDoc?.status === 'published') nextData.reviewFeedback = null
+          else nextData.reviewFeedback = originalDoc?.reviewFeedback ?? null
+        } else if (originalDoc?.status === 'published') {
+          // Mengedit karya terbit tanpa mengajukan: kembali menjadi draf yang belum ditinjau.
           nextData.verificationStatus = 'unreviewed'
           nextData.verifiedBy = null
           nextData.verifiedAt = null
           nextData.reviewFeedback = null
         } else if (originalDoc) {
+          // Menyimpan perubahan tidak mengubah status tinjauan (draf tetap draf, yang diajukan tetap diajukan).
           nextData.verificationStatus = originalDoc.verificationStatus
           nextData.verifiedBy = originalDoc.verifiedBy
           nextData.verifiedAt = originalDoc.verifiedAt
           nextData.reviewFeedback = originalDoc.reviewFeedback
+        } else {
+          nextData.verificationStatus = 'unreviewed'
         }
       }
 
-      const categoryRef = nextData.categoryRef ?? originalDoc?.categoryRef
+      // Draf cukup berjudul. Karya yang diajukan atau diterbitkan harus lengkap.
+      const effective = (key: 'summary' | 'categoryRef') => key in nextData ? nextData[key] : originalDoc?.[key]
+      const verificationStatus = 'verificationStatus' in nextData ? nextData.verificationStatus : originalDoc?.verificationStatus
+      const status = 'status' in nextData ? nextData.status : originalDoc?.status
+      if (status === 'published' || verificationStatus === 'submitted') {
+        const missing = [
+          ...(String(effective('summary') ?? '').trim() ? [] : [{ label: 'Ringkasan Karya', message: 'Isian ini wajib diisi.', path: 'summary' }]),
+          ...(effective('categoryRef') ? [] : [{ label: 'Kategori', message: 'Isian ini wajib diisi.', path: 'categoryRef' }]),
+        ]
+        if (missing.length) throw new ValidationError({ collection: 'portfolios', errors: missing }, req.t)
+      }
+
+      const categoryRef = effective('categoryRef')
       if (categoryRef) {
         const categoryID = typeof categoryRef === 'object' ? categoryRef.id : categoryRef
         const category = await req.payload.findByID({
@@ -106,7 +133,7 @@ export const Portfolio: CollectionConfig = {
       label: 'Kategori',
       type: 'relationship',
       relationTo: 'portfolio-categories',
-      required: true,
+      // Tidak wajib di level field agar draf bisa disimpan; dicek hook saat diajukan/diterbitkan.
     },
     {
       name: 'category',
@@ -122,7 +149,8 @@ export const Portfolio: CollectionConfig = {
       ],
       admin: { hidden: true },
     },
-    { name: 'summary', label: 'Ringkasan Karya', type: 'textarea', required: true },
+    // Tidak wajib di level field agar draf bisa disimpan; kelengkapannya dicek hook saat diajukan/diterbitkan.
+    { name: 'summary', label: 'Ringkasan Karya', type: 'textarea' },
     {
       name: 'details',
       label: 'Detail Karya',
@@ -155,11 +183,14 @@ export const Portfolio: CollectionConfig = {
       },
     },
     { name: 'projectFile', label: 'Video atau Dokumen Pendukung', type: 'upload', relationTo: 'uploads', admin: { description: 'Opsional. Unggah video MP4/WebM atau dokumen PDF sebagai bukti karya.' } },
+    // Bukan kolom database: form siswa mengirim true untuk "Ajukan verifikasi" (lihat hook beforeChange).
+    { name: 'submitForReview', type: 'checkbox', virtual: true, admin: { hidden: true } },
     {
       name: 'verificationStatus', label: 'Status Verifikasi', type: 'select', defaultValue: 'unreviewed',
       access: { create: ({ req }) => isCMSAdmin(req.user), update: ({ req }) => isCMSAdmin(req.user) || isTeacherUser(req.user) || isStudentUser(req.user) },
       options: [
-        { label: 'Belum ditinjau', value: 'unreviewed' },
+        { label: 'Draf (belum diajukan)', value: 'unreviewed' },
+        { label: 'Menunggu verifikasi', value: 'submitted' },
         { label: 'Terverifikasi', value: 'verified' },
         { label: 'Perlu revisi', value: 'revision-requested' },
       ],

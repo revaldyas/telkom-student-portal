@@ -12,6 +12,7 @@ export type ProjectEditorData = {
   id: string | number; title: string; summary: string; details?: SerializedEditorState | null; categoryRef?: string | number | null
   members: ProjectEditorMember[]; mentorAssignments: ProjectEditorMentor[]; coverImage?: { id: string | number; url?: string; filename?: string } | null
   galleryImages: Array<{ id: string | number; url?: string; filename?: string; alt?: string }>; year?: number; tools: string[]; projectUrl?: string
+  status?: string; verificationStatus?: string
 }
 
 export async function getProjectEditorData(projectID?: string) {
@@ -37,6 +38,7 @@ export async function getProjectEditorData(projectID?: string) {
     coverImage: typeof project.coverImage === 'object' && project.coverImage ? { id: project.coverImage.id, url: project.coverImage.url || undefined, filename: project.coverImage.filename || undefined } : null,
     galleryImages: Array.isArray(project.galleryImages) ? project.galleryImages.flatMap((image) => image && typeof image === 'object' ? [{ id: image.id, url: image.url || undefined, filename: image.filename || undefined, alt: image.alt || undefined }] : []) : [],
     year: project.year || undefined, tools: project.tools || [], projectUrl: project.projectUrl || '',
+    status: project.status, verificationStatus: project.verificationStatus || 'unreviewed',
   } : null
   return {
     userID: user.id,

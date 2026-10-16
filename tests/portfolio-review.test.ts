@@ -10,9 +10,10 @@ type Doc = { id: number; [key: string]: unknown }
 let counter = 0
 const idOf = (value: unknown) => (value && typeof value === 'object' ? (value as { id: number }).id : value)
 
-const newWork = async (owner: Doc = w.studentA) => (await w.payload.create({
+/** Karya yang sudah diajukan siswa (masuk antrean Guru). `submitForReview = false` menghasilkan draf pribadi. */
+const newWork = async (owner: Doc = w.studentA, submitForReview = true) => (await w.payload.create({
   collection: 'portfolios', depth: 0, ...as(owner),
-  data: { title: `Tinjauan karya ${w.suffix} ${++counter}`, summary: 'Ringkasan', categoryRef: w.category.id } as never,
+  data: { title: `Tinjauan karya ${w.suffix} ${++counter}`, summary: 'Ringkasan', categoryRef: w.category.id, submitForReview } as never,
 })) as unknown as Doc
 const reload = (work: Doc) => w.payload.findByID({ collection: 'portfolios', id: work.id, depth: 0, overrideAccess: true }) as Promise<Record<string, any>>
 const submit = (body: unknown, user?: Doc) => postReview(makeRequest('/api/mentor/reviews', { method: 'POST', body, user }))
@@ -62,7 +63,7 @@ describe('Alur persetujuan karya (POST /api/mentor/reviews)', () => {
   it('guru dari program/kelas lain tidak bisa meninjau (403)', async () => {
     const work = await newWork()
     expect((await decide(work, w.outsiderTeacher, 'verified')).status).toBe(403)
-    expect(await reload(work)).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
+    expect(await reload(work)).toMatchObject({ status: 'draft', verificationStatus: 'submitted' })
   })
   it('guru yang sama bisa meninjau karya siswa lain di kelas/program-nya', async () => {
     const work = await newWork(w.studentB)
@@ -90,10 +91,19 @@ describe('Alur persetujuan karya (POST /api/mentor/reviews)', () => {
   ])('menolak %s (400)', async (_label, extra) => {
     const work = await newWork()
     expect((await submit({ portfolio: work.id, ...extra }, w.teacher)).status).toBe(400)
-    expect((await reload(work)).verificationStatus).toBe('unreviewed')
+    expect((await reload(work)).verificationStatus).toBe('submitted')
   })
   it.each([[undefined], ['abc'], [0], [-3]])('menolak ID karya tidak valid %j (400)', async (portfolio) => {
     expect((await submit({ portfolio, decision: 'verified', feedback: 'Umpan balik cukup' }, w.teacher)).status).toBe(400)
+  })
+})
+
+describe('Draf yang belum diajukan', () => {
+  it('tidak bisa ditinjau lewat endpoint (409)', async () => {
+    const draft = await newWork(w.studentA, false)
+    const response = await decide(draft, w.teacher, 'verified')
+    expect(response.status).toBe(409)
+    expect(await reload(draft)).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
   })
 })
 
@@ -121,6 +131,13 @@ describe('Daftar antrean guru (GET /api/mentor/reviews)', () => {
     const work = await newWork()
     await decide(work, w.teacher, 'verified')
     expect(ids(await (await list(w.teacher)).json())).not.toContain(work.id)
+  })
+  it('draf yang belum diajukan tidak muncul di antrean guru', async () => {
+    const draft = await newWork(w.studentA, false)
+    const submitted = await newWork(w.studentA, true)
+    const found = ids(await (await list(w.teacher)).json())
+    expect(found).toContain(submitted.id)
+    expect(found).not.toContain(draft.id)
   })
   it('guru lain tidak melihat karya di luar tanggung jawabnya', async () => {
     const work = await newWork(w.studentA)

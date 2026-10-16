@@ -27,7 +27,7 @@ export default async function TeacherPortalDashboard() {
   const teacherProgram = idOf(teacher.program)
   const queueResponse = await payload.find({
     collection: 'portfolios',
-    where: { or: [{ status: { equals: 'draft' } }, { verificationStatus: { equals: 'revision-requested' } }] },
+    where: { and: [{ status: { equals: 'draft' } }, { verificationStatus: { in: ['submitted', 'revision-requested'] } }] },
     depth: 3,
     limit: 500,
     sort: '-updatedAt',
@@ -43,7 +43,7 @@ export default async function TeacherPortalDashboard() {
   const [students, published, pending, verified, allWorks, opportunities, interests] = await Promise.all([
     payload.count({ collection: 'users', where: { role: { equals: 'student' } }, overrideAccess: true }),
     payload.count({ collection: 'portfolios', where: { status: { equals: 'published' } }, overrideAccess: true }),
-    payload.count({ collection: 'portfolios', where: { or: [{ status: { equals: 'draft' } }, { verificationStatus: { equals: 'revision-requested' } }] }, overrideAccess: true }),
+    payload.count({ collection: 'portfolios', where: { and: [{ status: { equals: 'draft' } }, { verificationStatus: { in: ['submitted', 'revision-requested'] } }] }, overrideAccess: true }),
     payload.count({ collection: 'portfolios', where: { verificationStatus: { equals: 'verified' } }, overrideAccess: true }),
     payload.find({ collection: 'portfolios', where: { status: { equals: 'published' } }, depth: 2, limit: 1000, overrideAccess: true }),
     payload.count({ collection: 'opportunities', where: { status: { equals: 'open' } }, overrideAccess: true }),

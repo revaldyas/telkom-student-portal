@@ -104,7 +104,8 @@ export const Projects: CollectionConfig = {
         return duplicate.docs.length ? 'Slug proyek sudah digunakan. Ubah nama proyek agar slug berbeda.' : true
       },
     },
-    { name: 'summary', label: 'Ringkasan Proyek', type: 'textarea', required: true, maxLength: 800 },
+    // Tidak wajib di level field agar draf bisa disimpan; wajib saat proyek diajukan (lihat route actions) dan diterbitkan.
+    { name: 'summary', label: 'Ringkasan Proyek', type: 'textarea', maxLength: 800 },
     { name: 'details', label: 'Detail Proyek', type: 'richText', admin: { description: 'Jelaskan tujuan, proses kolaborasi, dan hasil proyek.' } },
     { name: 'categoryRef', label: 'Kategori', type: 'relationship', relationTo: 'portfolio-categories' },
     { name: 'members', label: 'Anggota Proyek', type: 'array', minRows: 1, labels: { singular: 'Anggota', plural: 'Anggota Proyek' }, fields: [

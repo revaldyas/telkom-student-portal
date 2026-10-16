@@ -8,11 +8,11 @@ import PortfolioDetailEditor from '../../../../../components/PortfolioDetailEdit
 import { siteFetch } from '../../../../../lib/siteFetch'
 import type { ProjectEditorData, ProjectMentorOption, ProjectStudentOption } from './editorData'
 
-type Props = { userID: string | number; students: ProjectStudentOption[]; teachers: ProjectMentorOption[]; categories: Array<{ id: string | number; name: string }>; project?: ProjectEditorData | null }
+type Props = { userID: string | number; students: ProjectStudentOption[]; teachers: ProjectMentorOption[]; categories: Array<{ id: string | number; name: string }>; project?: ProjectEditorData | null; notice?: string }
 type Member = { member: string | number; contribution: string }
 type MentorAssignment = { mentor: string | number; assignmentRole: 'primary' | 'supporting'; response: 'invited' | 'accepted' | 'declined' }
 
-export default function ProjectEditorPage({ userID, students, teachers, categories, project = null }: Props) {
+export default function ProjectEditorPage({ userID, students, teachers, categories, project = null, notice: initialNotice = '' }: Props) {
   const router = useRouter()
   const [members, setMembers] = useState<Member[]>(project?.members || [{ member: userID, contribution: 'Inisiator' }])
   const [mentorAssignments, setMentorAssignments] = useState<MentorAssignment[]>(project?.mentorAssignments || [])
@@ -22,7 +22,10 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
   const [tools, setTools] = useState<string[]>(project?.tools || [])
   const [toolInput, setToolInput] = useState('')
   const [error, setError] = useState('')
+  const [notice, setNotice] = useState(initialNotice)
   const [busy, setBusy] = useState(false)
+  // Mengedit proyek yang sudah diajukan/terbit mengembalikannya menjadi draf (lihat hook beforeChange di Projects).
+  const leavesReview = Boolean(project && (project.status === 'published' || project.verificationStatus === 'submitted' || project.verificationStatus === 'verified' || project.verificationStatus === 'revision-requested'))
   const available = students.filter((student) => !members.some((member) => String(member.member) === String(student.id)))
 
   function addTools(value: string) {
@@ -50,7 +53,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (!members.length || members.some((item) => !String(item.contribution).trim())) { setError('Tambahkan anggota dan isi kontribusi setiap anggota.'); return }
-    setBusy(true); setError('')
+    setBusy(true); setError(''); setNotice('')
     const form = new FormData(event.currentTarget)
     const title = String(form.get('title') || '').trim()
     try {
@@ -75,7 +78,8 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
       const response = await siteFetch(project ? `/api/projects/${project.id}?depth=2` : '/api/projects?depth=2', { method: project ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
       const result = await response.json()
       if (!response.ok) throw new Error(result.errors?.[0]?.message || result.message || 'Proyek belum berhasil disimpan.')
-      router.push('/portal/siswa/proyek'); router.refresh()
+      if (!project) router.replace(`/portal/siswa/proyek/${result.doc?.id}/edit?saved=draft`)
+      else { setNotice('Draf tersimpan. Ajukan verifikasi dari halaman proyek setelah mentor utama menerima undangan.'); router.refresh() }
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Proyek belum berhasil disimpan.') }
     finally { setBusy(false) }
   }
@@ -85,11 +89,12 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
     <header className="portal-page-heading portfolio-form-heading"><div><span className="section-kicker">KARYA KOLABORATIF</span><h1>{project ? 'Edit proyek' : 'Buat proyek kolaborasi'}</h1><p>Atur anggota dan peran mereka agar kontribusi setiap siswa terlihat jelas.</p></div><Link className="button impact-secondary" href="/portal/siswa/proyek">Kembali ke proyek</Link></header>
     <form className="portfolio-create-form" onSubmit={submit}>
       {error && <p className="portfolio-form-error" role="alert">{error}</p>}
+      {notice && <p className="portfolio-form-success" role="status">{notice}</p>}
       <section className="portfolio-form-section"><div className="portfolio-form-section-heading"><span>01</span><div><h2>Informasi proyek</h2><p>Jelaskan hasil kolaborasi dan pilih kategorinya.</p></div></div>
         <div className="portfolio-form-grid"><label className="portfolio-form-field portfolio-form-field--wide"><span>Nama proyek <i>*</i></span><input name="title" required maxLength={160} defaultValue={project?.title || ''} placeholder="Contoh: Aplikasi Jelajah Kota" /></label>
           <label className="portfolio-form-field"><span>Kategori</span><select name="categoryRef" defaultValue={String(project?.categoryRef || '')}><option value="">Pilih kategori</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
           <label className="portfolio-form-field"><span>Tahun</span><input name="year" type="number" min="2000" max={new Date().getFullYear() + 1} defaultValue={project?.year || new Date().getFullYear()} /></label>
-          <label className="portfolio-form-field portfolio-form-field--wide"><span>Ringkasan <i>*</i></span><textarea name="summary" required maxLength={800} rows={4} defaultValue={project?.summary || ''} placeholder="Apa yang dibuat tim, untuk siapa, dan apa hasilnya?" /></label>
+          <label className="portfolio-form-field portfolio-form-field--wide"><span>Ringkasan</span><textarea name="summary" maxLength={800} rows={4} defaultValue={project?.summary || ''} placeholder="Apa yang dibuat tim, untuk siapa, dan apa hasilnya?" /></label>
         </div>
       </section>
       <section className="portfolio-form-section"><div className="portfolio-form-section-heading"><span>02</span><div><h2>Anggota dan kontribusi</h2><p>Tambahkan siswa lain dan jelaskan peran masing-masing.</p></div></div>
@@ -113,8 +118,8 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
           </div><small id="project-tools-help">Tekan koma atau Enter setelah setiap perangkat atau teknologi untuk membuat pill.</small></div><label className="portfolio-form-field"><span>Tautan hasil proyek</span><input name="projectUrl" type="url" defaultValue={project?.projectUrl || ''} placeholder="https://…" /></label>
         </div>
       </section>
-      <aside className="portfolio-form-submit-note"><strong>Proyek masuk ke proses peninjauan</strong><p>Proyek disimpan sebagai draf dan hanya tampil di halaman publik setelah diterbitkan oleh admin.</p></aside>
-      <footer className="portfolio-form-actions"><Link className="button impact-secondary" href="/portal/siswa/proyek">Batal</Link><button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Menyimpan…' : 'Simpan proyek'}</button></footer>
+      <aside className="portfolio-form-submit-note"><strong>{leavesReview ? 'Proyek akan kembali menjadi draf' : 'Disimpan sebagai draf'}</strong><p>{leavesReview ? 'Menyimpan perubahan membatalkan pengajuan sebelumnya. Ajukan ulang dari halaman proyek agar mentor utama meninjaunya lagi.' : 'Draf hanya terlihat oleh anggota tim. Cukup isi nama proyek dulu; ringkasan wajib saat proyek diajukan untuk verifikasi, setelah mentor utama menerima undangan.'}</p></aside>
+      <footer className="portfolio-form-actions"><Link className="button impact-secondary" href="/portal/siswa/proyek">Kembali</Link><button className="button button-primary" type="submit" disabled={busy}>{busy ? 'Menyimpan…' : 'Simpan draf'}</button></footer>
     </form>
   </main>
 }

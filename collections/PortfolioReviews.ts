@@ -35,6 +35,9 @@ export const PortfolioReviews: CollectionConfig = {
       const portfolioID = relationID(data.portfolio) ?? relationID(originalDoc?.portfolio)
       if (portfolioID === undefined) throw new APIError('Karya yang ditinjau wajib dipilih.', 400)
       const portfolio = await req.payload.findByID({ collection: 'portfolios', id: portfolioID, depth: 3, overrideAccess: true, req })
+      if (portfolio.status === 'draft' && (portfolio.verificationStatus ?? 'unreviewed') === 'unreviewed') {
+        throw new APIError('Karya ini masih draf dan belum diajukan oleh siswa.', 409)
+      }
       const student = portfolio.student && typeof portfolio.student === 'object' ? portfolio.student : null
       if (!student) throw new APIError('Data siswa pada karya tidak ditemukan.', 404)
 

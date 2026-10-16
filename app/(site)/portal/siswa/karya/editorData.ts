@@ -41,6 +41,7 @@ export async function getPortfolioEditorData(workID?: string): Promise<{ categor
     tools: workResponse.tools || [],
     projectUrl: workResponse.projectUrl || '',
     status: workResponse.status,
+    verificationStatus: workResponse.verificationStatus || 'unreviewed',
   } satisfies PortfolioEditorWork : null
 
   return {

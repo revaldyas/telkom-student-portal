@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     : sessionUser
   const result = await payload.find({
     collection: 'portfolios',
-    where: { or: [{ status: { equals: 'draft' } }, { verificationStatus: { equals: 'revision-requested' } }] },
+    where: { and: [{ status: { equals: 'draft' } }, { verificationStatus: { in: ['submitted', 'revision-requested'] } }] },
     depth: 3,
     limit: 200,
     sort: '-updatedAt',
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
       id: doc.id, title: doc.title, slug: doc.slug, summary: doc.summary, year: doc.year, tools: doc.tools,
       status: doc.status, verificationStatus: doc.verificationStatus,
       student: student ? { id: student.id, name: student.name, class: studentClass, program: studentProgram } : null,
-      category: typeof doc.categoryRef === 'object' ? doc.categoryRef.name : null,
+      category: typeof doc.categoryRef === 'object' && doc.categoryRef ? doc.categoryRef.name : null,
       coverImage: cover?.url || null,
       projectFile: projectFile ? { url: projectFile.url, mimeType: projectFile.mimeType, filename: projectFile.filename } : null,
       review: review ? { id: review.id, decision: review.decision, feedback: review.feedback } : null,
@@ -87,6 +87,9 @@ export async function POST(request: Request) {
   }
   const portfolio = await payload.findByID({ collection: 'portfolios', id: portfolioID, depth: 3, overrideAccess: true })
   if (!inScope(user as unknown as Record<string, unknown>, portfolio as unknown as Record<string, unknown>)) return NextResponse.json({ message: 'Karya ini berada di luar kelas atau program keahlian yang menjadi tanggung jawabmu.' }, { status: 403 })
+  if (portfolio.status === 'draft' && (portfolio.verificationStatus ?? 'unreviewed') === 'unreviewed') {
+    return NextResponse.json({ message: 'Karya ini masih draf dan belum diajukan oleh siswa.' }, { status: 409 })
+  }
   const localReq = await createLocalReq({ user: user as TypedUser }, payload)
   const decision = body!.decision as 'verified' | 'revision-requested'
   const data = { portfolio: portfolioID, reviewer: user.id, reviewKey: String(portfolioID), decision, feedback }

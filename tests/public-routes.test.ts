@@ -17,9 +17,11 @@ let counter = 0
 const day = (offset: number) => new Date(Date.now() + offset * 86_400_000).toISOString()
 /** Token unik tanpa angka acak yang bisa bentrok dengan data asli, dipakai untuk pencarian. */
 const token = () => `Zq${w.suffix}x${++counter}`
-const draftWork = async (title: string, owner: Doc = w.studentA) => (await w.payload.create({
-  collection: 'portfolios', depth: 0, ...as(owner), data: { title, summary: 'Ringkasan', categoryRef: w.category.id } as never,
+/** Draf pribadi siswa: belum diajukan, jadi belum terlihat guru. `submitForReview` mengajukannya ke antrean guru. */
+const draftWork = async (title: string, owner: Doc = w.studentA, submitForReview = false) => (await w.payload.create({
+  collection: 'portfolios', depth: 0, ...as(owner), data: { title, summary: 'Ringkasan', categoryRef: w.category.id, submitForReview } as never,
 })) as unknown as Doc
+const submittedWork = (title: string, owner: Doc = w.studentA) => draftWork(title, owner, true)
 const publishedWork = (title: string, owner: Doc = w.studentB) => w.payload.create({
   collection: 'portfolios', depth: 0, overrideAccess: true,
   data: { title, summary: 'Ringkasan', categoryRef: w.category.id, student: owner.id, status: 'published', verificationStatus: 'verified' } as never,
@@ -151,7 +153,7 @@ describe('Detail karya (GET /api/community/portfolios/slug/[slug])', () => {
     for (const user of [undefined, w.studentB, w.outsiderTeacher]) expect((await get(String(work.slug), user)).status).toBe(404)
   })
   it('pemilik melihat drafnya beserta umpan balik dan riwayat tinjauan', async () => {
-    const work = await draftWork(`Slug pemilik ${token()}`)
+    const work = await submittedWork(`Slug pemilik ${token()}`)
     await w.payload.create({ collection: 'portfolio-reviews', ...as(w.teacher), data: { portfolio: work.id, decision: 'revision-requested', feedback: 'Perbaiki lagi' } as never })
     const response = await get(String(work.slug), w.studentA)
     expect(response.status).toBe(200)
@@ -159,11 +161,16 @@ describe('Detail karya (GET /api/community/portfolios/slug/[slug])', () => {
     expect(body).toMatchObject({ accessLevel: 'owner', reviewFeedback: 'Perbaiki lagi' })
     expect(body.reviewHistory[0]).toMatchObject({ decision: 'revision-requested', feedback: 'Perbaiki lagi' })
   })
-  it('guru sekelas/seprogram dapat melihat draf sebagai mentor', async () => {
-    const work = await draftWork(`Slug mentor ${token()}`)
+  it('guru sekelas/seprogram dapat melihat karya yang sudah diajukan sebagai mentor', async () => {
+    const work = await submittedWork(`Slug mentor ${token()}`)
     const response = await get(String(work.slug), w.teacher)
     expect(response.status).toBe(200)
     expect((await response.json()).accessLevel).toBe('mentor')
+  })
+  it('draf yang belum diajukan bersifat pribadi: guru mendapat 404, pemilik tetap bisa membuka', async () => {
+    const work = await draftWork(`Slug pribadi ${token()}`)
+    expect((await get(String(work.slug), w.teacher)).status).toBe(404)
+    expect((await get(String(work.slug), w.studentA)).status).toBe(200)
   })
   it('slug yang tidak ada → 404', async () => {
     expect((await get(`tidak-ada-${token().toLowerCase()}`)).status).toBe(404)
@@ -191,7 +198,7 @@ describe('Profil siswa dan guru', () => {
   it('profil guru memuat jumlah tinjauan dan karya yang ia verifikasi', async () => {
     const profile = async () => (await mentorProfile(makeRequest('/'), params({ id: String(w.teacher.id) }))).json()
     const before = await profile()
-    const work = await draftWork(`Profil guru ${token()}`)
+    const work = await submittedWork(`Profil guru ${token()}`)
     await w.payload.create({ collection: 'portfolio-reviews', ...as(w.teacher), data: { portfolio: work.id, decision: 'verified', feedback: 'Disetujui guru' } as never })
     const body = await profile()
     expect(body.mentor).toMatchObject({ id: w.teacher.id, name: w.teacher.name })
@@ -243,7 +250,7 @@ describe('Notifikasi portal (GET /api/portal/notifications)', () => {
     expect(items.some((item) => item.title === 'Seseorang menyukai karyamu' && item.message.includes(String(w.studentB.name)))).toBe(true)
   })
   it('siswa diberi tahu bila karyanya perlu direvisi', async () => {
-    const work = await draftWork(`Notif revisi ${token()}`, w.studentA)
+    const work = await submittedWork(`Notif revisi ${token()}`, w.studentA)
     await w.payload.create({ collection: 'portfolio-reviews', ...as(w.teacher), data: { portfolio: work.id, decision: 'revision-requested', feedback: 'Tambahkan dokumentasi' } as never })
     const items = await titles(w.studentA)
     expect(items.some((item) => item.title === 'Karya perlu direvisi' && item.message.includes('Tambahkan dokumentasi'))).toBe(true)
@@ -262,9 +269,11 @@ describe('Notifikasi portal (GET /api/portal/notifications)', () => {
     expect(items.some((item) => item.title === 'Voting penghargaan segera ditutup' && item.message.includes(String(award.title)))).toBe(true)
   })
   it('guru menerima notifikasi karya menunggu verifikasi hanya dari siswa di cakupannya', async () => {
-    const mine = await draftWork(`Notif antre ${token()}`, w.studentA)
-    const other = await draftWork(`Notif antre luar ${token()}`, w.studentC)
+    const mine = await submittedWork(`Notif antre ${token()}`, w.studentA)
+    const other = await submittedWork(`Notif antre luar ${token()}`, w.studentC)
+    const privateDraft = await draftWork(`Notif draf pribadi ${token()}`, w.studentA)
     const items = await titles(w.teacher)
+    expect(items.some((item) => item.message.includes(String(privateDraft.title)))).toBe(false)
     expect(items.some((item) => item.title === 'Karya menunggu verifikasi' && item.message.includes(String(mine.title)))).toBe(true)
     expect(items.some((item) => item.message.includes(String(other.title)))).toBe(false)
   })

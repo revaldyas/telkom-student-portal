@@ -31,7 +31,7 @@ export async function GET(request: Request) {
     ...programs.docs.map((item) => ({ type: 'Program keahlian', label: item.name, detail: item.code, href: `/karya?program=${item.id}` })),
     ...categories.docs.map((item) => ({ type: 'Kategori karya', label: item.name, detail: item.code, href: `/karya?kategori=${item.id}` })),
     ...awards.docs.map((item) => ({ type: 'Award', label: item.title, detail: 'Penghargaan siswa', href: `/awards?q=${encodeURIComponent(item.title)}` })),
-    ...opportunities.docs.map((item) => ({ type: 'Peluang', label: item.title, detail: item.organizer, href: '/peluang' })),
+    ...opportunities.docs.map((item) => ({ type: 'Peluang', label: item.title, detail: item.organizer || 'Peluang siswa', href: '/peluang' })),
   ]
   const lowerQuery = query.toLocaleLowerCase('id')
   if (['leaderboard', 'peringkat', 'mvs', 'top likes', 'trending'].some((term) => term.includes(lowerQuery) || lowerQuery.includes(term))) {

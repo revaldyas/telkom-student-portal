@@ -32,7 +32,10 @@ describe('Form proyek: membuat proyek', () => {
 
   describe('validasi isian', () => {
     it('nama proyek wajib', async () => { await expect(create(valid({ title: '' }))).rejects.toThrow(/Nama Proyek/) })
-    it('ringkasan wajib', async () => { await expect(create(valid({ summary: '' }))).rejects.toThrow(/Ringkasan/) })
+    it('draf proyek cukup bernama: ringkasan boleh kosong', async () => {
+      const doc = await create(valid({ summary: '' }))
+      expect(doc).toMatchObject({ status: 'draft', verificationStatus: 'unreviewed' })
+    })
     it('nama proyek maksimal 160 karakter', async () => { await expect(create(valid({ title: 'x'.repeat(161) }))).rejects.toThrow() })
     it('ringkasan maksimal 800 karakter', async () => { await expect(create(valid({ summary: 'x'.repeat(801) }))).rejects.toThrow() })
     it('nama yang menghasilkan slug sama ditolak', async () => {

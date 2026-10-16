@@ -228,7 +228,7 @@ export interface Portfolio {
    */
   slug: string;
   student: number | User;
-  categoryRef: number | PortfolioCategory;
+  categoryRef?: (number | null) | PortfolioCategory;
   category?:
     | (
         | 'UI/UX'
@@ -259,7 +259,7 @@ export interface Portfolio {
         | 'DKV-MOTION'
       )
     | null;
-  summary: string;
+  summary?: string | null;
   /**
    * Penjelasan lengkap proses, tujuan, dan hasil karya. Format teks dapat diatur melalui editor.
    */
@@ -293,7 +293,8 @@ export interface Portfolio {
    * Opsional. Unggah video MP4/WebM atau dokumen PDF sebagai bukti karya.
    */
   projectFile?: (number | null) | Upload;
-  verificationStatus?: ('unreviewed' | 'verified' | 'revision-requested') | null;
+  submitForReview?: boolean | null;
+  verificationStatus?: ('unreviewed' | 'submitted' | 'verified' | 'revision-requested') | null;
   verifiedBy?: (number | null) | User;
   verifiedAt?: string | null;
   reviewFeedback?: string | null;
@@ -399,7 +400,7 @@ export interface Project {
    * Dibuat otomatis dari nama proyek.
    */
   slug: string;
-  summary: string;
+  summary?: string | null;
   /**
    * Jelaskan tujuan, proses kolaborasi, dan hasil proyek.
    */
@@ -597,9 +598,9 @@ export interface PortfolioReview {
 export interface Opportunity {
   id: number;
   title: string;
-  type: 'competition' | 'exhibition' | 'challenge' | 'mentoring' | 'collaboration' | 'other';
-  organizer: string;
-  summary: string;
+  type?: ('competition' | 'exhibition' | 'challenge' | 'mentoring' | 'collaboration' | 'other') | null;
+  organizer?: string | null;
+  summary?: string | null;
   requirements?: string | null;
   coverImage?: (number | null) | Upload;
   targetPrograms?: (number | Program)[] | null;
@@ -809,6 +810,7 @@ export interface PortfoliosSelect<T extends boolean = true> {
   tools?: T;
   projectUrl?: T;
   projectFile?: T;
+  submitForReview?: T;
   verificationStatus?: T;
   verifiedBy?: T;
   verifiedAt?: T;
