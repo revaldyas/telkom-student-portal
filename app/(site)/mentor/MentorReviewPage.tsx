@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { MentorCardsSkeleton } from '../../../components/SiteSkeletons'
 
 type ReviewItem = {
   kind?: 'portfolio' | 'project'
@@ -44,7 +45,7 @@ export default function MentorReviewPage() {
     <header className="mentor-hero"><span className="section-kicker">VERIFIKASI KARYA</span><h1>Bantu karya<br /><span>bertumbuh.</span></h1><p>Tinjau bukti karya siswa, beri umpan balik yang membangun, lalu verifikasi karya yang siap dipublikasikan.</p><Link className="button impact-secondary" href="/portal/guru">Kembali ke dashboard</Link></header>
     {message && <p className="mentor-message" role="status">{message}</p>}
     <div className="mentor-list-heading"><div><span className="section-kicker">TINJAUAN KARYA</span><h2>Undangan dan tinjauan</h2></div>{!loading && <span>{items.length} item</span>}</div>
-    {loading ? <div className={`mentor-list is-${layout}`}>{[1, 2, 3].map((id) => <div className="mentor-card mentor-skeleton" key={id}><div className="sk" /><span className="sk sk-line" /><span className="sk sk-line" /></div>)}</div>
+    {loading ? <MentorCardsSkeleton layout={layout} announce />
       : !allowed ? <div className="empty-state"><h2>Akses dibatasi</h2><p>Masuk dengan akun Guru yang ditetapkan ke kelas atau program keahlian siswa.</p><Link href="/login">Masuk ke akun</Link></div>
         : !items.length ? <div className="empty-state"><h2>Belum ada undangan atau tinjauan</h2><p>Undangan pembimbing proyek dan karya siswa yang perlu ditinjau akan muncul di sini.</p></div>
           : <><div className="mentor-list-tools"><span>Menampilkan {Math.min((page - 1) * pageSize + 1, items.length)}–{Math.min(page * pageSize, items.length)} dari {items.length} karya</span><div className="mentor-list-controls" aria-label="Tampilan daftar verifikasi"><button type="button" aria-pressed={layout === 'grid'} onClick={() => setLayout('grid')}>Grid</button><button type="button" aria-pressed={layout === 'list'} onClick={() => setLayout('list')}>List</button></div></div><div className={`mentor-list is-${layout}`}>{pageItems.map((item) => <article className={`mentor-card${item.coverImage ? '' : ' mentor-card-no-cover'}`} key={item.id}>

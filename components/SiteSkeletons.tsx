@@ -68,7 +68,11 @@ export function WorkDetailSkeleton() {
 }
 
 export function PortfolioFormSkeleton() {
-  return <main className="portal-page portfolio-form-page"><div className="sk sk-filter" /><div className="sk sk-panel-title" /><div className="sk sk-line" /><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /><div className="sk sk-filter" /><div className="sk sk-filter" /></section><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /></section><section className="portfolio-form-skeleton-section"><div className="sk sk-panel-title" /><div className="sk sk-filter" /><div className="sk sk-filter" /></section></main>
+  return <main className="portal-page portfolio-form-page"><LoadingStatus label="Memuat formulir"><div className="skeleton-portal-form">
+    <span className="sk sk-breadcrumb" />
+    <div className="portal-page-heading portfolio-form-heading"><div><span className="sk sk-kicker" /><span className="sk sk-title" /><span className="sk sk-line" /></div><span className="sk sk-button" /></div>
+    {[3, 1, 2].map((fields, section) => <section className="portfolio-form-skeleton-section" key={section}><div className="sk sk-panel-title" />{Array.from({ length: fields }, (_, field) => <div className="sk sk-filter" key={field} />)}</section>)}
+  </div></LoadingStatus></main>
 }
 
 export function SearchResultsSkeleton() {
@@ -81,4 +85,71 @@ export function HomePageSkeleton() {
 
 export function AuthSkeleton() {
   return <main className="auth-shell"><LoadingStatus label="Memuat formulir akun"><div className="skeleton-auth-layout"><div className="skeleton-auth-side"><span className="sk sk-kicker" /><div><span className="sk sk-title" /><span className="sk sk-title sk-title-short" /><span className="sk sk-line" /></div></div><div className="skeleton-auth-form"><span className="sk sk-breadcrumb" /><span className="sk sk-panel-title" /><span className="sk sk-line sk-line-short" />{[0, 1, 2, 3].map((row) => <div className="skeleton-auth-field" key={row}><span className="sk sk-kicker" /><span className="sk sk-filter" /></div>)}<span className="sk sk-button" /></div></div></LoadingStatus></main>
+}
+
+/* ——— Portal siswa dan guru ——— */
+
+function PortalHeroSkeleton({ actions }: { actions: number }) {
+  return <header className="portal-hero skeleton-portal-hero">
+    <span className="sk sk-kicker" /><span className="sk sk-title" /><span className="sk sk-line sk-line-short" />
+    <div className="portal-hero-actions">{Array.from({ length: actions }, (_, index) => <span className="sk sk-button" key={index} />)}</div>
+  </header>
+}
+
+function PortalPanelHeadingSkeleton() {
+  return <header><div><span className="sk sk-kicker" /><span className="sk sk-panel-title" /></div><span className="sk sk-link" /></header>
+}
+
+function PortalWorkRowsSkeleton({ rows = 5, thumb = true }: { rows?: number; thumb?: boolean }) {
+  return <div className="portal-work-list">{Array.from({ length: rows }, (_, index) => <article key={index}>
+    {thumb ? <div className="portal-work-main"><span className="sk skeleton-portal-thumb" /><div className="portal-work-copy"><span className="sk sk-card-title" /><span className="sk sk-author-line" /></div></div>
+      : <div><span className="sk sk-card-title" /><span className="sk sk-author-line" /></div>}
+    <div className="portal-work-actions"><span className="sk sk-status" /><span className="sk sk-link" /></div>
+  </article>)}</div>
+}
+
+export function PortalStudentDashboardSkeleton() {
+  return <main className="portal-page"><LoadingStatus label="Memuat dashboard siswa"><div>
+    <PortalHeroSkeleton actions={3} />
+    <section className="portal-stat-grid">{[0, 1, 2, 3].map((index) => <article key={index}><span className="sk sk-kicker" /><span className="sk sk-stat-value" /></article>)}</section>
+    <section className="portal-panel"><PortalPanelHeadingSkeleton /><PortalWorkRowsSkeleton /></section>
+  </div></LoadingStatus></main>
+}
+
+export function PortalTeacherDashboardSkeleton() {
+  return <main className="portal-page"><LoadingStatus label="Memuat dashboard guru"><div>
+    <PortalHeroSkeleton actions={3} />
+    <section className="portal-impact-section">
+      <header className="portal-impact-heading"><div className="skeleton-heading-copy"><span className="sk sk-kicker" /><span className="sk sk-panel-title skeleton-impact-title" /><span className="sk sk-line" /></div><div className="portal-hero-actions"><span className="sk sk-button" /><span className="sk sk-button" /></div></header>
+      <section className="impact-stats">{[0, 1, 2, 3, 4, 5].map((index) => <article key={index}><span className="sk sk-kicker" /><span className="sk sk-stat-value skeleton-impact-value" /><span className="sk sk-author-line" /></article>)}</section>
+      <section className="portal-panel portal-review-queue"><PortalPanelHeadingSkeleton /><PortalWorkRowsSkeleton thumb={false} /></section>
+      <section className="impact-columns">{[0, 1].map((index) => <article className="impact-panel" key={index}><header><div><span className="sk sk-kicker" /><span className="sk sk-panel-title" /></div><span className="sk sk-link" /></header><div className="skeleton-impact-bars">{[0, 1, 2, 3].map((row) => <span className="sk sk-line" key={row} />)}</div></article>)}</section>
+    </section>
+  </div></LoadingStatus></main>
+}
+
+/** Halaman daftar di portal siswa (karya saya, proyek saya). */
+export function PortalListSkeleton({ rows = 5 }: { rows?: number }) {
+  return <main className="portal-page"><LoadingStatus label="Memuat daftar"><div>
+    <header className="portal-page-heading"><div className="skeleton-heading-copy"><span className="sk sk-kicker" /><span className="sk sk-title" /><span className="sk sk-line" /></div><span className="sk sk-button" /></header>
+    <section className="portal-panel"><header><span className="sk sk-panel-title" /><span className="sk sk-link" /></header><PortalWorkRowsSkeleton rows={rows} /></section>
+  </div></LoadingStatus></main>
+}
+
+/** Kartu undangan/tinjauan/peluang guru; dipakai juga oleh halaman klien saat data dimuat. */
+export function MentorCardsSkeleton({ layout = 'list', count = 3, announce = false }: { layout?: 'grid' | 'list'; count?: number; announce?: boolean }) {
+  const list = <div className={`mentor-list is-${layout}`}>{Array.from({ length: count }, (_, index) => <div className="mentor-card mentor-skeleton" key={index}>
+    <span className="sk mentor-skeleton-cover" />
+    <div className="mentor-card-content"><div className="mentor-card-top"><span className="sk sk-badge" /><span className="sk sk-author-line" /></div><span className="sk sk-card-title mentor-skeleton-title" /><span className="sk sk-line" /><span className="sk sk-line sk-line-short" /><span className="sk sk-button" /></div>
+  </div>)}</div>
+  return announce ? <LoadingStatus label="Memuat daftar">{list}</LoadingStatus> : list
+}
+
+/** Halaman guru yang dirender di klien (verifikasi, peluang). */
+export function MentorPageSkeleton({ heading = 'Memuat halaman guru' }: { heading?: string }) {
+  return <main className="mentor-page wrap"><LoadingStatus label={heading}><div>
+    <header className="mentor-hero skeleton-mentor-hero"><span className="sk sk-kicker" /><span className="sk sk-title" /><span className="sk sk-title sk-title-short" /><span className="sk sk-line" /><span className="sk sk-button" /></header>
+    <div className="mentor-list-heading"><div className="skeleton-heading-copy"><span className="sk sk-kicker" /><span className="sk sk-panel-title" /></div></div>
+    <MentorCardsSkeleton />
+  </div></LoadingStatus></main>
 }
