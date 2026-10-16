@@ -87,7 +87,7 @@ export default function PortfolioEditorPage({ categories, work = null }: Props) 
       }
       const data = {
         title,
-        categoryRef,
+        categoryRef: categories.find((category) => String(category.id) === categoryRef)?.id ?? categoryRef,
         summary,
         details: details || undefined,
         coverImage: coverID,

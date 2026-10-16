@@ -108,11 +108,13 @@ export const Projects: CollectionConfig = {
     { name: 'details', label: 'Detail Proyek', type: 'richText', admin: { description: 'Jelaskan tujuan, proses kolaborasi, dan hasil proyek.' } },
     { name: 'categoryRef', label: 'Kategori', type: 'relationship', relationTo: 'portfolio-categories' },
     { name: 'members', label: 'Anggota Proyek', type: 'array', minRows: 1, labels: { singular: 'Anggota', plural: 'Anggota Proyek' }, fields: [
-      { name: 'member', label: 'Siswa', type: 'relationship', relationTo: 'users', required: true, filterOptions: { role: { equals: 'student' } } },
+      // Tanpa filterOptions: validasinya berjalan dengan hak akses siswa yang login, dan siswa hanya boleh membaca akunnya sendiri,
+      // sehingga rekan tim dan guru selalu dianggap tidak valid. Peran anggota/pembimbing dicek di hook beforeChange.
+      { name: 'member', label: 'Siswa', type: 'relationship', relationTo: 'users', required: true },
       { name: 'contribution', label: 'Kontribusi atau Peran', type: 'text', required: true, maxLength: 120 },
     ] },
     { name: 'mentorAssignments', label: 'Guru Pembimbing', type: 'array', access: { read: ({ req, doc }) => canReadPrivateProjectFields(req.user, doc as Record<string, unknown> | undefined) }, labels: { singular: 'Guru pembimbing', plural: 'Guru pembimbing' }, admin: { description: 'Satu mentor utama mengambil keputusan akhir. Mentor pendamping dapat memberi masukan.' }, fields: [
-      { name: 'mentor', label: 'Guru', type: 'relationship', relationTo: 'users', required: true, filterOptions: { role: { equals: 'teacher' } } },
+      { name: 'mentor', label: 'Guru', type: 'relationship', relationTo: 'users', required: true },
       { name: 'assignmentRole', label: 'Peran', type: 'select', required: true, defaultValue: 'supporting', options: [{ label: 'Mentor utama', value: 'primary' }, { label: 'Mentor pendamping', value: 'supporting' }] },
       { name: 'response', label: 'Respons undangan', type: 'select', required: true, defaultValue: 'invited', options: [{ label: 'Menunggu jawaban', value: 'invited' }, { label: 'Diterima', value: 'accepted' }, { label: 'Ditolak', value: 'declined' }] },
     ] },

@@ -63,7 +63,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
         title,
         summary: String(form.get('summary') || '').trim(),
         details: details || undefined,
-        categoryRef: String(form.get('categoryRef') || '') || null,
+        categoryRef: categories.find((category) => String(category.id) === String(form.get('categoryRef') || ''))?.id ?? null,
         members: members.map((item) => ({ member: item.member, contribution: item.contribution.trim() })),
         mentorAssignments: mentorAssignments.map((item) => ({ ...item })),
         coverImage: coverID,

@@ -36,7 +36,15 @@ export const OpportunityInterests: CollectionConfig = {
         const sameClass = relationID(teacher.class) !== undefined && String(relationID(teacher.class)) === String(relationID(student?.class))
         const sameProgram = relationID(teacher.program) !== undefined && String(relationID(teacher.program)) === String(relationID(student?.program))
         if (!sameClass && !sameProgram) throw new APIError('Minat siswa ini berada di luar tanggung jawabmu.', 403)
-        return { status }
+        // Guru hanya boleh mengubah status. Field lain diambil dari dokumen asli (bukan dari `data`) agar
+        // field wajib tidak hilang dan kiriman guru tidak bisa mengubah catatan, siswa, atau peluangnya.
+        return {
+          opportunity: relationID(interest.opportunity),
+          student: relationID(interest.student),
+          interestKey: interest.interestKey,
+          note: interest.note,
+          status,
+        }
       }
       if (!isStudentUser(req.user)) throw new APIError('Peluang hanya dapat diikuti oleh akun siswa.', 403)
       const opportunityID = relationID(data.opportunity) ?? relationID(originalDoc?.opportunity)

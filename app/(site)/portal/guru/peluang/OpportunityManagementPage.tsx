@@ -48,7 +48,8 @@ export default function OpportunityManagementPage() {
     event.preventDefault(); setBusy(true); setMessage('')
     const form = new FormData(event.currentTarget)
     const data: Record<string, unknown> = Object.fromEntries([...form.entries()].filter(([key, value]) => key !== 'targetPrograms' && value !== ''))
-    data.targetPrograms = form.getAll('targetPrograms').map((value) => value.toString())
+    // ID relasi di database berupa angka; nilai <option> selalu string dan akan ditolak validasi bila dikirim apa adanya.
+    data.targetPrograms = form.getAll('targetPrograms').map((value) => programs.find((program) => String(program.id) === value.toString())?.id).filter((id) => id !== undefined)
     try {
       const response = await siteFetch(editing ? `/api/opportunities/${editing.id}` : '/api/opportunities', { method: editing ? 'PATCH' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...data, status: editing?.status || 'open' }) })
       const result = await response.json()

@@ -42,9 +42,11 @@ export const PortfolioComments: CollectionConfig = {
     { name: 'student', label: 'Siswa', type: 'relationship', relationTo: 'users', required: true, index: true, admin: { hidden: true } },
     {
       name: 'content', label: 'Komentar', type: 'textarea', required: true, maxLength: 1200,
-      validate: (value) => typeof value === 'string' && value.trim().length >= 2
-        ? true
-        : 'Komentar minimal 2 karakter.',
+      // Validator kustom menggantikan pemeriksaan maxLength bawaan, jadi batasnya dicek di sini.
+      validate: (value) => {
+        if (typeof value !== 'string' || value.trim().length < 2) return 'Komentar minimal 2 karakter.'
+        return value.length > 1200 ? 'Komentar maksimal 1200 karakter.' : true
+      },
     },
   ],
 }

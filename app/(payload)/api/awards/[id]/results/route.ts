@@ -8,7 +8,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const award = await payload.findByID({
     collection: 'awards',
     id,
-    depth: 1,
+    depth: 2,
     overrideAccess: true,
   })
 
