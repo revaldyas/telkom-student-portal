@@ -15,10 +15,13 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
   const [sessionChecked, setSessionChecked] = useState(false)
   const workspacePath = pathname === '/dashboard' || pathname.startsWith('/dashboard/') || pathname === '/portal' || pathname.startsWith('/portal/')
 
+  const portalRole = pathname.startsWith('/portal/guru') ? 'teacher' : pathname.startsWith('/portal/siswa') ? 'student' : null
+
   useEffect(() => {
-    if (!workspacePath) return
+    if (!workspacePath) { setAccount(null); setSessionChecked(false); return }
+    // Sesi cukup diperiksa sekali per kunjungan ke portal, bukan di setiap perpindahan halaman.
+    if (sessionChecked) return
     let cancelled = false
-    setSessionChecked(false)
     fetch('/api/auth/session', { credentials: 'same-origin', cache: 'no-store' })
       .then(async (response) => response.ok ? response.json() : null)
       .then((data) => {
@@ -29,7 +32,25 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
       })
       .catch(() => { if (!cancelled) { setAccount(null); setSessionChecked(true) } })
     return () => { cancelled = true }
-  }, [pathname, workspacePath])
+  }, [workspacePath, sessionChecked])
+
+  // Setelah profil diubah (atau sesi berganti), perbarui data akun di header tanpa menampilkan skeleton lagi.
+  useEffect(() => {
+    if (!workspacePath) return
+    let latest = 0
+    function refresh() {
+      const ticket = ++latest
+      fetch('/api/auth/session', { credentials: 'same-origin', cache: 'no-store' })
+        .then(async (response) => response.ok ? response.json() : null)
+        .then((data) => {
+          const user = data?.user
+          if (ticket === latest && user && (user.role === 'student' || user.role === 'teacher')) setAccount(user as Account)
+        })
+        .catch(() => undefined)
+    }
+    window.addEventListener('karyakita-session-change', refresh)
+    return () => window.removeEventListener('karyakita-session-change', refresh)
+  }, [workspacePath])
 
   const isCorrectWorkspace = Boolean(
     account && (
@@ -38,6 +59,9 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
     ),
   )
   if (isCorrectWorkspace && account) return <WorkspaceLayout account={account}>{children}</WorkspaceLayout>
+  // Selama sesi diperiksa, tampilkan shell portal (sidebar berukuran sama) beserta halamannya, bukan layar kosong,
+  // supaya tidak ada lompatan layout dan loading.tsx tiap halaman tetap terlihat.
+  if (workspacePath && !sessionChecked && portalRole) return <WorkspaceLayout account={null} role={portalRole}>{children}</WorkspaceLayout>
   if (workspacePath && !sessionChecked) return <div className="workspace-checking"><img src="/brand/telkom-schools.png" alt="Telkom Schools" /><span>Memeriksa sesi akun…</span></div>
 
   return <>

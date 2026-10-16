@@ -125,6 +125,21 @@ describe('Akun (collection users)', () => {
     const user = await w.payload.findByID({ collection: 'users', id: w.studentA.id, overrideAccess: true })
     expect(user).toMatchObject({ bio: 'Halo', interests: ['Web'] })
   })
+  it('form "Profil saya": nama, bio, dan daftar minat/keterampilan/pengalaman tersimpan', async () => {
+    const data = { name: 'Nama Baru', bio: 'Bio singkat', interests: ['UI/UX', 'Web'], skills: ['Figma'], experiences: ['Aplikasi Kasir — UI designer, 2025'] }
+    await w.payload.update({ collection: 'users', id: w.studentB.id, data, ...as(w.studentB) })
+    const user = await w.payload.findByID({ collection: 'users', id: w.studentB.id, overrideAccess: true })
+    expect(user).toMatchObject(data)
+  })
+  it('form "Profil saya": nama tidak boleh dikosongkan', async () => {
+    await expect(w.payload.update({ collection: 'users', id: w.studentB.id, data: { name: '' }, ...as(w.studentB) })).rejects.toThrow(/Nama/)
+  })
+  it('form "Profil saya": kelas dan program tidak bisa diubah siswa', async () => {
+    await w.payload.update({ collection: 'users', id: w.studentB.id, data: { class: w.otherClass.id, program: w.otherProgram.id } as never, ...as(w.studentB) })
+    const user = await w.payload.findByID({ collection: 'users', id: w.studentB.id, depth: 0, overrideAccess: true })
+    expect(user.class).toBe(w.classroom.id)
+    expect(user.program).toBe(w.program.id)
+  })
   it('siswa tidak bisa mengubah profil siswa lain', async () => {
     await expect(w.payload.update({ collection: 'users', id: w.studentB.id, data: { bio: 'Diretas' }, ...as(w.studentA) })).rejects.toThrow()
   })
