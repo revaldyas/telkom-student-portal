@@ -1,8 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { displayTitle } from '../../lib/displayTitle'
+import { siteFetch } from '../../lib/siteFetch'
 import { AwardCardsSkeleton, HeroSkeleton, LeaderboardSkeleton, WorkGridSkeleton } from '../../components/SiteSkeletons'
 import SkeletonImage from '../../components/SkeletonImage'
 
@@ -57,6 +59,11 @@ const mvsRank = (board: Board | null, id: string | number | null | undefined) =>
 }
 
 export default function Home() {
+  const router = useRouter()
+  const [role, setRole] = useState('')
+  const [myLikes, setMyLikes] = useState<Record<string, string | number>>({})
+  const [likeBusy, setLikeBusy] = useState('')
+  const [likeNotice, setLikeNotice] = useState('')
   const [portfolios, setPortfolios] = useState<Portfolio[]>([])
   const [projects, setProjects] = useState<RecentProject[]>([])
   const [opportunities, setOpportunities] = useState<RecentOpportunity[]>([])
@@ -85,6 +92,51 @@ export default function Home() {
   const scrollRecentProjects = (direction: -1 | 1) => scrollTrack(recentProjectsTrackRef.current, direction)
   const scrollRecentOpportunities = (direction: -1 | 1) => scrollTrack(recentOpportunitiesTrackRef.current, direction)
   const scrollAwards = (direction: -1 | 1) => scrollTrack(awardTrackRef.current, direction)
+  useEffect(() => {
+    fetch('/api/auth/session', { credentials: 'same-origin', cache: 'no-store' })
+      .then(async (response) => response.ok ? response.json() : null)
+      .then((data) => setRole(data?.user?.role || ''))
+      .catch(() => setRole(''))
+  }, [])
+
+  // Karya di beranda yang sudah disukai user (satu permintaan untuk semua kartu).
+  const portfolioIDs = portfolios.map((work) => work.id).join(',')
+  useEffect(() => {
+    if (role !== 'student' || !portfolioIDs) return
+    let cancelled = false
+    siteFetch(`/api/portfolio-likes?where[portfolio][in]=${portfolioIDs}&limit=100&depth=0`, { cache: 'no-store' })
+      .then(async (response) => response.ok ? response.json() : null)
+      .then((data) => {
+        if (cancelled || !data) return
+        setMyLikes(Object.fromEntries((data.docs || []).map((like: { id: string | number; portfolio: { id: string | number } | string | number }) => [String(typeof like.portfolio === 'object' ? like.portfolio.id : like.portfolio), like.id])))
+      })
+      .catch(() => undefined)
+    return () => { cancelled = true }
+  }, [role, portfolioIDs])
+
+  async function toggleLike(work: Portfolio) {
+    setLikeNotice('')
+    if (!role) { router.push('/login'); return }
+    if (role !== 'student') { setLikeNotice('Suka hanya tersedia untuk akun siswa.'); return }
+    const key = String(work.id)
+    if (likeBusy) return
+    const existing = myLikes[key]
+    const change = (delta: number) => setPortfolios((current) => current.map((item) => String(item.id) === key ? { ...item, likes: Math.max(0, (item.likes ?? 0) + delta) } : item))
+    setLikeBusy(key)
+    change(existing ? -1 : 1)
+    try {
+      const response = existing
+        ? await siteFetch(`/api/portfolio-likes/${existing}`, { method: 'DELETE' })
+        : await siteFetch('/api/portfolio-likes', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ portfolio: work.id }) })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(data.errors?.[0]?.message || data.message || 'Suka belum berhasil disimpan.')
+      setMyLikes((current) => { const next = { ...current }; if (existing) delete next[key]; else next[key] = data.doc?.id ?? 'liked'; return next })
+    } catch (error) {
+      change(existing ? 1 : -1)
+      setLikeNotice(error instanceof Error ? error.message : 'Suka belum berhasil disimpan.')
+    } finally { setLikeBusy('') }
+  }
+
   useEffect(() => {
     fetch('/api/community/feed?limit=1000').then((response) => response.ok ? response.json() : null).then((feed) => {
       setPortfolios(selectRecentByProgram(feed?.portfolios || []))
@@ -132,6 +184,7 @@ export default function Home() {
     </section>}
 
     <section className="home-section" id="karya"><div className="section-heading"><div><span className="section-kicker">PILIHAN KOMUNITAS</span><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-recent-all"><Link className="section-link" href="/karya">Lihat semua{totals.portfolios !== undefined ? ` ${totals.portfolios}` : ''} karya <span>↗</span></Link></div></div>
+      {likeNotice && <p className="home-like-notice" role="status">{likeNotice}</p>}
       <div className="home-recent-carousel home-works-carousel"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => scrollRecentWorks(-1)}>‹</button>
       {loading ? <WorkGridSkeleton className="home-recent-track" /> : portfolios.length ? <div ref={recentTrackRef} className="lowfi-work-grid home-recent-track" aria-label="Karya terbaru siswa" tabIndex={0}>{portfolios.map((work) => {
         const image = typeof work.coverImage === 'object' && work.coverImage ? work.coverImage.url : null
@@ -143,7 +196,7 @@ export default function Home() {
         return <article className="lowfi-work-card" key={work.id}>
           <Link className="work-card-media" href={`/karya/${work.slug}`}>{image ? <SkeletonImage src={image} alt={`Sampul ${work.title}`} /> : <span className="work-card-placeholder">Telkom Student Creation</span>}{work.isNominee && <span className="lowfi-badge">NOMINEE</span>}</Link>
           <div className="work-card-body"><h3><Link href={`/karya/${work.slug}`} title={displayTitle(work.title, nameOf(work.student))}>{displayTitle(work.title, nameOf(work.student))}</Link></h3><span className="work-card-badge">{typeof work.categoryRef === 'object' ? work.categoryRef?.name || work.categoryRef?.code : 'Karya'}</span></div>
-          <div className="work-card-footer work-card-top"><p className="work-author">{studentID ? <Link href={`/siswa/${studentID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-counts" aria-label={`${work.likes ?? 0} suka, ${work.comments ?? 0} komentar`}><span aria-hidden="true">♡ {work.likes ?? 0}</span><span aria-hidden="true">◉ {work.comments ?? 0}</span></span></div>
+          <div className="work-card-footer work-card-top"><p className="work-author">{studentID ? <Link href={`/siswa/${studentID}`}>{author}</Link> : <span>{author}</span>}</p><span className="work-card-counts"><button type="button" className="work-card-like" aria-pressed={Boolean(myLikes[String(work.id)])} aria-label={`${myLikes[String(work.id)] ? 'Batal suka' : 'Suka'} (${work.likes ?? 0} suka)`} disabled={likeBusy === String(work.id)} onClick={() => void toggleLike(work)}>{myLikes[String(work.id)] ? '♥' : '♡'} {work.likes ?? 0}</button><Link className="work-card-comments" href={`/karya/${work.slug}#komentar`} aria-label={`${work.comments ?? 0} komentar, buka bagian komentar`}>◉ {work.comments ?? 0}</Link></span></div>
         </article>
       })}</div> : <p>Belum ada karya terbit.</p>}
       <button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => scrollRecentWorks(1)}>›</button></div>

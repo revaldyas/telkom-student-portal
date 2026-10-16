@@ -58,6 +58,12 @@ export default function WorkPage() {
   const [mvsRank, setMvsRank] = useState(0)
   const [siteNavHeight, setSiteNavHeight] = useState(74)
 
+  // Tautan "#komentar" dari kartu karya: konten baru muncul setelah data dimuat, jadi scroll dilakukan di sini.
+  useEffect(() => {
+    if (loading || !portfolio || window.location.hash !== '#komentar') return
+    document.getElementById('komentar')?.scrollIntoView({ block: 'start' })
+  }, [loading, portfolio])
+
   useEffect(() => {
     const siteNav = document.querySelector('.site-nav-shell')
     if (!siteNav) return
@@ -263,7 +269,7 @@ export default function WorkPage() {
       {portfolio.status === 'published' ? <>
         <div className="lowfi-actions"><button type="button" disabled={busy} onClick={() => void toggleLike()}>{myLike ? '♥ Disukai' : '♡ Suka'} · {counts.likes}</button><span>{counts.comments} komentar</span></div>
         {awards.length > 0 && <section className="lowfi-panel"><h2>Voting Penghargaan</h2><p>Karya ini masuk nominasi penghargaan yang sedang tersedia.</p>{awards.map((award) => <div className="lowfi-row" key={award.id}><span>{award.title}</span><button disabled={busy || role === 'teacher' || role === 'admin'} onClick={() => void vote(award)}>{myVotes[String(award.id)] ? 'Ubah suara' : 'Vote karya'}</button></div>)}</section>}
-        <section className="lowfi-panel"><h2>Komentar ({comments.length})</h2><form onSubmit={submitComment}><label htmlFor="comment">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder="Berikan tanggapan yang membangun…"/><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></form>{comments.map((comment) => <article className="lowfi-comment" key={comment.id}><p>{comment.content}</p><small><Link href={`/siswa/${relationId(comment.student)}`}>{relationName(comment.student) || 'Siswa'}</Link> · {new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}</small></article>)}</section>
+        <section className="lowfi-panel" id="komentar"><h2>Komentar ({comments.length})</h2><form onSubmit={submitComment}><label htmlFor="comment">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder="Berikan tanggapan yang membangun…"/><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></form>{comments.map((comment) => <article className="lowfi-comment" key={comment.id}><p>{comment.content}</p><small><Link href={`/siswa/${relationId(comment.student)}`}>{relationName(comment.student) || 'Siswa'}</Link> · {new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}</small></article>)}</section>
       </> : <section className="lowfi-panel"><h2>Interaksi karya</h2><p>Suka, komentar, dan voting akan tersedia setelah karya diterbitkan.</p></section>}
       </div>
     </article>

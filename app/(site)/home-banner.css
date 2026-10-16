@@ -86,7 +86,7 @@
 #karya .home-recent-track .lowfi-work-card:hover .work-card-media,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media{transform:none}
 #karya .home-recent-track .lowfi-work-card:hover .work-card-media img,#karya .home-recent-track .lowfi-work-card:focus-within .work-card-media img{transform:scale(1.015)}
 #karya .home-recent-track .work-card-media img{aspect-ratio:auto;object-fit:cover;transition:transform .5s ease}
-#karya .home-recent-track .work-card-counts{display:inline-flex;flex:0 0 auto;gap:9px;color:#6b6d73;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
+#karya .home-recent-track .work-card-counts{display:inline-flex;flex:0 0 auto;gap:2px;margin-right:-6px;color:#6b6d73;font-size:12px;font-weight:600;line-height:1.35;white-space:nowrap}
 #karya .home-recent-track .work-card-badge{align-self:flex-start;max-width:100%;margin:0;overflow:hidden;color:#6b6d73;font-size:12px;font-weight:500;line-height:1.3;text-overflow:ellipsis;white-space:nowrap}
 #karya .home-recent-track .work-card-body{padding:12px 14px}
 #karya .home-recent-track .work-card-body h3{display:block;height:auto;min-height:0;margin:0 0 8px;overflow:hidden;font-size:15px;font-weight:800;letter-spacing:-.01em;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
@@ -102,3 +102,12 @@
 #karya .skeleton-work-body>.sk{order:1;margin:11px 14px 0}
 #karya .skeleton-work-body>.sk:first-child{margin-top:12px}
 @media(max-width:600px){#karya .home-recent-track .work-card-body h3{font-size:15px}}
+
+/* Suka dan komentar pada kartu "Karya Terbaru" bisa diklik. */
+#karya .home-recent-track .work-card-like,#karya .home-recent-track .work-card-comments{display:inline-flex;align-items:center;padding:3px 6px;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit;line-height:inherit;cursor:pointer;transition:background .15s ease,color .15s ease}
+#karya .home-recent-track .work-card-like:hover,#karya .home-recent-track .work-card-comments:hover{background:#f3f3f1;color:var(--ink)}
+#karya .home-recent-track .work-card-like[aria-pressed=true]{color:#c8102e}
+#karya .home-recent-track .work-card-like:disabled{cursor:progress;opacity:.7}
+#karya .home-recent-track .work-card-like:focus-visible,#karya .home-recent-track .work-card-comments:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.home-like-notice{margin:0 0 12px;padding:10px 14px;border:1px solid #ead2d2;border-radius:10px;background:#fff8f8;color:#762026;font-size:12px}
+#komentar{scroll-margin-top:96px}
