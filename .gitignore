@@ -20,3 +20,6 @@ pnpm-debug.log*
 
 # Dibuat otomatis oleh Next.js; isinya berbeda antara next dev dan next build
 next-env.d.ts
+
+# Hasil build dokumen (PDF) dan berkas sementara
+tools/docs-build/.build/

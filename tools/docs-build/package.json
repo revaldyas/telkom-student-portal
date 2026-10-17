@@ -1,0 +1,23 @@
+{
+  "name": "docs-build",
+  "private": true,
+  "type": "module",
+  "description": "Membuat PDF proposal, dokumentasi, dan pitch deck dari Markdown di docs/",
+  "scripts": {
+    "screens": "node capture-screens.mjs",
+    "docs": "node build-docs.mjs",
+    "deck": "node build-deck.mjs",
+    "all": "node build-docs.mjs && node build-deck.mjs"
+  },
+  "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
+    "@fontsource/source-serif-4": "^5.3.1",
+    "@marp-team/marp-cli": "^4.5.1",
+    "markdown-it": "^15.0.3",
+    "markdown-it-anchor": "^10.0.0",
+    "mermaid": "^12.2.0",
+    "pagedjs": "^0.4.3",
+    "playwright-core": "^1.64.1"
+  }
+}
