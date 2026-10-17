@@ -320,7 +320,18 @@ Perkiraan dari estimasi S/M/L pada [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) 
 | Fase 3 – penguatan | Rubrik penilaian, notifikasi di server + realtime, ekspor portofolio PDF, laporan kemajuan proyek, analitik sekolah | **±6-10 minggu-orang** |
 | Fase 4 – ekosistem | Mentor industri/alumni, fitur AI bantu guru/siswa, PWA | **±6-12 minggu-orang** |
 
-Konversi ke rupiah dan rincian per modul ada di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md): paket minimum layak (Fase 2) ±Rp 106-259 juta, paket direkomendasikan (Fase 2 + 3) ±Rp 285-698 juta, dan paket penuh ±Rp 0,54-1,32 miliar, bergantung tarif pengembang (internal sampai software house). Fitur inti yang sudah ada tidak membutuhkan pengembangan ulang.
+**Biaya pengembangan (harga sekolah, tim 2 orang, di luar biaya layanan seperti server dan API AI)** — rincian di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md):
+
+| Paket | Harga sekolah | Kumulatif |
+| --- | ---: | ---: |
+| **MVP – prioritas tinggi** (keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi) | **Rp 10 juta** | Rp 10 juta |
+| Prioritas sedang (rubrik, realtime, ekspor PDF, laporan proyek, analitik) | Rp 10 juta | Rp 20 juta |
+| Prioritas kecil (PWA, aksesibilitas, pencarian, tracker lanjutan) | Rp 7 juta | Rp 27 juta |
+| Ekosistem non-AI (mentor industri, pencocokan peluang, juri, GitHub) | Rp 9,5 juta | Rp 36,5 juta |
+| Fitur AI (belum termasuk biaya API) | Rp 12,5 juta | Rp 49 juta |
+| Migrasi hosting sendiri (opsional) | Rp 2,5 juta | Rp 51,5 juta |
+
+Fitur yang sudah tersedia saat ini bernilai ±Rp 32 juta pada tarif yang sama (nilai pasar konvensional ±Rp 0,5 miliar) dan sudah dikerjakan. Harga di atas sengaja jauh di bawah tarif pasar karena ini proyek sekolah.
 
 ---
 
