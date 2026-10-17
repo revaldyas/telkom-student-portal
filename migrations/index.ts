@@ -35,6 +35,11 @@ export const migrations = [
     name: '20261011_075200_ensure_vercel_blob_object_key',
   },
   {
+    up: migration_20261011_085218.up,
+    down: migration_20261011_085218.down,
+    name: '20261011_085218'
+  },
+  {
     up: migration_20261011_120000_portfolio_review_history.up,
     down: migration_20261011_120000_portfolio_review_history.down,
     name: '20261011_120000_portfolio_review_history',
