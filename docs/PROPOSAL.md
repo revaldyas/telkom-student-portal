@@ -255,7 +255,7 @@ Target PKL, peluang, keterlibatan, dan kepuasan adalah **sasaran kebijakan**, bu
 | --- | --- | --- |
 | **0 – Kesiapan** | Keputusan kebijakan, penanggung jawab, pemetaan data sekolah, konfirmasi sumber identitas | Persetujuan dan tim pengelola |
 | **1 – Percontohan** | 1-2 jurusan/kelas, guru pembimbing terpilih, pelatihan, kumpulkan umpan balik | Bukti manfaat dan perbaikan |
-| **2 – Peluncuran sekolah** | Registrasi tervalidasi data sekolah, lupa kata sandi, keamanan dasar, kebijakan privasi | Seluruh siswa dan guru terdaftar |
+| **2 – Peluncuran sekolah (MVP)** | Registrasi tervalidasi data sekolah, lupa kata sandi, keamanan dasar, kebijakan privasi, notifikasi di server, moderasi; pengerjaan 1 minggu + testing dan QA 1 minggu | Seluruh siswa dan guru terdaftar |
 | **3 – Penguatan** | Rubrik penilaian, notifikasi realtime, ekspor portofolio, laporan untuk guru, analitik sekolah | Nilai lebih bagi guru dan siswa |
 | **4 – Ekosistem** | Mentor industri/alumni, kemitraan PKL, fitur AI bantu guru/siswa | Jembatan ke industri |
 
@@ -310,26 +310,20 @@ Opsi A menukar biaya yang lebih tinggi dengan perawatan yang lebih ringan; opsi 
 | Orientasi siswa | 30 menit per kelas × 36 kelas = **±18 jam** (dapat digabung dengan jam wali kelas) |
 | Panduan singkat dan video tutorial | dibuat sekali, ±2-3 hari kerja |
 
-### 10.5 Pengembangan lanjutan (usaha dalam minggu-orang)
+### 10.5 Pengembangan lanjutan: biaya dan jadwal
 
-Perkiraan dari estimasi S/M/L pada [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) (S ≈ 0,5 minggu, M ≈ 1-2 minggu, L ≈ 3+ minggu):
+Biaya pengembangan (harga sekolah, tim 2 orang, di luar biaya layanan seperti server dan API AI); rincian, dasar perhitungan, dan syarat jadwal di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md). **Setiap paket dikerjakan paling lama 2 minggu**, termasuk testing dan Quality Assurance (QA):
 
-| Paket | Isi | Perkiraan usaha |
-| --- | --- | --- |
-| Fase 2 – peluncuran sekolah | Registrasi tervalidasi data sekolah, lupa kata sandi + verifikasi email, keamanan dasar (rate limit, CAPTCHA, header), kebijakan privasi | **±4-7 minggu-orang** (bergantung pada API sekolah) |
-| Fase 3 – penguatan | Rubrik penilaian, notifikasi di server + realtime, ekspor portofolio PDF, laporan kemajuan proyek, analitik sekolah | **±6-10 minggu-orang** |
-| Fase 4 – ekosistem | Mentor industri/alumni, fitur AI bantu guru/siswa, PWA | **±6-12 minggu-orang** |
+| Paket | Harga sekolah | Kumulatif | Jadwal |
+| --- | ---: | ---: | --- |
+| **MVP – prioritas tinggi** (keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi) | **Rp 10 juta** | Rp 10 juta | **2 minggu**: 1 minggu pengerjaan + 1 minggu testing dan QA |
+| Prioritas sedang (rubrik, realtime, ekspor PDF, laporan proyek, analitik) | Rp 10 juta | Rp 20 juta | 2 minggu: 1 + 1 |
+| Prioritas kecil (PWA, aksesibilitas, pencarian, tracker lanjutan) | Rp 7 juta | Rp 27 juta | 1,5 minggu: 1 + 0,5 |
+| Ekosistem non-AI (mentor industri, pencocokan peluang, juri, GitHub) | Rp 9,5 juta | Rp 36,5 juta | 2 minggu: 1 + 1 |
+| Fitur AI (belum termasuk biaya API) | Rp 12,5 juta | Rp 49 juta | 2 minggu: 1,5 + 0,5 |
+| Migrasi hosting sendiri (opsional) | Rp 2,5 juta | Rp 51,5 juta | 1 minggu |
 
-**Biaya pengembangan (harga sekolah, tim 2 orang, di luar biaya layanan seperti server dan API AI)** — rincian di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md):
-
-| Paket | Harga sekolah | Kumulatif |
-| --- | ---: | ---: |
-| **MVP – prioritas tinggi** (keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi) | **Rp 10 juta** | Rp 10 juta |
-| Prioritas sedang (rubrik, realtime, ekspor PDF, laporan proyek, analitik) | Rp 10 juta | Rp 20 juta |
-| Prioritas kecil (PWA, aksesibilitas, pencarian, tracker lanjutan) | Rp 7 juta | Rp 27 juta |
-| Ekosistem non-AI (mentor industri, pencocokan peluang, juri, GitHub) | Rp 9,5 juta | Rp 36,5 juta |
-| Fitur AI (belum termasuk biaya API) | Rp 12,5 juta | Rp 49 juta |
-| Migrasi hosting sendiri (opsional) | Rp 2,5 juta | Rp 51,5 juta |
+Seluruh paket berurutan membutuhkan ±10,5 minggu. Jadwal mengasumsikan pengembangan dibantu AI oleh tim 2 orang yang bekerja penuh, serta data/akses dari sekolah (misalnya daftar siswa dan guru) tersedia sebelum paket dimulai.
 
 Fitur yang sudah tersedia saat ini bernilai ±Rp 32 juta pada tarif yang sama (nilai pasar konvensional ±Rp 0,26 miliar, dengan acuan tarif yang sudah disesuaikan ke kondisi pasar saat ini) dan sudah dikerjakan. Harga di atas sengaja jauh di bawah tarif pasar karena ini proyek sekolah.
 

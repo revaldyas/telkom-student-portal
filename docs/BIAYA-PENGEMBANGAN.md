@@ -46,18 +46,29 @@ Gambaran total:
 | Tarif pasar acuan | Internal/freelancer Rp 0,45 juta; gabungan Rp 0,75 juta; software house Rp 1,10 juta per hari-orang. Sudah diturunkan 50% dari tarif dasar (Rp 0,9 / 1,5 / 2,2 juta) karena pasar jasa pengembangan melemah sejak maraknya AI. Untuk potongan 60%, ubah `MARKET_DISCOUNT` di skrip |
 | Ketidakpastian | ±30%. Terbesar pada registrasi via API sekolah dan fitur AI |
 
-## 3. Paket dan waktu pengerjaan
+## 3. Paket dan jadwal pengerjaan
 
-| Paket | Hari-orang | Per orang (tim 2) | Waktu bila penuh waktu | Waktu bila paruh waktu (50%) |
-| --- | ---: | ---: | ---: | ---: |
-| Prioritas tinggi – MVP (Fase 2) | 81 | 41 hari | ±1,8 bulan | ±3,7 bulan |
-| Prioritas sedang – pasca-MVP | 81 | 41 hari | ±1,8 bulan | ±3,7 bulan |
-| Prioritas kecil – penyempurnaan | 56 | 28 hari | ±1,3 bulan | ±2,6 bulan |
-| Ekosistem (non-AI) | 76 | 38 hari | ±1,7 bulan | ±3,5 bulan |
-| Fitur AI | 101 | 51 hari | ±2,3 bulan | ±4,6 bulan |
-| Infrastruktur (opsional) | 19 | 9 hari | ±0,4 bulan | ±0,9 bulan |
+Setiap paket dikerjakan **paling lama 2 minggu**: pengerjaan, lalu testing dan Quality Assurance (QA) pada paket yang sama. Contoh MVP: 1 minggu pengerjaan + 1 minggu testing dan QA.
 
-Waktu dihitung dari hari-orang dibagi dua (tim 2 orang) dengan 22 hari kerja per bulan; paruh waktu = separuh jam kerja. Paket dikerjakan berurutan, dan tiap paket dapat dihentikan tanpa merusak paket sebelumnya.
+| Paket | Pengerjaan | Testing dan QA | **Total** | Usaha konvensional | Jadwal nyata (2 orang) | Percepatan yang diasumsikan |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Prioritas tinggi – MVP (Fase 2) | 1,0 minggu | 1,0 minggu | **2,0 minggu** | 81 hari-orang | 20 hari-orang | ±4,1× |
+| Prioritas sedang – pasca-MVP | 1,0 minggu | 1,0 minggu | **2,0 minggu** | 81 hari-orang | 20 hari-orang | ±4,1× |
+| Prioritas kecil – penyempurnaan | 1,0 minggu | 0,5 minggu | **1,5 minggu** | 56 hari-orang | 15 hari-orang | ±3,8× |
+| Ekosistem (non-AI) | 1,0 minggu | 1,0 minggu | **2,0 minggu** | 76 hari-orang | 20 hari-orang | ±3,8× |
+| Fitur AI | 1,5 minggu | 0,5 minggu | **2,0 minggu** | 101 hari-orang | 20 hari-orang | ±5,1× |
+| Infrastruktur (opsional) | 1,0 minggu | 0,0 minggu | **1,0 minggu** | 19 hari-orang | 10 hari-orang | ±1,9× |
+
+Total jika semua paket dikerjakan berurutan: **±10,5 minggu** (≈ 2,4 bulan), tanpa jeda antarpaket. Tiap paket dapat dihentikan tanpa merusak paket sebelumnya, dan paket berikutnya baru dimulai setelah QA paket sebelumnya selesai.
+
+Apa yang dilakukan di minggu testing dan QA: menjalankan seluruh suite test otomatis (sekarang 409 test) plus test fitur baru, uji manual alur utama per peran (siswa, guru, admin), uji keamanan dasar (rate limit, akses lintas peran, input berbahaya), uji di perangkat dan peramban umum, perbaikan temuan, pembaruan dokumentasi, dan uji penerimaan di sekolah.
+
+**Syarat agar jadwal ini realistis:**
+
+- **Percepatan.** Usaha konvensional (81 hari-orang untuk MVP) tidak mungkin dikejar dalam 1 minggu oleh 2 orang tanpa bantuan; jadwal ini mengasumsikan pengembangan dibantu AI seperti yang dilakukan pada fitur yang sudah ada, dengan percepatan ±4× dari ukuran konvensional. Pada paket AI, percepatan yang diminta paling tinggi (±5×); bila terasa mepet, pecah menjadi dua paket 2 minggu (AI guru + fondasi, lalu AI siswa + admin) tanpa mengubah harga.
+- **Tim bekerja penuh pada jadwal itu** (±8 jam per hari, 5 hari per minggu) dan tidak bertabrakan dengan kegiatan sekolah lain.
+- **Ketergantungan sudah jelas sebelum minggu pertama:** akses API atau CSV data siswa/guru sekolah untuk MVP, layanan email dan CAPTCHA, keputusan hosting (untuk realtime), kebijakan privasi (untuk AI), dan keputusan bisnis (untuk mentor industri). Ketergantungan yang terlambat menggeser jadwal.
+- **Risiko terbesar di MVP:** registrasi via API sekolah. Bila API belum siap, kerjakan lewat impor CSV (lihat bagian 7) agar tetap dalam 2 minggu.
 
 Isi tiap paket:
 
@@ -194,8 +205,8 @@ Nilai pasar memakai tarif gabungan Rp 0,75 juta per hari-orang (sudah turun 50% 
 
 ## 7. Catatan untuk tim
 
-- **Tarif efektif rendah.** Rp 10 juta untuk MVP berarti ±Rp 5 juta per orang untuk ±41 hari kerja (±Rp 123 ribu per hari). Itu keputusan wajar bila dipahami sebagai kontribusi untuk sekolah; pastikan kalian nyaman dan alokasi waktunya realistis.
-- **Opsi mengurangi lingkup MVP** bila ingin lebih longgar: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±52 hari murni → ±65 hari total → ±Rp 8 juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
+- **Tarif efektif.** Rp 10 juta untuk MVP berarti Rp 5 juta per orang. Dengan jadwal 2 minggu (20 hari-orang nyata) itu ±Rp 500 ribu per orang per hari kerja; diukur dengan usaha konvensional (81 hari-orang) hanya ±Rp 123 ribu per hari-orang. Dua angka ini menjelaskan kenapa harga tampak sangat rendah di atas kertas tetapi tetap wajar sebagai kompensasi untuk 2 minggu kerja penuh.
+- **Opsi mengurangi lingkup MVP** bila jadwal 2 minggu terasa mepet: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±52 hari murni → ±65 hari total → ±Rp 8 juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
 - **Hindari menurunkan keamanan demi harga.** Rate limit, CAPTCHA, lupa kata sandi, dan privasi adalah syarat peluncuran ke siswa di bawah umur; sebaiknya tetap di MVP.
 - **Pembayaran bertahap** mengurangi risiko kedua pihak. Contoh untuk MVP: 30% saat mulai, 40% saat keamanan + registrasi selesai dan lolos test, 30% setelah uji penerimaan di sekolah.
 - **Tulis lingkup tiap paket di surat penugasan** supaya perubahan permintaan tidak menambah pekerjaan tanpa penyesuaian.

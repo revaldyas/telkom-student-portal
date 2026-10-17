@@ -48,9 +48,15 @@ for tier, raw, days, price, cum, market, per in cum_rows:
     summary += f"| **{tier}** | {isi[tier]} | **Rp {j(price)} juta** | Rp {j(cum)} juta | {rp(market)} |\n"
 summary += f"| *Sudah dibangun (tersedia sekarang)* | 16 modul, 409 test | *Rp {j(built_price)} juta* | - | {rp(built_market)} |\n"
 
-dur = "| Paket | Hari-orang | Per orang (tim 2) | Waktu bila penuh waktu | Waktu bila paruh waktu (50%) |\n| --- | ---: | ---: | ---: | ---: |\n"
+dur = "| Paket | Pengerjaan | Testing dan QA | **Total** | Usaha konvensional | Jadwal nyata (2 orang) | Percepatan yang diasumsikan |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n"
+sched_total = 0
 for tier, raw, days, price, cum, market, per in cum_rows:
-    dur += f"| {tier} | {days:.0f} | {per:.0f} hari | ±{nf(per / est.HARI_PER_BULAN)} bulan | ±{nf(per * 2 / est.HARI_PER_BULAN)} bulan |\n"
+    build, qa = est.SCHEDULE[tier]
+    actual = (build + qa) * est.WORK_DAYS_PER_WEEK * est.TEAM_SIZE
+    sched_total += build + qa
+    dur += f"| {tier} | {nf(build)} minggu | {nf(qa)} minggu | **{nf(build + qa)} minggu** | {days:.0f} hari-orang | {actual:.0f} hari-orang | ±{nf(days / actual)}× |\n"
+mvp_actual = sum(est.SCHEDULE[est.T1]) * est.WORK_DAYS_PER_WEEK * est.TEAM_SIZE
+real_day_rate = 10.0 / mvp_actual * 1000
 
 mod = body.split('### Rincian rekomendasi (belum dibangun)')[1].split('**Seluruh rekomendasi:**')[0].strip()
 built_table = body.split('### Rincian rekomendasi (belum dibangun)')[0].replace('### Rincian usaha yang sudah dibangun', '').strip()
@@ -99,10 +105,21 @@ Gambaran total:
 | Tarif pasar acuan | Internal/freelancer Rp {nf(R[names[0]], 2)} juta; gabungan Rp {nf(G, 2)} juta; software house Rp {nf(R[names[2]], 2)} juta per hari-orang. Sudah diturunkan {disc}% dari tarif dasar (Rp {nf(est.BASE_RATES[names[0]], 1)} / {nf(est.BASE_RATES[names[1]], 1)} / {nf(est.BASE_RATES[names[2]], 1)} juta) karena pasar jasa pengembangan melemah sejak maraknya AI. Untuk potongan 60%, ubah `MARKET_DISCOUNT` di skrip |
 | Ketidakpastian | ±30%. Terbesar pada registrasi via API sekolah dan fitur AI |
 
-## 3. Paket dan waktu pengerjaan
+## 3. Paket dan jadwal pengerjaan
+
+Setiap paket dikerjakan **paling lama 2 minggu**: pengerjaan, lalu testing dan Quality Assurance (QA) pada paket yang sama. Contoh MVP: 1 minggu pengerjaan + 1 minggu testing dan QA.
 
 {dur}
-Waktu dihitung dari hari-orang dibagi dua (tim 2 orang) dengan {est.HARI_PER_BULAN} hari kerja per bulan; paruh waktu = separuh jam kerja. Paket dikerjakan berurutan, dan tiap paket dapat dihentikan tanpa merusak paket sebelumnya.
+Total jika semua paket dikerjakan berurutan: **±{nf(sched_total)} minggu** (≈ {nf(sched_total / 4.3)} bulan), tanpa jeda antarpaket. Tiap paket dapat dihentikan tanpa merusak paket sebelumnya, dan paket berikutnya baru dimulai setelah QA paket sebelumnya selesai.
+
+Apa yang dilakukan di minggu testing dan QA: menjalankan seluruh suite test otomatis (sekarang 409 test) plus test fitur baru, uji manual alur utama per peran (siswa, guru, admin), uji keamanan dasar (rate limit, akses lintas peran, input berbahaya), uji di perangkat dan peramban umum, perbaikan temuan, pembaruan dokumentasi, dan uji penerimaan di sekolah.
+
+**Syarat agar jadwal ini realistis:**
+
+- **Percepatan.** Usaha konvensional ({cum_rows[0][2]:.0f} hari-orang untuk MVP) tidak mungkin dikejar dalam 1 minggu oleh 2 orang tanpa bantuan; jadwal ini mengasumsikan pengembangan dibantu AI seperti yang dilakukan pada fitur yang sudah ada, dengan percepatan ±4× dari ukuran konvensional. Pada paket AI, percepatan yang diminta paling tinggi (±5×); bila terasa mepet, pecah menjadi dua paket 2 minggu (AI guru + fondasi, lalu AI siswa + admin) tanpa mengubah harga.
+- **Tim bekerja penuh pada jadwal itu** (±8 jam per hari, 5 hari per minggu) dan tidak bertabrakan dengan kegiatan sekolah lain.
+- **Ketergantungan sudah jelas sebelum minggu pertama:** akses API atau CSV data siswa/guru sekolah untuk MVP, layanan email dan CAPTCHA, keputusan hosting (untuk realtime), kebijakan privasi (untuk AI), dan keputusan bisnis (untuk mentor industri). Ketergantungan yang terlambat menggeser jadwal.
+- **Risiko terbesar di MVP:** registrasi via API sekolah. Bila API belum siap, kerjakan lewat impor CSV (lihat bagian 7) agar tetap dalam 2 minggu.
 
 Isi tiap paket:
 
@@ -144,8 +161,8 @@ Nilai pasar memakai tarif gabungan Rp {nf(G, 2)} juta per hari-orang (sudah turu
 
 ## 7. Catatan untuk tim
 
-- **Tarif efektif rendah.** Rp 10 juta untuk MVP berarti ±Rp 5 juta per orang untuk ±{cum_rows[0][6]:.0f} hari kerja (±Rp {rate * 1000:.0f} ribu per hari). Itu keputusan wajar bila dipahami sebagai kontribusi untuk sekolah; pastikan kalian nyaman dan alokasi waktunya realistis.
-- **Opsi mengurangi lingkup MVP** bila ingin lebih longgar: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±{mvp_alt_raw} hari murni → ±{alt_days:.0f} hari total → ±Rp {j(alt_price)} juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
+- **Tarif efektif.** Rp 10 juta untuk MVP berarti Rp 5 juta per orang. Dengan jadwal 2 minggu ({mvp_actual:.0f} hari-orang nyata) itu ±Rp {real_day_rate:.0f} ribu per orang per hari kerja; diukur dengan usaha konvensional ({cum_rows[0][2]:.0f} hari-orang) hanya ±Rp {rate * 1000:.0f} ribu per hari-orang. Dua angka ini menjelaskan kenapa harga tampak sangat rendah di atas kertas tetapi tetap wajar sebagai kompensasi untuk 2 minggu kerja penuh.
+- **Opsi mengurangi lingkup MVP** bila jadwal 2 minggu terasa mepet: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±{mvp_alt_raw} hari murni → ±{alt_days:.0f} hari total → ±Rp {j(alt_price)} juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
 - **Hindari menurunkan keamanan demi harga.** Rate limit, CAPTCHA, lupa kata sandi, dan privasi adalah syarat peluncuran ke siswa di bawah umur; sebaiknya tetap di MVP.
 - **Pembayaran bertahap** mengurangi risiko kedua pihak. Contoh untuk MVP: 30% saat mulai, 40% saat keamanan + registrasi selesai dan lolos test, 30% setelah uji penerimaan di sekolah.
 - **Tulis lingkup tiap paket di surat penugasan** supaya perubahan permintaan tidak menambah pekerjaan tanpa penyesuaian.

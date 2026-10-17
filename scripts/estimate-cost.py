@@ -77,6 +77,18 @@ FUTURE = [
 
 # Harga sekolah: diturunkan dari anggaran yang disepakati untuk MVP (Rp 10 juta untuk tim 2 orang, di luar biaya layanan).
 # Tarif dihitung dari usaha MVP termasuk test dan dokumentasi; tidak ada pengali overhead karena desain dan manajemen dikerjakan tim yang sama.
+# Jadwal kerja nyata per paket: (minggu pengerjaan, minggu testing dan QA). Tim 2 orang, 5 hari kerja per minggu.
+# Usaha di atas (hari-orang) adalah ukuran konvensional; jadwal ini mengasumsikan pengembangan dibantu AI dan bekerja paralel.
+SCHEDULE = {
+    T1: (1.0, 1.0),
+    T2: (1.0, 1.0),
+    T3: (1.0, 0.5),
+    T4: (1.0, 1.0),
+    T5: (1.5, 0.5),
+    T6: (1.0, 0.0),
+}
+WORK_DAYS_PER_WEEK = 5
+
 MVP_BUDGET_JUTA = 10.0
 TEAM_SIZE = 2
 
