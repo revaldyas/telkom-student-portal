@@ -52,9 +52,9 @@ describe('Suka karya', () => {
     expect(idOf(doc.student)).toBe(w.studentA.id)
     expect(doc.likeKey).toBe(`${work.id}:${w.studentA.id}`)
   })
-  it('guru dan pengunjung tidak bisa menyukai karya', async () => {
+  it('guru dapat menyukai karya siswa, pengunjung tidak', async () => {
     const work = await publishedWork()
-    await expect(like(work, w.teacher)).rejects.toThrow()
+    await expect(like(work, w.teacher)).resolves.toBeTruthy()
     await expect(like(work, null)).rejects.toThrow()
   })
   it('siswa dapat membatalkan sukanya, lalu menyukai lagi', async () => {
@@ -113,9 +113,9 @@ describe('Komentar karya', () => {
     const doc = await w.payload.create({ collection: 'portfolio-comments', data: { portfolio: work.id, content: 'Halo', student: w.studentC.id } as never, depth: 0, ...as(w.studentA) })
     expect(idOf(doc.student)).toBe(w.studentA.id)
   })
-  it('guru dan pengunjung tidak bisa berkomentar', async () => {
+  it('guru dapat berkomentar, pengunjung tidak', async () => {
     const work = await publishedWork()
-    await expect(comment(work, 'Halo dari guru', w.teacher)).rejects.toThrow()
+    await expect(comment(work, 'Halo dari guru', w.teacher)).resolves.toBeTruthy()
     await expect(comment(work, 'Halo tamu', null)).rejects.toThrow()
   })
   it('penulis dapat mengedit isi komentarnya; karya dan penulis tidak berubah', async () => {
