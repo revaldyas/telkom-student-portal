@@ -36,35 +36,46 @@ BUILT = [
     ('Dokumentasi: fitur, API, arsitektur, pengujian, rekomendasi, proposal, simulasi', 10, ''),
 ]
 
-# (fase, modul, hari-orang) — usaha pengembangan murni sebelum pengali
+# (tingkat prioritas, modul, hari-orang) — usaha pengembangan murni sebelum pengali test/dokumentasi
+T1 = 'Prioritas tinggi – MVP (Fase 2)'
+T2 = 'Prioritas sedang – pasca-MVP'
+T3 = 'Prioritas kecil – penyempurnaan'
+T4 = 'Ekosistem (non-AI)'
+T5 = 'Fitur AI'
+T6 = 'Infrastruktur (opsional)'
 FUTURE = [
-    ('Fase 2 – Peluncuran', 'Registrasi tervalidasi data sekolah (identity provider, tabel staff, sinkron terjadwal, status akun)', 25),
-    ('Fase 2 – Peluncuran', 'Lupa/ubah kata sandi + verifikasi email (termasuk layanan email)', 6),
-    ('Fase 2 – Peluncuran', 'Paket keamanan P1: rate limit, CAPTCHA, header keamanan, kuota/validasi unggahan, audit data publik', 10),
-    ('Fase 2 – Peluncuran', 'Kebijakan privasi, aturan komunitas, persetujuan', 3),
-    ('Fase 2 – Peluncuran', 'Tabel notifikasi + status baca di server (menggantikan localStorage)', 10),
-    ('Fase 2 – Peluncuran', 'Moderasi konten (laporan komentar/karya, antrean admin)', 8),
-    ('Fase 2 – Peluncuran', 'Log audit admin', 3),
-    ('Fase 3 – Penguatan', 'Rubrik penilaian dan lencana keahlian', 16),
-    ('Fase 3 – Penguatan', 'Notifikasi realtime (SSE/WebSocket) + Web Push', 18),
-    ('Fase 3 – Penguatan', 'Ekspor portofolio/CV PDF', 8),
-    ('Fase 3 – Penguatan', 'Laporan kemajuan proyek mingguan + email ringkasan', 8),
-    ('Fase 3 – Penguatan', 'Analitik sekolah (dasbor pimpinan)', 10),
-    ('Fase 3 – Penguatan', 'Impor/ekspor CSV massal dan kenaikan kelas', 5),
-    ('Fase 3 – Penguatan', 'PWA, mode gelap, audit aksesibilitas (WCAG AA)', 14),
-    ('Fase 3 – Penguatan', 'Pencarian teks penuh yang lebih baik', 5),
-    ('Fase 3 – Penguatan', 'Riwayat revisi karya', 8),
-    ('Fase 3 – Penguatan', 'Penyempurnaan tracker: template, lampiran, @mention, kalender, peer review kontribusi', 18),
-    ('Fase 4 – Ekosistem', 'Mentor industri/alumni (peran baru, alur akses) + profil alumni', 26),
-    ('Fase 4 – Ekosistem', 'Pencocokan peluang + pendaftaran peluang dengan berkas', 12),
-    ('Fase 4 – Ekosistem', 'Penghargaan berbasis juri', 8),
-    ('Fase 4 – Ekosistem', 'Integrasi GitHub/GitLab', 15),
-    ('Fase 4 – Ekosistem', 'Fondasi AI: modul penyedia, kuota, filter data pribadi, log penggunaan', 8),
-    ('Fase 4 – Ekosistem', 'AI untuk guru: draf umpan balik, ringkasan, pemeriksaan kelengkapan, ringkasan proyek', 18),
-    ('Fase 4 – Ekosistem', 'AI untuk siswa: asisten penulisan, pemeriksaan sebelum ajukan, saran kategori, teks alt, rekomendasi, CV, rencana tugas', 37),
-    ('Fase 4 – Ekosistem', 'AI untuk admin: moderasi otomatis + pencarian semantik (pgvector)', 18),
-    ('Infrastruktur (opsional)', 'Migrasi ke hosting sendiri: Docker, storage S3, database, backup, pemantauan, cutover', 15),
+    (T1, 'Registrasi tervalidasi data sekolah (identity provider, tabel staff, sinkron terjadwal, status akun)', 25),
+    (T1, 'Lupa/ubah kata sandi + verifikasi email (termasuk layanan email)', 6),
+    (T1, 'Paket keamanan P1: rate limit, CAPTCHA, header keamanan, kuota/validasi unggahan, audit data publik', 10),
+    (T1, 'Kebijakan privasi, aturan komunitas, persetujuan', 3),
+    (T1, 'Tabel notifikasi + status baca di server (menggantikan localStorage)', 10),
+    (T1, 'Moderasi konten (laporan komentar/karya, antrean admin)', 8),
+    (T1, 'Log audit admin', 3),
+    (T2, 'Rubrik penilaian dan lencana keahlian', 16),
+    (T2, 'Notifikasi realtime (SSE/WebSocket) + Web Push', 18),
+    (T2, 'Ekspor portofolio/CV PDF', 8),
+    (T2, 'Laporan kemajuan proyek mingguan + email ringkasan', 8),
+    (T2, 'Analitik sekolah (dasbor pimpinan)', 10),
+    (T2, 'Impor/ekspor CSV massal dan kenaikan kelas', 5),
+    (T3, 'PWA, mode gelap, audit aksesibilitas (WCAG AA)', 14),
+    (T3, 'Pencarian teks penuh yang lebih baik', 5),
+    (T3, 'Riwayat revisi karya', 8),
+    (T3, 'Penyempurnaan tracker: template, lampiran, @mention, kalender, peer review kontribusi', 18),
+    (T4, 'Mentor industri/alumni (peran baru, alur akses) + profil alumni', 26),
+    (T4, 'Pencocokan peluang + pendaftaran peluang dengan berkas', 12),
+    (T4, 'Penghargaan berbasis juri', 8),
+    (T4, 'Integrasi GitHub/GitLab', 15),
+    (T5, 'Fondasi AI: modul penyedia, kuota, filter data pribadi, log penggunaan', 8),
+    (T5, 'AI untuk guru: draf umpan balik, ringkasan, pemeriksaan kelengkapan, ringkasan proyek', 18),
+    (T5, 'AI untuk siswa: asisten penulisan, pemeriksaan sebelum ajukan, saran kategori, teks alt, rekomendasi, CV, rencana tugas', 37),
+    (T5, 'AI untuk admin: moderasi otomatis + pencarian semantik (pgvector)', 18),
+    (T6, 'Migrasi ke hosting sendiri: Docker, storage S3, database, backup, pemantauan, cutover', 15),
 ]
+
+# Harga sekolah: diturunkan dari anggaran yang disepakati untuk MVP (Rp 10 juta untuk tim 2 orang, di luar biaya layanan).
+# Tarif dihitung dari usaha MVP termasuk test dan dokumentasi; tidak ada pengali overhead karena desain dan manajemen dikerjakan tim yang sama.
+MVP_BUDGET_JUTA = 10.0
+TEAM_SIZE = 2
 
 def rp(million):
     if million >= 1000:
@@ -118,29 +129,48 @@ def render():
     out.append('')
     return '\n'.join(out), built_days, total_future, uplifted, loaded_days
 
-if __name__ == '__main__' and '--packages' not in __import__('sys').argv:
-    print(render()[0])
 
+
+def school_pricing():
+    """Harga sekolah per tingkat, tarif turunan dari anggaran MVP, dibulatkan ke Rp 0,5 juta."""
+    by_tier = {}
+    for tier, _, days in FUTURE:
+        by_tier[tier] = by_tier.get(tier, 0) + days
+    mvp_days = by_tier[T1] * TEST_UPLIFT
+    rate = MVP_BUDGET_JUTA / mvp_days  # juta per hari-orang
+    rows = []
+    for tier, raw in by_tier.items():
+        days = raw * TEST_UPLIFT
+        rows.append((tier, raw, days, round(days * rate * 2) / 2, days * RATES['Gabungan (freelancer + tim kecil)'] * OVERHEAD_FUTURE, days / TEAM_SIZE))
+    built_days = sum(d for _, d, _ in BUILT)
+    built = (built_days, round(built_days * rate * 2) / 2, built_days * RATES['Gabungan (freelancer + tim kecil)'] * OVERHEAD_BUILT)
+    return rate, rows, built
 
 def packages():
-    """Paket implementasi dan biayanya (dengan test, dokumentasi, dan overhead) untuk tiap skenario tarif."""
-    by_phase = {}
-    for phase, _, days in FUTURE:
-        by_phase[phase] = by_phase.get(phase, 0) + days
-    f2, f3, f4, infra = (by_phase[k] for k in ('Fase 2 – Peluncuran', 'Fase 3 – Penguatan', 'Fase 4 – Ekosistem', 'Infrastruktur (opsional)'))
-    sets = {
-        'Minimum layak (Fase 2)': f2,
-        'Direkomendasikan (Fase 2 + 3)': f2 + f3,
-        'Penuh (Fase 2 + 3 + 4 + migrasi hosting)': f2 + f3 + f4 + infra,
-    }
-    rows = []
-    for name, raw in sets.items():
-        days = raw * TEST_UPLIFT * OVERHEAD_FUTURE
-        rows.append((name, raw, days, {rate_name: days * rate for rate_name, rate in RATES.items()}))
+    """Paket implementasi (kumulatif per tingkat) dengan harga pasar acuan untuk tiap skenario tarif."""
+    by_tier = {}
+    for tier, _, days in FUTURE:
+        by_tier[tier] = by_tier.get(tier, 0) + days
+    order = [T1, T2, T3, T4, T5, T6]
+    rows, running = [], 0
+    for tier in order:
+        running += by_tier[tier]
+        days = running * TEST_UPLIFT * OVERHEAD_FUTURE
+        rows.append((tier, running, days, {rate_name: days * rate for rate_name, rate in RATES.items()}))
     return rows
 
 if __name__ == '__main__' and '--packages' in __import__('sys').argv:
-    print('| Paket | Hari-orang (murni) | Hari-orang (total) | ' + ' | '.join(RATES) + ' |')
+    print('| Kumulatif sampai | Hari-orang (murni) | Hari-orang (total) | ' + ' | '.join(RATES) + ' |')
     print('| --- | ---: | ---: | ' + ' | '.join('---:' for _ in RATES) + ' |')
     for name, raw, days, costs in packages():
         print(f'| {name} | {raw} | {days:.0f} | ' + ' | '.join(rp(costs[r]) for r in RATES) + ' |')
+
+if __name__ == '__main__' and '--school' in __import__('sys').argv:
+    rate, rows, built = school_pricing()
+    print(f'Tarif turunan: Rp {rate * 1000:.0f} rb per hari-orang; tim {TEAM_SIZE} orang')
+    for tier, raw, days, price, market, per_person in rows:
+        print(f'{tier}: {raw} murni -> {days:.0f} hari; harga sekolah Rp {price:.1f} jt; pasar (gabungan) Rp {market:.0f} jt; {per_person:.0f} hari/orang')
+    print('Sudah dibangun:', built)
+
+if __name__ == '__main__' and not any(a in __import__('sys').argv for a in ('--packages', '--school')):
+    print(render()[0])
