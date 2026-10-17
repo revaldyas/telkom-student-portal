@@ -20,6 +20,7 @@ import * as migration_20261018_100000_pinned_works from './20261018_100000_pinne
 import * as migration_20261018_110000_chat from './20261018_110000_chat';
 import * as migration_20261018_120000_chat_photo from './20261018_120000_chat_photo';
 import * as migration_20261018_130000_project_tracker from './20261018_130000_project_tracker';
+import * as migration_20261018_140000_project_social from './20261018_140000_project_social';
 
 export const migrations = [
   {
@@ -131,5 +132,10 @@ export const migrations = [
     up: migration_20261018_130000_project_tracker.up,
     down: migration_20261018_130000_project_tracker.down,
     name: '20261018_130000_project_tracker',
+  },
+  {
+    up: migration_20261018_140000_project_social.up,
+    down: migration_20261018_140000_project_social.down,
+    name: '20261018_140000_project_social',
   },
 ];

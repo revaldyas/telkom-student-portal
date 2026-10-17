@@ -1,0 +1,31 @@
+.wd-chip--blue{background:#e3edff;color:#143a8a}
+.pd-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;margin:0 0 26px;padding:16px 22px;border:1px solid #e6d9b0;border-radius:20px;background:#fff9e6}
+.pd-banner strong{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.pd-banner span{color:#6b5a1f;font-size:13px}.pd-banner p{margin:6px 0 0;font-size:13px}
+.pd-team ul{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.pd-team a{display:flex;align-items:center;gap:12px;padding:8px;margin:0 -8px;border-radius:14px;color:var(--ink);text-decoration:none;transition:background .2s}
+.pd-team a:hover{background:#f4f4f2;color:var(--ink)}
+.pd-team strong{display:block;font-size:14px}.pd-team small{display:block;color:var(--muted);font-size:12px}
+.pd-mentors{display:grid;gap:10px}
+.pd-mentor{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 16px;border:1px solid #e1e1de;border-radius:18px;background:#fff}
+.pd-mentor strong{display:block;font-size:14px}.pd-mentor small{color:var(--muted);font-size:12px}
+.pd-response{padding:4px 12px;border-radius:999px;background:#f0f0ee;color:#55575b;font-size:11px;font-weight:800}
+.pd-response--accepted{background:#e1f5ea;color:#0f6a40}.pd-response--declined{background:#fde8ea;color:#a30d1f}
+.pd-timeline{display:grid;gap:0;margin:0;padding:0 0 0 18px;border-left:2px solid #e1e1de;list-style:none}
+.pd-timeline li{position:relative;padding:0 0 22px 22px}
+.pd-timeline li::before{content:"";position:absolute;left:-30px;top:3px;width:14px;height:14px;border:3px solid #fff;border-radius:50%;background:#9aa0aa;box-shadow:0 0 0 1px #d0d0cb}
+.pd-timeline li.is-ok::before{background:#0f7a4a}.pd-timeline li.is-warn::before{background:#e8710a}
+.pd-timeline li>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px}
+.pd-timeline strong{font-size:14px}.pd-timeline span{color:#55575b;font-size:13px;font-weight:700}.pd-timeline time{color:var(--muted);font-size:12px}
+.pd-timeline p{margin:6px 0 0;padding:12px 16px;border-radius:14px;background:#f7f7f5;font-size:14px;line-height:1.65}
+.pd .project-mentor-workflow{display:grid;gap:12px;padding:20px 22px;border:1px solid #e1e1de;border-radius:24px;background:#fff;box-shadow:0 1px 2px rgba(24,28,36,.04),0 8px 22px rgba(24,28,36,.05)}
+.pd .project-mentor-workflow h2{margin:0;font-size:1.15rem;letter-spacing:-.02em}
+.pd .project-mentor-workflow p{margin:0;color:#55575b;font-size:14px}
+.pd .project-mentor-workflow form{display:grid;gap:8px}
+.pd .project-mentor-workflow label{font-size:12px;font-weight:800}
+.pd .project-mentor-workflow select,.pd .project-mentor-workflow textarea{width:100%;padding:10px 12px;border:1px solid #d9d9d5;border-radius:12px;font:inherit;font-size:14px}
+.pd .project-mentor-workflow textarea{min-height:100px}
+.pd .project-workflow-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ps-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:22px}
+.ps-like{min-width:150px;padding:0 22px}.wd-like.ps-like{display:inline-flex}
+.ps-del{margin-left:auto;padding:0;border:0;background:none;color:#c8102e;font-size:12px;font-weight:800;cursor:pointer}.ps-del:hover{text-decoration:underline}
