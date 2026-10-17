@@ -320,7 +320,7 @@ Perkiraan dari estimasi S/M/L pada [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) 
 | Fase 3 – penguatan | Rubrik penilaian, notifikasi di server + realtime, ekspor portofolio PDF, laporan kemajuan proyek, analitik sekolah | **±6-10 minggu-orang** |
 | Fase 4 – ekosistem | Mentor industri/alumni, fitur AI bantu guru/siswa, PWA | **±6-12 minggu-orang** |
 
-Konversi ke rupiah menggunakan tarif pengembang yang berlaku di sekolah/mitra. Fitur inti yang sudah ada tidak membutuhkan pengembangan ulang.
+Konversi ke rupiah dan rincian per modul ada di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md): paket minimum layak (Fase 2) ±Rp 106-259 juta, paket direkomendasikan (Fase 2 + 3) ±Rp 285-698 juta, dan paket penuh ±Rp 0,54-1,32 miliar, bergantung tarif pengembang (internal sampai software house). Fitur inti yang sudah ada tidak membutuhkan pengembangan ulang.
 
 ---
 
@@ -348,3 +348,4 @@ Telkom Student Creation mengubah karya dan proyek siswa dari "tugas yang selesai
 | Pengujian | [TESTING.md](TESTING.md) |
 | Rekomendasi pengembangan | [REKOMENDASI.md](REKOMENDASI.md) |
 | Simulasi adopsi dan sumber daya | [SIMULASI.md](SIMULASI.md) |
+| Rincian biaya pengembangan | [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md) |
