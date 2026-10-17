@@ -26,6 +26,15 @@ export function guardTransaction(payload: BasePayload) {
     return original(id)
   }
   db.__guarded = true
+  // lib/dbCounts menjalankan SQL lewat payload.db.drizzle, di luar API Payload. Selama transaksi test aktif,
+  // arahkan ke sesi transaksi yang sama supaya data test terlihat oleh hitungan itu.
+  const target = payload.db as unknown as { drizzle: unknown; sessions: Record<string, { db: unknown }> }
+  const pool = target.drizzle
+  Object.defineProperty(target, 'drizzle', {
+    configurable: true,
+    get: () => (txState.id !== undefined && target.sessions[String(txState.id)]?.db) || pool,
+    set: () => undefined,
+  })
 }
 
 let queue: Promise<unknown> = Promise.resolve()
