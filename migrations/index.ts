@@ -14,6 +14,8 @@ import * as migration_20261011_230000_project_array_ids from './20261011_230000_
 import * as migration_20261011_240000_home_banner_optional_image from './20261011_240000_home_banner_optional_image';
 import * as migration_20261017_100000_draft_support from './20261017_100000_draft_support';
 import * as migration_20261017_100100_existing_drafts_submitted from './20261017_100100_existing_drafts_submitted';
+import * as migration_20261017_100200_testimonials from './20261017_100200_testimonials';
+import * as migration_20261017_110100_testimonials_lock_rels from './20261017_110100_testimonials_lock_rels';
 
 export const migrations = [
   {
@@ -25,11 +27,6 @@ export const migrations = [
     up: migration_20261011_075200_ensure_vercel_blob_object_key.up,
     down: migration_20261011_075200_ensure_vercel_blob_object_key.down,
     name: '20261011_075200_ensure_vercel_blob_object_key',
-  },
-  {
-    up: migration_20261011_085218.up,
-    down: migration_20261011_085218.down,
-    name: '20261011_085218'
   },
   {
     up: migration_20261011_120000_portfolio_review_history.up,
@@ -95,5 +92,15 @@ export const migrations = [
     up: migration_20261017_100100_existing_drafts_submitted.up,
     down: migration_20261017_100100_existing_drafts_submitted.down,
     name: '20261017_100100_existing_drafts_submitted',
+  },
+  {
+    up: migration_20261017_100200_testimonials.up,
+    down: migration_20261017_100200_testimonials.down,
+    name: '20261017_100200_testimonials',
+  },
+  {
+    up: migration_20261017_110100_testimonials_lock_rels.up,
+    down: migration_20261017_110100_testimonials_lock_rels.down,
+    name: '20261017_110100_testimonials_lock_rels',
   },
 ];
