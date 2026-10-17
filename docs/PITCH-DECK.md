@@ -408,9 +408,7 @@ Kontak: Tim Pengembang Telkom Student Creation
 
 ---
 
-## Sumber dan catatan data
-
-**Data eksternal**
+## Sumber data eksternal (1 dari 2)
 
 | No. | Data | Sumber |
 | --- | --- | --- |
@@ -420,18 +418,19 @@ Kontak: Tim Pengembang Telkom Student Creation
 | S4 | Kebutuhan ±12 juta talenta digital hingga 2030 (Komdigi) | Investortrust — https://investortrust.id/business/70129/kebutuhan-talenta-digital-indonesia-melonjak-jadi-12-juta-hingga-2030 |
 | S5 | Target 450 ribu / 600 ribu talenta digital per tahun | Selular — https://selular.id/2025/06/pemerintah-targetkan-450-ribu-talenta-digital-per-tahun/ ; Kontan — https://nasional.kontan.co.id/news/potensi-ekonomi-digital-besar-indonesia-butuh-600000-talenta-digital-per-tahun |
 | S6 | 72% perusahaan menerapkan perekrutan berbasis keterampilan (survei 2.000 perusahaan, AS) | ZipRecruiter — https://www.ziprecruiter-research.org/economic-insights-research/beyond-degrees-rethinking-qualifications-in-the-skills-first-era |
+
+---
+
+## Sumber data eksternal (2 dari 2)
+
+| No. | Data | Sumber |
+| --- | --- | --- |
 | S7 | 76% employer memprioritaskan keterampilan di atas pendidikan (AS) | AARP — https://employerportal.aarp.org/resource/employer-attitudes-on-credentials-as-proof-of-skills/ |
 | S8 | 79% profesional HR: hasil asesmen keterampilan sama/lebih penting (AS) | SHRM via HR Dive — https://www.hrdive.com/news/skill-assessment-usage-is-growing-shrm-survey-says |
 | S9 | ±45% perusahaan hanya berubah "dalam nama saja" | Harvard Business School & Burning Glass Institute via HCAmag — https://www.hcamag.com/ca/specialization/recruitment/in-name-only-firms-dropping-degree-requirements-fall-short-in-practice/477331 |
 | S10 | ±50 sekolah, ±15.075 siswa, ±974 pendidik, 11 SMK | Situs Telkom Schools — https://telkomschools.sch.id/ |
 | S11 | Empat komponen instrumen akreditasi BAN-PDM | Panduan Akreditasi SMK/MAK — https://www.komunitasbelajar.id/2024/09/panduan-akreditasi-smk-mak-tahun-2024.html |
 
-**Data internal**
-
-| Data | Sumber |
-| --- | --- |
-| Fitur, modul, 409 uji | Repositori proyek (docs/FEATURES.md, docs/TESTING.md) |
-| Proyeksi dampak, kapasitas, beban guru | Simulasi Monte Carlo 2.000 kali untuk sekolah ±1.200 siswa (docs/SIMULASI.md) |
-| Biaya, jadwal, paket | docs/BIAYA-PENGEMBANGAN.md |
+**Data internal:** fitur, modul, dan 409 uji (docs/FEATURES.md, docs/TESTING.md) · proyeksi dampak dan kapasitas dari simulasi Monte Carlo 2.000 kali untuk sekolah ±1.200 siswa (docs/SIMULASI.md) · biaya, jadwal, dan paket (docs/BIAYA-PENGEMBANGAN.md).
 
 **Catatan:** survei perekrutan (S6–S9) berasal dari Amerika Serikat dan dipakai sebagai indikasi arah tren, bukan potret pasar kerja Indonesia. Angka TPT lulusan SMK berbeda sedikit antar sumber (8,62% dan 9,01%); rujuk Berita Resmi Statistik BPS untuk angka resmi. Platform membantu menyediakan bukti untuk akreditasi dan tidak menjamin hasilnya.

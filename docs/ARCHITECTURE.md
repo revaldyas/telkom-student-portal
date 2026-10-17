@@ -106,7 +106,7 @@ sequenceDiagram
         end
         P-->>B: { notifications, chatUnread, trackerBadge }
     end
-    Note over B: Halaman chat memakai GET messages?after=ID<br/>untuk pesan baru; suara Web Audio saat ada pesan masuk
+    Note over B: Halaman chat memakai GET messages?after=ID<br/>untuk pesan baru, suara Web Audio saat ada pesan masuk
 ```
 
 ---
