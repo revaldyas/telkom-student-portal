@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { siteFetch } from '../../../lib/siteFetch'
+import '../listing.css'
+import { Dropdown, ListingHead, SearchField } from '../../../components/ListingControls'
 
 type Opportunity = {
   id: string | number; title: string; type: string; organizer: string; summary: string; requirements?: string
@@ -14,11 +16,16 @@ type Opportunity = {
 const labels: Record<string, string> = { competition: 'Kompetisi', exhibition: 'Pameran', challenge: 'Tantangan Proyek', mentoring: 'Mentoring', collaboration: 'Kolaborasi Industri', other: 'Lainnya' }
 const dateLabel = (value?: string) => value ? new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(value)) : ''
 
+const PAGE_SIZE = 12
+
 export default function OpportunitiesPage() {
   const [docs, setDocs] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [type, setType] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [sort, setSort] = useState('terbaru')
+  const [visible, setVisible] = useState(PAGE_SIZE)
   const [role, setRole] = useState('')
   const [interests, setInterests] = useState<Record<string, string | number>>({})
   const [busy, setBusy] = useState('')
@@ -44,10 +51,34 @@ export default function OpportunitiesPage() {
     }).catch(() => setMessage('Peluang belum dapat dimuat. Coba lagi sebentar.')).finally(() => setLoading(false))
   }, [])
 
-  const filtered = useMemo(() => docs.filter((opportunity) => {
-    const haystack = `${opportunity.title} ${opportunity.organizer} ${opportunity.summary} ${opportunity.requirements || ''}`.toLocaleLowerCase('id')
-    return (!query.trim() || haystack.includes(query.trim().toLocaleLowerCase('id'))) && (!type || opportunity.type === type)
-  }), [docs, query, type])
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    setQuery(params.get('q') || ''); setType(params.get('jenis') || ''); setStatusFilter(params.get('status') || '')
+    if (params.get('urut') === 'deadline') setSort('deadline')
+  }, [])
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (query.trim()) params.set('q', query.trim())
+    if (type) params.set('jenis', type)
+    if (statusFilter) params.set('status', statusFilter)
+    if (sort !== 'terbaru') params.set('urut', sort)
+    const next = params.toString()
+    window.history.replaceState(null, '', `${next ? `?${next}` : window.location.pathname}${window.location.hash}`)
+  }, [query, type, statusFilter, sort])
+  useEffect(() => { setVisible(PAGE_SIZE) }, [query, type, statusFilter, sort])
+
+  const typeOptions = useMemo(() => Object.entries(labels).map(([value, label]) => ({ value, label, count: docs.filter((opportunity) => opportunity.type === value).length })).filter((option) => option.count > 0), [docs])
+  const filtered = useMemo(() => {
+    const result = docs.filter((opportunity) => {
+      const haystack = `${opportunity.title} ${opportunity.organizer} ${opportunity.summary} ${opportunity.requirements || ''}`.toLocaleLowerCase('id')
+      return (!query.trim() || haystack.includes(query.trim().toLocaleLowerCase('id'))) && (!type || opportunity.type === type) && (!statusFilter || (statusFilter === 'open' ? opportunity.status === 'open' : opportunity.status !== 'open'))
+    })
+    if (sort === 'deadline') return [...result].sort((a, b) => (a.deadline ? new Date(a.deadline).getTime() : Infinity) - (b.deadline ? new Date(b.deadline).getTime() : Infinity))
+    return result
+  }, [docs, query, type, statusFilter, sort])
+  const hasFilter = Boolean(query || type || statusFilter)
+  const shown = filtered.slice(0, visible)
+  const daysLeft = (value?: string) => value ? Math.ceil((new Date(value).getTime() - Date.now()) / 86400000) : null
 
   async function expressInterest(opportunity: Opportunity) {
     if (!role) { window.location.assign('/login'); return }
@@ -73,33 +104,33 @@ export default function OpportunitiesPage() {
     finally { setBusy('') }
   }
 
-  return <main className="opportunity-page wrap">
-    <header className="opportunity-hero"><span className="section-kicker">PELUANG & KOLABORASI</span><h1>Bawa karyamu<br /><span>ke langkah berikutnya.</span></h1><p>Temukan kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi bersama industri.</p></header>
-    <section aria-label="Daftar peluang">
-      <div className="listing-filters opportunity-filters">
-        <label className="listing-search"><span>Cari peluang</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Nama, penyelenggara, atau bidang…" /></label>
-        <label><span>Jenis peluang</span><select value={type} onChange={(event) => setType(event.target.value)}><option value="">Semua jenis</option>{Object.entries(labels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
-        <span className="filter-result-count">{loading ? 'Memuat…' : `${filtered.length} peluang`}</span>
-      </div>
-      {message && <p className="opportunity-message" role="status">{message}</p>}
-      {loading ? <div className="opportunity-grid">{[1, 2, 3].map((item) => <div className="opportunity-card opportunity-skeleton" key={item}><div className="sk" /><span className="sk sk-line" /><span className="sk sk-line" /></div>)}</div>
-        : !filtered.length ? <div className="empty-state"><h2>{docs.length ? 'Peluang tidak ditemukan' : 'Belum ada peluang aktif'}</h2><p>{docs.length ? 'Coba ubah pencarian atau filter.' : 'Guru akan menambahkan informasi kompetisi, pameran, tantangan, dan kolaborasi di sini.'}</p></div>
-          : <div className="opportunity-grid">{filtered.map((opportunity) => {
-            const image = typeof opportunity.coverImage === 'object' ? opportunity.coverImage?.url : null
-            const isOpen = opportunity.status === 'open'
-            return <article className="opportunity-card" id={`peluang-${opportunity.id}`} key={opportunity.id}>
-              {image && <img className="opportunity-cover" src={image} alt="" />}
-              <div className="opportunity-card-body"><div className="opportunity-card-labels"><span className="lowfi-badge">{labels[opportunity.type] || 'Peluang'}</span><span className={`opportunity-status ${isOpen ? 'is-open' : 'is-closed'}`}>{isOpen ? 'DIBUKA' : 'DITUTUP'}</span></div>
-                <h2>{opportunity.title}</h2><p className="opportunity-organizer">{opportunity.organizer}</p><p>{opportunity.summary}</p>
-                {opportunity.requirements && <details><summary>Syarat dan informasi</summary><p>{opportunity.requirements}</p></details>}
-                <div className="opportunity-dates">{opportunity.opensAt && <span>Mulai {dateLabel(opportunity.opensAt)}</span>}{opportunity.deadline && <span>Batas {dateLabel(opportunity.deadline)}</span>}</div>
-                {opportunity.contact && <p className="opportunity-contact">Kontak: {opportunity.contact}</p>}
-                <div className="opportunity-actions">{isOpen && <button type="button" className="button button-primary" disabled={busy === String(opportunity.id)} onClick={() => void expressInterest(opportunity)}>{busy === String(opportunity.id) ? 'Menyimpan…' : interests[String(opportunity.id)] ? 'Tertarik ✓ · Batalkan' : 'Saya tertarik'}</button>}{opportunity.url && <a className="button button-glass opportunity-link" href={opportunity.url} target="_blank" rel="noreferrer">Info & pendaftaran ↗</a>}</div>
-              </div>
-            </article>
-          })}</div>}
-    </section>
-    {role === 'teacher' && <p className="opportunity-manage-note">Kelola peluang di panel Guru atau CMS.</p>}
-    <p className="opportunity-manage-note">Guru dapat mengelola peluang dan verifikasi karya melalui Portal Guru.</p>
-  </main>
+  return <main className="lowfi-shell"><section className="lowfi-content kl-page" aria-label="Daftar peluang">
+    <ListingHead crumb="Peluang" title="Peluang" count={loading ? null : `${filtered.length}${filtered.length !== docs.length ? ` / ${docs.length}` : ''}`} lead="Kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi bersama industri." />
+    <div className="kl-bar">
+      <SearchField value={query} onChange={setQuery} placeholder="Nama, penyelenggara, bidang…" label="Cari peluang" />
+      <Dropdown label="Jenis" value={type} allLabel="Semua" options={typeOptions} onChange={setType} />
+      <Dropdown label="Status" value={statusFilter} allLabel="Semua" options={[{ value: 'open', label: 'Dibuka', count: docs.filter((item) => item.status === 'open').length }, { value: 'closed', label: 'Ditutup', count: docs.filter((item) => item.status !== 'open').length }]} onChange={setStatusFilter} />
+      {hasFilter && <button type="button" className="kl-reset" onClick={() => { setQuery(''); setType(''); setStatusFilter('') }}>Reset</button>}
+      <div className="kl-bar-sort"><Dropdown label="Urutkan" value={sort} options={[{ value: 'terbaru', label: 'Terbaru' }, { value: 'deadline', label: 'Batas terdekat' }]} onChange={setSort} /></div>
+    </div>
+    {message && <p className="kl-note" role="status">{message}</p>}
+    {loading ? <div className="kl-grid">{[1, 2, 3, 4].map((item) => <div className="opportunity-card opportunity-skeleton" key={item}><div className="sk" /><span className="sk sk-line" /><span className="sk sk-line" /></div>)}</div>
+      : !shown.length ? <div className="kl-empty"><strong>{docs.length ? 'Peluang tidak ditemukan' : 'Belum ada peluang aktif'}</strong><p>{docs.length ? 'Coba ubah pencarian atau filter.' : 'Guru akan menambahkan informasi kompetisi, pameran, tantangan, dan kolaborasi di sini.'}</p>{hasFilter && <button type="button" onClick={() => { setQuery(''); setType(''); setStatusFilter('') }}>Hapus semua filter</button>}</div>
+        : <><div className="kl-grid">{shown.map((opportunity) => {
+          const image = typeof opportunity.coverImage === 'object' ? opportunity.coverImage?.url : null
+          const isOpen = opportunity.status === 'open'
+          const left = daysLeft(opportunity.deadline)
+          return <article className="kr-card kl-op-card" id={`peluang-${opportunity.id}`} key={opportunity.id}>
+            <div className="kr-media">{image ? <img src={image} alt="" loading="lazy" /> : <span className="kr-placeholder">{labels[opportunity.type] || 'Peluang'}</span>}
+              <span className="kr-category">{labels[opportunity.type] || 'Peluang'}</span><span className={`kr-nominee kr-deadline${!isOpen || (left !== null && left <= 7) ? ' is-urgent' : ''}`}>{!isOpen ? 'Ditutup' : left === null ? 'Dibuka' : left < 0 ? 'Berakhir' : left === 0 ? 'Hari ini' : `${left} hari lagi`}</span></div>
+            <div className="kr-body"><h2>{opportunity.title}</h2><p className="kl-organizer">{opportunity.organizer}</p><p className="kr-summary">{opportunity.summary}</p>
+              {opportunity.requirements && <details className="kl-details"><summary>Syarat dan informasi</summary><p>{opportunity.requirements}</p></details>}
+              <div className="kl-meta">{opportunity.opensAt && <span>Mulai {dateLabel(opportunity.opensAt)}</span>}{opportunity.deadline && <span>Batas {dateLabel(opportunity.deadline)}</span>}{opportunity.contact && <span>Kontak: {opportunity.contact}</span>}</div>
+              <div className="kl-actions">{isOpen && <button type="button" className="kl-primary" disabled={busy === String(opportunity.id)} onClick={() => void expressInterest(opportunity)}>{busy === String(opportunity.id) ? 'Menyimpan…' : interests[String(opportunity.id)] ? 'Tertarik ✓ · Batalkan' : 'Saya tertarik'}</button>}{opportunity.url && <a className="kl-secondary" href={opportunity.url} target="_blank" rel="noreferrer">Info & daftar ↗</a>}</div>
+            </div>
+          </article>
+        })}</div>
+        <div className="kl-more"><p>Menampilkan {shown.length} dari {filtered.length} peluang</p>{shown.length < filtered.length && <button type="button" onClick={() => setVisible((count) => count + PAGE_SIZE)}>Muat lebih banyak</button>}</div></>}
+    <p className="kl-footnote">{role === 'teacher' ? 'Kelola peluang di panel Guru atau CMS. ' : ''}Guru dapat mengelola peluang dan verifikasi karya melalui Portal Guru.</p>
+  </section></main>
 }

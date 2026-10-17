@@ -6,6 +6,8 @@ import { siteFetch } from '../../../lib/siteFetch'
 import { displayTitle } from '../../../lib/displayTitle'
 import { AwardListSkeleton } from '../../../components/SiteSkeletons'
 import SkeletonImage from '../../../components/SkeletonImage'
+import '../listing.css'
+import { Dropdown, ListingHead, SearchField } from '../../../components/ListingControls'
 
 type Portfolio = {
   id: string | number
@@ -27,6 +29,8 @@ type Award = {
 
 type Vote = { id: string | number; portfolio: string | number | Portfolio }
 
+type AwardStats = { totalVotes: number; eligibleVoters: number }
+
 type AwardResult = { award: string; results: { portfolio: Portfolio; votes: number }[] }
 
 const dateLabel = (value: string) => new Intl.DateTimeFormat('id-ID', {
@@ -39,6 +43,7 @@ export default function AwardsPage() {
   const [awards, setAwards] = useState<Award[]>([])
   const [votes, setVotes] = useState<Record<string, Vote>>({})
   const [results, setResults] = useState<Record<string, AwardResult>>({})
+  const [stats, setStats] = useState<Record<string, AwardStats>>({})
   const [role, setRole] = useState('')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState('')
@@ -79,6 +84,11 @@ export default function AwardsPage() {
         if (!resultResponse.ok) return null
         return [String(award.id), await resultResponse.json() as AwardResult] as const
       }))
+      const statEntries = await Promise.all(docs.filter((award) => award.status !== 'draft').map(async (award) => {
+        const statResponse = await fetch(`/api/awards/${award.id}/stats`, { cache: 'no-store' }).catch(() => null)
+        return statResponse?.ok ? [String(award.id), await statResponse.json() as AwardStats] as const : null
+      }))
+      setStats(Object.fromEntries(statEntries.filter((entry): entry is readonly [string, AwardStats] => entry !== null)))
       setResults(Object.fromEntries(resultEntries.filter((entry): entry is readonly [string, AwardResult] => entry !== null)))
       setLoading(false)
     }
@@ -130,43 +140,66 @@ export default function AwardsPage() {
       && (!statusFilter || award.status === statusFilter)
   })
 
+  const statusCounts = { open: awards.filter((award) => award.status === 'open').length, closed: awards.filter((award) => award.status === 'closed').length, announced: awards.filter((award) => award.status === 'announced').length }
   return <main className="award-page">
-    <header className="award-hero wrap">
-      <div className="eyebrow muted">TELKOM STUDENT CREATION / PENGHARGAAN</div>
-      <h1>Rayakan karya<br /><span>yang menginspirasi.</span></h1>
-      <p>Apresiasi untuk karya terbaik siswa. Satu siswa, satu suara untuk setiap penghargaan.</p>
-    </header>
-    <section className="award-list wrap">
-      {message && <p className="award-message" role="status">{message}</p>}
-      <div className="listing-filters award-filters">
-        <label className="listing-search"><span>Cari penghargaan, nominasi, atau siswa</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Nama penghargaan, karya, siswa…" /></label>
-        <label><span>Status</span><select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}><option value="">Semua status</option><option value="open">Voting dibuka</option><option value="closed">Voting ditutup</option><option value="announced">Hasil diumumkan</option></select></label>
-        <span className="filter-result-count">{loading ? <span className="sk sk-count" role="status" aria-label="Menghitung penghargaan" /> : `${filteredAwards.length} penghargaan`}</span>
-        {(query || statusFilter) && <button type="button" onClick={() => { setQuery(''); setStatusFilter('') }}>Hapus filter</button>}
+    <section className="award-list wrap kl-page">
+      <ListingHead crumb="Penghargaan" title="Penghargaan" count={loading ? null : `${filteredAwards.length}${filteredAwards.length !== awards.length ? ` / ${awards.length}` : ''}`} lead="Apresiasi untuk karya terbaik siswa. Satu siswa, satu suara untuk setiap penghargaan." />
+      {message && <p className="kl-note" role="status">{message}</p>}
+      <div className="kl-bar">
+        <SearchField value={query} onChange={setQuery} placeholder="Penghargaan, karya, siswa…" label="Cari penghargaan, nominasi, atau siswa" />
+        <Dropdown label="Status" value={statusFilter} allLabel="Semua" options={[{ value: 'open', label: 'Voting dibuka', count: statusCounts.open }, { value: 'closed', label: 'Voting ditutup', count: statusCounts.closed }, { value: 'announced', label: 'Hasil diumumkan', count: statusCounts.announced }]} onChange={setStatusFilter} />
+        {(query || statusFilter) && <button type="button" className="kl-reset" onClick={() => { setQuery(''); setStatusFilter('') }}>Reset</button>}
       </div>
-      {loading ? <AwardListSkeleton /> : awards.length === 0 ? <div className="empty-state"><h3>Belum ada penghargaan.</h3><p>Admin akan menampilkan penghargaan dan nominasi di sini.</p></div> : filteredAwards.length === 0 ? <div className="empty-state"><h3>Tidak ada penghargaan yang cocok.</h3><p>Ubah kata pencarian atau filter status.</p></div> : filteredAwards.map((award) => {
+      {loading ? <AwardListSkeleton /> : awards.length === 0 ? <div className="kl-empty"><strong>Belum ada penghargaan</strong><p>Admin akan menampilkan penghargaan dan nominasi di sini.</p></div> : filteredAwards.length === 0 ? <div className="kl-empty"><strong>Tidak ada penghargaan yang cocok</strong><p>Ubah kata pencarian atau filter status.</p><button type="button" onClick={() => { setQuery(''); setStatusFilter('') }}>Hapus semua filter</button></div> : filteredAwards.map((award) => {
         const awardKey = String(award.id)
         const ownVote = votes[awardKey]
         const selectedPortfolio = ownVote && (typeof ownVote.portfolio === 'object' ? ownVote.portfolio.id : ownVote.portfolio)
         const result = results[awardKey]
-        return <article className="award-card" key={award.id}>
-          <div className="award-card-head">
-          <div><div className="eyebrow muted">{award.status === 'announced' ? 'HASIL PENGHARGAAN' : 'PENGHARGAAN SISWA'}</div><h2>{award.title}</h2></div>
-            <span className={`award-status ${award.status}`}>{award.status === 'open' ? 'VOTING DIBUKA' : award.status === 'closed' ? 'VOTING DITUTUP' : award.status === 'announced' ? 'HASIL DIUMUMKAN' : 'BELUM DIBUKA'}</span>
-          </div>
-          <p className="award-description">{award.description}</p>
-          <p className="award-dates">Voting: {dateLabel(award.opensAt)} — {dateLabel(award.closesAt)}</p>
-          <div className="award-nominees">{(award.nominees || []).map((portfolio) => {
-            const nomineeResult = result?.results.find((item) => String(item.portfolio.id) === String(portfolio.id))
-            const selected = String(selectedPortfolio) === String(portfolio.id)
-            return <div className={`award-nominee${selected ? ' selected' : ''}`} key={portfolio.id}>
-              <div className="award-nominee-main">{typeof portfolio.coverImage === 'object' && portfolio.coverImage?.url && <SkeletonImage className="award-nominee-image" src={portfolio.coverImage.url} alt={`Sampul ${portfolio.title}`} />}<div><span className="lowfi-badge">NOMINEE</span><h3>{displayTitle(portfolio.title, typeof portfolio.student === 'object' ? portfolio.student?.name : null)}</h3><p>{typeof portfolio.student === 'object' ? portfolio.student?.name : 'Siswa Telkom'}</p></div></div>
-              {result ? <strong>{nomineeResult?.votes || 0} suara</strong> : isOpen(award) && (role === '' || role === 'student') ? <button type="button" className="filter" disabled={busy !== ''} onClick={() => void castVote(award, portfolio)}>{busy === `${awardKey}:${portfolio.id}` ? 'Menyimpan…' : selected ? 'Pilihanmu ✓' : ownVote ? 'Ubah pilihan' : 'Pilih karya'}</button> : null}
+        const open = isOpen(award)
+        const opens = new Date(award.opensAt).getTime(), closes = new Date(award.closesAt).getTime()
+        const progress = closes > opens ? Math.min(100, Math.max(0, ((Date.now() - opens) / (closes - opens)) * 100)) : 100
+        const daysLeft = Math.max(0, Math.ceil((closes - Date.now()) / 86400000))
+        const statusText = award.status === 'open' ? (open ? 'VOTING BERLANGSUNG' : 'BELUM DIBUKA') : award.status === 'closed' ? 'VOTING DITUTUP' : award.status === 'announced' ? 'HASIL DIUMUMKAN' : 'BELUM DIBUKA'
+        const nominees = [...(award.nominees || [])]
+        const votesOf = (portfolio: Portfolio) => result?.results.find((item) => String(item.portfolio.id) === String(portfolio.id))?.votes || 0
+        if (result) nominees.sort((a, b) => votesOf(b) - votesOf(a))
+        const totalVotes = result ? nominees.reduce((sum, portfolio) => sum + votesOf(portfolio), 0) : 0
+        return <article className="awp-award" id={`award-${award.id}`} key={award.id}>
+          <header className={`awp-hero awp-hero--${award.status}`}>
+            <svg className="awp-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+            <div className="awp-hero-top"><span className="awp-status"><i aria-hidden="true" />{statusText}</span>{open && <span className="awp-days">{daysLeft > 0 ? `${daysLeft} hari lagi` : 'Hari terakhir'}</span>}</div>
+            <h2>{award.title}</h2><p className="awp-desc">{award.description}</p>
+            <div className="awp-meta"><span>{dateLabel(award.opensAt)} — {dateLabel(award.closesAt)}</span><span>{nominees.length} nominasi{result ? ` · ${totalVotes} suara` : ''}</span></div>
+            {award.status === 'open' && <div className="aw-progress" role="img" aria-label={`Waktu voting berjalan ${Math.round(progress)} persen`}><span style={{ width: `${progress}%` }} /></div>}
+          </header>
+          {stats[awardKey] && (() => {
+            const stat = stats[awardKey]
+            const turnout = stat.eligibleVoters ? Math.min(100, Math.round((stat.totalVotes / stat.eligibleVoters) * 100)) : 0
+            return <div className="awp-quick" aria-label="Quick count partisipasi">
+              <div><strong>{stat.totalVotes}</strong><span>Suara masuk</span></div>
+              <div><strong>{turnout}%</strong><span>Partisipasi siswa</span><div className="awp-turnout" role="img" aria-label={`${turnout} persen siswa sudah memilih`}><span style={{ width: `${turnout}%` }} /></div></div>
+              <div><strong>{nominees.length}</strong><span>Nominasi</span></div>
+              <div><strong>{open ? (daysLeft > 0 ? daysLeft : '0') : '—'}</strong><span>{open ? 'Hari tersisa' : 'Voting selesai'}</span></div>
             </div>
-          })}</div>
-          {ownVote && isOpen(award) && <p className="award-vote-note">Suara tersimpan. Kamu dapat mengganti pilihan sampai {dateLabel(award.closesAt)}.</p>}
-          {role === 'teacher' && isOpen(award) && <p className="award-vote-note">Voting hanya tersedia untuk akun siswa terdaftar.</p>}
-          {award.status === 'open' && !isOpen(award) && <p className="award-vote-note">Periode voting belum dimulai atau sudah berakhir.</p>}
+          })()}
+          {(ownVote && open) || (role === 'teacher' && open) || (award.status === 'open' && !open) ? <p className="awp-note" role="status">{ownVote && open ? `Suara tersimpan. Kamu dapat mengganti pilihan sampai ${dateLabel(award.closesAt)}.` : role === 'teacher' && open ? 'Voting hanya tersedia untuk akun siswa terdaftar.' : 'Periode voting belum dimulai atau sudah berakhir.'}</p> : null}
+          {nominees.length ? <div className="awp-grid">{nominees.map((portfolio, index) => {
+            const selected = String(selectedPortfolio) === String(portfolio.id)
+            const votesCount = votesOf(portfolio)
+            const percent = totalVotes ? Math.round((votesCount / totalVotes) * 100) : 0
+            const winner = Boolean(result) && index === 0 && votesCount > 0
+            const cover = typeof portfolio.coverImage === 'object' && portfolio.coverImage?.url ? portfolio.coverImage.url : null
+            const studentLabel = typeof portfolio.student === 'object' ? portfolio.student?.name || 'Siswa Telkom' : 'Siswa Telkom'
+            const canVote = !result && open && (role === '' || role === 'student')
+            return <div className={`awp-nominee${selected ? ' is-selected' : ''}${winner ? ' is-winner' : ''}`} key={portfolio.id}>
+              <div className="awp-cover">{cover ? <SkeletonImage src={cover} alt={`Sampul ${portfolio.title}`} /> : <span className="kr-placeholder">Telkom Student Creation</span>}
+                {result ? <span className="awp-rank">{winner ? '♛ Juara' : `#${index + 1}`}</span> : <span className="awp-rank">Nominasi</span>}{selected && !result && <span className="awp-picked">✓ Pilihanmu</span>}</div>
+              <div className="awp-body"><h3>{displayTitle(portfolio.title, studentLabel)}</h3><p>Oleh {studentLabel}</p>
+                {result && <div className="awp-result"><div className="awp-bar"><span style={{ width: `${percent}%` }} /></div><strong>{votesCount} suara <small>{percent}%</small></strong></div>}
+                {canVote && <button type="button" className={`awp-vote${selected ? ' is-selected' : ''}`} disabled={busy !== ''} onClick={() => void castVote(award, portfolio)}>{busy === `${awardKey}:${portfolio.id}` ? 'Menyimpan…' : selected ? '✓ Pilihanmu' : ownVote ? 'Ubah pilihan' : 'Pilih karya'}</button>}
+              </div>
+            </div>
+          })}</div> : <p className="awp-empty">Belum ada karya nominasi untuk penghargaan ini.</p>}
         </article>
       })}
     </section>
