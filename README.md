@@ -18,8 +18,20 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 - Ringkasan dampak sekolah di dashboard Guru: partisipasi, kategori proyek, status verifikasi, publikasi, dan peluang.
 - Kanal peluang untuk kompetisi, pameran, tantangan proyek, mentoring, dan kolaborasi industri.
 - Pencarian global untuk konten publik.
+- Pesan: DM, grup, ruang kelas, dan ruang proyek dengan foto grup, blokir, laporan, status online, dan nada notifikasi.
+- Tracker proyek: papan kanban, daftar tugas, penanggung jawab, checklist, riwayat aktivitas, dan badge di sidebar.
+- Suka dan komentar proyek, leaderboard proyek, serta suka/komentar oleh Guru pada semua karya dan proyek.
+- Profil publik dengan cover banner, tema tampilan, karya semat (maksimal 3), kartu bagikan dengan QR, dan testimoni di beranda.
 - Panel admin Payload CMS untuk mengelola data sekolah, karya, pengguna, penghargaan, dan media.
 - Upload gambar yang dikompresi ke WebP sebelum disimpan.
+
+## Dokumentasi
+
+| Dokumen | Isi |
+| --- | --- |
+| [docs/FEATURES.md](docs/FEATURES.md) | Daftar fitur per area: publik, portal siswa, portal Guru, admin CMS, pesan, tracker, dan fitur lintas bagian |
+| [docs/API.md](docs/API.md) | Referensi endpoint `/api`: akses, parameter, dan aturan validasi |
+| [docs/TESTING.md](docs/TESTING.md) | Cara menjalankan test, cara kerja harness, cakupan per file, dan area yang belum teruji |
 
 ## Teknologi
 
@@ -54,7 +66,7 @@ Persyaratan: Node.js 20.9 atau lebih baru dan akses ke database PostgreSQL.
 | Variabel | Kegunaan |
 | --- | --- |
 | `DATABASE_URL` | URL koneksi PostgreSQL. Untuk lokal, gunakan Supabase Session Pooler port `5432`; untuk serverless Vercel, gunakan Shared Transaction Pooler port `6543`. Encode karakter khusus pada password sebagai percent-encoding. |
-| `DATABASE_POOL_MAX` | Batas koneksi `node-postgres` per fungsi. Default aplikasi `5`; deployment Vercel saat ini juga memakai `5`. |
+| `DATABASE_POOL_MAX` | Batas koneksi `node-postgres` per fungsi. Default aplikasi `5`; deployment Vercel memakai `10` bersama pooler port `6543`. |
 | `PAYLOAD_SECRET` | Secret acak panjang untuk token dan fungsi keamanan Payload. |
 | `NEXT_PUBLIC_SERVER_URL` | URL dasar aplikasi, misalnya `http://localhost:3000` saat lokal. |
 | `BLOB_READ_WRITE_TOKEN` | Token Vercel Blob untuk penyimpanan upload persisten. Diperlukan pada Vercel dan tersedia setelah Blob Store dihubungkan. |
@@ -122,6 +134,10 @@ Guru menerima atau menolak undangan dari halaman detail proyek. Proyek hanya dap
 | `awards` | Penghargaan, periode voting, status, dan nominasi portofolio. |
 | `award-votes` | Suara untuk penghargaan, terhubung ke award, karya, dan pemilih. Kunci unik membatasi satu suara per siswa untuk setiap award. |
 | `student-records` | Riwayat achievement dan penghargaan siswa untuk timeline profil. |
+| `home-banners`, `testimonials` | Hero banner dan testimoni beranda. |
+| `project-likes`, `project-comments` | Suka dan komentar proyek. |
+| `project-tasks`, `project-task-comments`, `project-activity` | Tugas tracker, komentarnya, dan log aktivitas proyek. |
+| `chat-conversations`, `chat-members`, `chat-messages`, `chat-blocks`, `chat-reports` | Pesan: percakapan, anggota, pesan, blokir, dan laporan. Hanya admin yang dapat mengakses langsung; klien memakai `/api/chat/*`. |
 
 Mayoritas collection sekolah dan konten dapat dikelola admin CMS. Suara voting tidak dapat dihapus melalui CMS; likes dan komentar tidak dapat diedit. Aturan akses lengkap berada di masing-masing file `collections/`.
 
@@ -140,49 +156,28 @@ public/demo-avatars/       Sumber avatar contoh
 public/demo-covers/        Sumber cover untuk seed portofolio
 public/media/              Aset media demo lokal
 scripts/                   Script seed data demo dan admin CMS
+tests/                     Test Vitest dan harness transaksi
+docs/                      Dokumentasi fitur, API, dan pengujian
 ```
 
 ### API website
 
-- `POST /api/auth/login`, `GET /api/auth/session`, `POST /api/auth/logout`
-- `POST /api/register`
-- `GET /api/community/feed`
-- `GET /api/community/leaderboard`
-- `GET /api/community/search`
-- `GET /api/community/students/:id`
-- `GET /api/portal/notifications` (khusus sesi website siswa/Guru; notifikasi dibuat dari aktivitas dan status terbaru)
-- `POST /api/community/projects/:id/actions` (respons undangan Guru, pengajuan tinjauan, dan masukan/keputusan mentor)
-- `GET /api/mentor/reviews`, `POST /api/mentor/reviews` (khusus Guru; cakupan dibatasi ke kelas/program yang ditugaskan)
-- `GET /api/community/portfolios/slug/:slug`
-- `GET` dan `POST /api/community/portfolios/:id/comments`
-- `GET` dan `POST /api/community/portfolios/:id/stats` untuk statistik dan interaksi suka
-- `GET /api/awards/:id/results`
-- Endpoint REST Payload tersedia di `/api/:collection` melalui route catch-all.
+Daftar lengkap endpoint ada di [docs/API.md](docs/API.md). Endpoint REST Payload tersedia di `/api/:collection` melalui route catch-all.
 
-## Data contoh
-
-> Jalankan seed hanya pada database development/demo. Script mengubah database dan beberapa di antaranya membuat atau memperbarui record contoh.
-
-Jalankan dalam urutan berikut:
+## Pengujian
 
 ```bash
-npm run seed:school
-npm run seed:students
-npm run seed:categories
-npm run seed:portfolios
-npm run seed:avatars
-npm run seed:bios
-npm run seed:community
-npm run seed:awards
+npm test              # Vitest, 259 test di tests/
+npx tsc --noEmit      # pemeriksaan tipe
 ```
 
-`seed:portfolios` membuat akun siswa demo dari 25 data siswa dan menghasilkan contoh karya untuk kategori yang tersedia. `seed:community` memerlukan akun demo serta portofolio terbit. `seed:awards` membuat atau memperbarui dua award demo yang sedang dibuka. Buat admin CMS secara terpisah dengan `npm run seed:cms-admin`.
+Test berjalan pada database di `DATABASE_URL`, tetapi tiap test di-rollback. Detail cakupan dan area yang belum teruji ada di [docs/TESTING.md](docs/TESTING.md).
 
 ## Database dan migrasi
 
 Payload mengelola schema PostgreSQL melalui adapter Drizzle. Deployment Vercel menggunakan Shared Transaction Pooler Supabase karena fungsi serverless membuka koneksi singkat dan deployment Vercel memerlukan jalur IPv4. Direct connection Supabase pada konfigurasi standar dapat hanya menyediakan IPv6. Session Pooler lebih cocok untuk server lokal yang berjalan lama.
 
-Schema push otomatis Payload dinonaktifkan agar schema lokal tanpa plugin Vercel Blob tidak menghapus kolom internal Blob pada database bersama. Setiap perubahan collection perlu disertai migrasi dan dicatat di `migrations/index.ts`. Schema Proyek, penyesuaian nama kolom anggota proyek, undangan mentor, status pengajuan tinjauan, dan riwayat tinjauan dicatat pada migrasi `20261011_150000_projects`, `20261011_160000_fix_project_members_columns`, dan `20261011_170000_project_mentors_and_reviews`.
+Schema push otomatis Payload dinonaktifkan agar schema lokal tanpa plugin Vercel Blob tidak menghapus kolom internal Blob pada database bersama. Setiap perubahan collection perlu disertai migrasi dan dicatat di `migrations/index.ts`. Migrasi untuk testimoni, tampilan profil, karya semat, pesan, tracker, dan suka/komentar proyek ada di `migrations/` (awalan `20261017_` dan `20261018_`). Setiap collection baru juga memerlukan kolom `<slug>_id` pada `payload_locked_documents_rels`. Schema Proyek, penyesuaian nama kolom anggota proyek, undangan mentor, status pengajuan tinjauan, dan riwayat tinjauan dicatat pada migrasi `20261011_150000_projects`, `20261011_160000_fix_project_members_columns`, dan `20261011_170000_project_mentors_and_reviews`.
 
 Jalankan perintah CLI Payload melalui script npm:
 
