@@ -24,16 +24,14 @@ function teacherCanReview(teacher: Record<string, unknown>, student: Record<stri
 export async function GET(request: Request, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const payload = await getPayload({ config })
-  const result = await payload.find({
-    collection: 'portfolios',
-    where: { slug: { equals: slug } },
-    depth: 3,
-    limit: 1,
-    overrideAccess: true,
-  })
+  // Karya, sesi pengguna, dan daftar penghargaan saling bebas: dibaca bersamaan (satu gelombang round trip).
+  const [result, sessionUser, awards] = await Promise.all([
+    payload.find({ collection: 'portfolios', where: { slug: { equals: slug } }, depth: 3, limit: 1, overrideAccess: true, pagination: false }),
+    authenticateWebsiteRequest(payload, request),
+    payload.find({ collection: 'awards', where: { status: { not_equals: 'draft' } }, depth: 0, limit: 1000, overrideAccess: true, pagination: false }),
+  ])
   const work = result.docs[0]
   if (!work) return NextResponse.json({ message: 'Karya tidak ditemukan.' }, { status: 404 })
-  const sessionUser = await authenticateWebsiteRequest(payload, request)
   const student = typeof work.student === 'object' && work.student ? work.student as unknown as Record<string, unknown> : null
   const owner = Boolean(sessionUser && student && String(sessionUser.id) === String(student.id) && !isTeacherUser(sessionUser))
   let mentor = false
@@ -45,20 +43,23 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
   if (work.status !== 'published' && !owner && !mentor) {
     return NextResponse.json({ message: 'Karya tidak ditemukan.' }, { status: 404 })
   }
-  const awards = await payload.find({
-    collection: 'awards',
-    where: { status: { not_equals: 'draft' } },
-    depth: 0,
-    limit: 1000,
-    overrideAccess: true,
-  })
   const isNominee = awards.docs.some((award) => Array.isArray(award.nominees) && award.nominees.some((nominee) => {
     const nomineeID = nominee && typeof nominee === 'object' && 'id' in nominee ? nominee.id : nominee
     return String(nomineeID) === String(work.id)
   }))
   const reviewHistory = owner || mentor
-    ? await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: work.id } }, depth: 1, limit: 100, sort: '-createdAt', overrideAccess: true })
+    ? await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: work.id } }, depth: 1, limit: 100, sort: '-createdAt', overrideAccess: true, pagination: false })
     : null
+  // Guru pembimbing yang memverifikasi: dari verifiedBy, atau dari tinjauan "verified" terakhir bila kolomnya kosong.
+  type Verifier = { id: string | number; name?: string; profilePhoto?: unknown }
+  let verifier: Verifier | null = typeof work.verifiedBy === 'object' && work.verifiedBy ? work.verifiedBy as Verifier : null
+  let verifiedAt: string | null = work.verifiedAt || null
+  if (!verifier && work.verificationStatus === 'verified') {
+    const lastVerification = await payload.find({ collection: 'portfolio-reviews', where: { and: [{ portfolio: { equals: work.id } }, { decision: { equals: 'verified' } }] }, depth: 1, limit: 1, sort: '-createdAt', overrideAccess: true, pagination: false })
+    const review = lastVerification.docs[0]
+    if (review && typeof review.reviewer === 'object' && review.reviewer) { verifier = review.reviewer as Verifier; verifiedAt = verifiedAt || review.createdAt }
+  }
+  const verifierPhoto = verifier && typeof verifier.profilePhoto === 'object' && verifier.profilePhoto ? (verifier.profilePhoto as { url?: string }).url || null : null
   const photo = student && typeof student.profilePhoto === 'object' ? student.profilePhoto as Record<string, unknown> : null
   const category = typeof work.categoryRef === 'object' ? work.categoryRef : null
   const cover = typeof work.coverImage === 'object' ? work.coverImage : null
@@ -90,7 +91,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ slug
       createdAt: review.createdAt,
       reviewer: typeof review.reviewer === 'object' && review.reviewer ? { name: review.reviewer.name } : null,
     })) || [],
-    verifiedBy: typeof work.verifiedBy === 'object' && work.verifiedBy ? { name: work.verifiedBy.name } : null,
+    verifiedBy: verifier ? { id: verifier.id, name: verifier.name, photo: verifierPhoto } : null,
+    verifiedAt,
     categoryRef: category ? { name: category.name, code: category.code } : null,
     coverImage: cover ? { url: cover.url, alt: cover.alt } : null,
     galleryImages,

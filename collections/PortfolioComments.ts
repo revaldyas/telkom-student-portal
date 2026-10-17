@@ -1,5 +1,9 @@
 import { isCMSAdmin } from '../lib/isCMSAdmin'
 import { isStudentUser } from '../lib/isStudentUser'
+import { isTeacherUser } from '../lib/isTeacherUser'
+
+// Siswa dan guru dapat berinteraksi (suka/komentar); voting penghargaan tetap khusus siswa.
+const canEngage = (user: unknown): user is { id: string | number; role: 'student' | 'teacher' } => isStudentUser(user) || isTeacherUser(user)
 import { APIError, type CollectionConfig } from 'payload'
 
 const relationID = (value: unknown): string | number | undefined => {
@@ -17,17 +21,17 @@ export const PortfolioComments: CollectionConfig = {
   admin: { hidden: true, useAsTitle: 'content', defaultColumns: ['portfolio', 'student', 'createdAt'] },
   access: {
     read: ({ req }) => isCMSAdmin(req.user),
-    create: ({ req }) => isStudentUser(req.user),
+    create: ({ req }) => canEngage(req.user),
     update: () => false,
     delete: ({ req }) => isCMSAdmin(req.user)
       ? true
-      : isStudentUser(req.user)
+      : canEngage(req.user)
         ? { student: { equals: req.user.id } }
         : false,
   },
   hooks: {
     beforeChange: [async ({ data, originalDoc, req }) => {
-      if (!isStudentUser(req.user)) throw new APIError('Hanya akun siswa yang dapat berkomentar.', 403)
+      if (!canEngage(req.user)) throw new APIError('Hanya akun siswa atau guru yang dapat berkomentar.', 403)
       const portfolioID = relationID(data.portfolio) ?? relationID(originalDoc?.portfolio)
       if (portfolioID === undefined) throw new APIError('Karya yang dikomentari wajib dipilih.', 400)
       const portfolio = await req.payload.findByID({

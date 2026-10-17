@@ -14,8 +14,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
       depth: 1,
       limit: 100,
       sort: 'createdAt',
-      overrideAccess: true,
-    })
+      overrideAccess: true, pagination: false })
     return NextResponse.json({
       docs: comments.docs.map((comment) => ({
         id: comment.id,
