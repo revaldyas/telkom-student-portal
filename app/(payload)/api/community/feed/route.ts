@@ -1,6 +1,7 @@
 import config from '@payload-config'
 import { getPayload } from 'payload'
 import { NextResponse } from 'next/server'
+import { groupCount } from '../../../../../lib/dbCounts'
 
 const idOf = (value: unknown): string | undefined => {
   if (typeof value === 'string' || typeof value === 'number') return String(value)
@@ -12,39 +13,22 @@ export async function GET(request: Request) {
   const payload = await getPayload({ config })
   const requestedLimit = Number(new URL(request.url).searchParams.get('limit') || 6)
   const limit = Number.isFinite(requestedLimit) ? Math.min(1000, Math.max(1, Math.floor(requestedLimit))) : 6
-  const [works, awardResponse, openAwards, projectResponse, opportunityResponse, bannerResponse] = await Promise.all([
+  const [works, awardResponse, openAwards, projectResponse, opportunityResponse, bannerResponse, testimonialResponse, likeTotals, commentTotals, projectLikeTotals, projectCommentTotals] = await Promise.all([
     payload.find({ collection: 'portfolios', where: { status: { equals: 'published' } }, depth: 2, limit, sort: '-createdAt', overrideAccess: true }),
-    payload.find({ collection: 'awards', where: { status: { not_equals: 'draft' } }, depth: 0, limit: 1000, sort: 'opensAt', overrideAccess: true }),
-    payload.find({ collection: 'awards', where: { status: { equals: 'open' } }, depth: 2, limit: 10, sort: 'opensAt', overrideAccess: true }),
+    payload.find({ collection: 'awards', where: { status: { not_equals: 'draft' } }, depth: 0, limit: 1000, sort: 'opensAt', overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'awards', where: { status: { equals: 'open' } }, depth: 2, limit: 10, sort: 'opensAt', overrideAccess: true, pagination: false }),
     payload.find({ collection: 'projects', where: { status: { equals: 'published' } }, depth: 2, limit: 20, sort: '-createdAt', overrideAccess: true }),
     payload.find({ collection: 'opportunities', where: { status: { equals: 'open' } }, depth: 1, limit: 20, sort: '-createdAt', overrideAccess: true }),
-    payload.find({ collection: 'home-banners', where: { status: { equals: 'published' } }, depth: 1, limit: 20, sort: 'sortOrder', overrideAccess: true }).catch(() => null),
+    payload.find({ collection: 'home-banners', where: { status: { equals: 'published' } }, depth: 1, limit: 20, sort: 'sortOrder', overrideAccess: true, pagination: false }).catch(() => null),
+    payload.find({ collection: 'testimonials', where: { status: { equals: 'published' } }, depth: 0, limit: 30, sort: 'sortOrder', overrideAccess: true, pagination: false }).catch(() => null),
+    // Jumlah suka/komentar dihitung di database (agregat kecil) dan ikut gelombang query yang sama.
+    groupCount(payload, 'portfolio_likes', 'portfolio_id'),
+    groupCount(payload, 'portfolio_comments', 'portfolio_id'),
+    groupCount(payload, 'project_likes', 'project_id').catch(() => new Map<number, number>()),
+    groupCount(payload, 'project_comments', 'project_id').catch(() => new Map<number, number>()),
   ])
-  const collectCounts = async (collection: 'portfolio-likes' | 'portfolio-comments') => {
-    const counts = new Map<string, number>()
-    const portfolioIDs = works.docs.map((work) => work.id)
-    if (portfolioIDs.length === 0) return counts
-    let page = 1
-    let hasNextPage = true
-    while (hasNextPage) {
-      const result = await payload.find({
-        collection,
-        where: { portfolio: { in: portfolioIDs } },
-        depth: 0,
-        limit: 1000,
-        page,
-        overrideAccess: true,
-      })
-      for (const item of result.docs) {
-        const portfolioID = idOf(item.portfolio)
-        if (portfolioID) counts.set(portfolioID, (counts.get(portfolioID) || 0) + 1)
-      }
-      hasNextPage = result.hasNextPage
-      page += 1
-    }
-    return counts
-  }
-  const [likeCounts, commentCounts] = await Promise.all([collectCounts('portfolio-likes'), collectCounts('portfolio-comments')])
+  const likeCounts = new Map([...likeTotals].map(([id, total]) => [String(id), total]))
+  const commentCounts = new Map([...commentTotals].map(([id, total]) => [String(id), total]))
 
   const nomineeIDs = new Set(awardResponse.docs.flatMap((award) =>
     Array.isArray(award.nominees) ? award.nominees.map(idOf).filter((id): id is string => Boolean(id)) : [],
@@ -75,6 +59,7 @@ export async function GET(request: Request) {
       comments: commentCounts.get(String(work.id)) || 0,
     }
   })
+  const projectStats = { likes: projectLikeTotals, comments: projectCommentTotals }
   const projects = projectResponse.docs.map((project) => {
     const cover = typeof project.coverImage === 'object' ? project.coverImage : null
     const category = typeof project.categoryRef === 'object' ? project.categoryRef : null
@@ -94,6 +79,8 @@ export async function GET(request: Request) {
       coverImage: cover?.url || null,
       coverAlt: cover?.alt || null,
       members,
+      likes: projectStats.likes.get(project.id) || 0,
+      comments: projectStats.comments.get(project.id) || 0,
     }
   })
   const opportunities = opportunityResponse.docs.map((opportunity) => {
@@ -123,6 +110,14 @@ export async function GET(request: Request) {
       secondaryAction: banner.secondaryButtonLabel || null,
     }]
   })
+  const testimonials = (testimonialResponse?.docs || []).map((testimonial) => ({
+    id: testimonial.id,
+    quote: testimonial.quote,
+    name: testimonial.name,
+    role: testimonial.role,
+    program: testimonial.program || null,
+    isSample: Boolean(testimonial.isSample),
+  }))
   const now = Date.now()
   const awards = openAwards.docs
     .filter((award) => Date.parse(award.closesAt) >= now)
@@ -139,5 +134,5 @@ export async function GET(request: Request) {
       }) : [],
     }))
   const totals = { portfolios: works.totalDocs, projects: projectResponse.totalDocs, opportunities: opportunityResponse.totalDocs, awards: awards.length }
-  return NextResponse.json({ portfolios, projects, opportunities, awards, heroSlides, totals }, { headers: { 'Cache-Control': 'no-store' } })
+  return NextResponse.json({ portfolios, projects, opportunities, awards, testimonials, heroSlides, totals }, { headers: { 'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=300' } })
 }
