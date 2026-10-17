@@ -105,11 +105,11 @@ export default function SiteNav() {
     <Link className="site-brand" href="/" aria-label="TEL-CREATION — Beranda"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></Link>
     <button type="button" className="site-nav-toggle" aria-label={menuOpen ? 'Tutup menu' : 'Buka menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><span /><span /><span /></button>
     <nav className={menuOpen ? 'site-nav-links is-open' : 'site-nav-links'} aria-label="Navigasi utama">
-      <Link aria-current={pathname === '/karya' || pathname.startsWith('/karya/') ? 'page' : undefined} href="/karya" onClick={() => setMenuOpen(false)}>Karya</Link>
-      <Link aria-current={pathname === '/proyek' || pathname.startsWith('/proyek/') ? 'page' : undefined} href="/proyek" onClick={() => setMenuOpen(false)}>Proyek kolaborasi</Link>
-      <Link aria-current={pathname === '/awards' ? 'page' : undefined} href="/awards" onClick={() => setMenuOpen(false)}>Penghargaan</Link>
-      <Link aria-current={pathname === '/leaderboard' ? 'page' : undefined} href="/leaderboard" onClick={() => setMenuOpen(false)}>Peringkat</Link>
-      <Link aria-current={pathname === '/peluang' ? 'page' : undefined} href="/peluang" onClick={() => setMenuOpen(false)}>Peluang</Link>
+      <Link aria-current={pathname === '/karya' || pathname.startsWith('/karya/') ? 'page' : undefined} href="/karya" onClick={() => setMenuOpen(false)}>Eksplor Karya</Link>
+      <Link aria-current={pathname === '/proyek' || pathname.startsWith('/proyek/') ? 'page' : undefined} href="/proyek" onClick={() => setMenuOpen(false)}>Proyek Siswa</Link>
+      <Link aria-current={pathname === '/peluang' ? 'page' : undefined} href="/peluang" onClick={() => setMenuOpen(false)}>Peluang Kolaborasi</Link>
+      <Link aria-current={pathname === '/awards' ? 'page' : undefined} href="/awards" onClick={() => setMenuOpen(false)}>Awards</Link>
+      <Link aria-current={pathname === '/leaderboard' ? 'page' : undefined} href="/leaderboard" onClick={() => setMenuOpen(false)}>Leaderboard</Link>
     </nav>
     <GlobalSearch />
     {status === 'checking' ? <span className="site-nav-session-skeleton" role="status" aria-label="Memeriksa sesi"><span className="sk" aria-hidden="true" /></span>
