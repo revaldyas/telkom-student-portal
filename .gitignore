@@ -17,3 +17,6 @@ pnpm-debug.log*
 .DS_Store
 
 /memory/
+
+# Dibuat otomatis oleh Next.js; isinya berbeda antara next dev dan next build
+next-env.d.ts
