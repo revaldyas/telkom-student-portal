@@ -68,7 +68,7 @@ Apa yang dilakukan di minggu testing dan QA: menjalankan seluruh suite test otom
 - **Percepatan.** Usaha konvensional (81 hari-orang untuk MVP) tidak mungkin dikejar dalam 1 minggu oleh 2 orang tanpa bantuan; jadwal ini mengasumsikan pengembangan dibantu AI seperti yang dilakukan pada fitur yang sudah ada, dengan percepatan ±4× dari ukuran konvensional. Pada paket AI, percepatan yang diminta paling tinggi (±5×); bila terasa mepet, pecah menjadi dua paket 2 minggu (AI guru + fondasi, lalu AI siswa + admin) tanpa mengubah harga.
 - **Tim bekerja penuh pada jadwal itu** (±8 jam per hari, 5 hari per minggu) dan tidak bertabrakan dengan kegiatan sekolah lain.
 - **Ketergantungan sudah jelas sebelum minggu pertama:** akses API atau CSV data siswa/guru sekolah untuk MVP, layanan email dan CAPTCHA, keputusan hosting (untuk realtime), kebijakan privasi (untuk AI), dan keputusan bisnis (untuk mentor industri). Ketergantungan yang terlambat menggeser jadwal.
-- **Risiko terbesar di MVP:** registrasi via API sekolah. Bila API belum siap, kerjakan lewat impor CSV (lihat bagian 7) agar tetap dalam 2 minggu.
+- **Risiko terbesar di MVP:** registrasi via API sekolah. Bila API belum siap, kerjakan lewat impor CSV terlebih dahulu agar tetap dalam 2 minggu.
 
 Isi tiap paket:
 
@@ -203,15 +203,7 @@ Perkiraan untuk sekolah ±1.200 siswa (lihat [SIMULASI.md](SIMULASI.md)); harga 
 
 Nilai pasar memakai tarif gabungan Rp 0,75 juta per hari-orang (sudah turun 50% dari acuan lama) dan pengali overhead ×1,45 (paket baru) atau ×1,35 (yang sudah dibangun). Skenario tarif lain tersedia dengan menjalankan `python3 scripts/estimate-cost.py --packages`.
 
-## 7. Catatan untuk tim
-
-- **Opsi mengurangi lingkup MVP** bila jadwal 2 minggu terasa mepet: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±52 hari murni → ±65 hari total → ±Rp 8 juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
-- **Hindari menurunkan keamanan demi harga.** Rate limit, CAPTCHA, lupa kata sandi, dan privasi adalah syarat peluncuran ke siswa di bawah umur; sebaiknya tetap di MVP.
-- **Pembayaran bertahap** mengurangi risiko kedua pihak. Contoh untuk MVP: 30% saat mulai, 40% saat keamanan + registrasi selesai dan lolos test, 30% setelah uji penerimaan di sekolah.
-- **Tulis lingkup tiap paket di surat penugasan** supaya perubahan permintaan tidak menambah pekerjaan tanpa penyesuaian.
-- **Dokumentasi dan test sudah menjadi bagian harga**, sehingga pemeliharaan lanjutan dapat dilakukan orang lain bila diperlukan.
-
-## 8. Memperbarui perhitungan
+## 7. Memperbarui perhitungan
 
 1. Ubah `BASE_RATES`, `MARKET_DISCOUNT`, `OVERHEAD_*`, `MVP_BUDGET_JUTA`, `BUILT`, dan `FUTURE` di `scripts/estimate-cost.py`.
 2. Jalankan `python3 scripts/build-cost-doc.py` untuk membuat ulang dokumen ini; `python3 scripts/estimate-cost.py --school` (harga sekolah), `--packages` (nilai pasar kumulatif), atau tanpa argumen untuk seluruh rincian.
