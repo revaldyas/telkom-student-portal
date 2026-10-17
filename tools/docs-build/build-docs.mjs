@@ -254,6 +254,8 @@ const shots = [
   ['07-leaderboard', '<b>Leaderboard</b> — Most Valuable Student, peringkat karya dan proyek'],
   ['08-penghargaan', '<b>Penghargaan</b> — nominasi, voting siswa, dan hasil yang diumumkan'],
   ['11-dashboard-siswa', '<b>Dashboard siswa</b> — status karya, dampak, dan hal yang perlu ditindaklanjuti'],
+  ['15-tracker-papan', '<b>Tracker proyek</b> — papan kanban dengan tenggat, penanggung jawab, checklist, dan komentar'],
+  ['16-pesan', '<b>Pesan</b> — ruang tim proyek, ruang kelas, dan pesan pribadi dengan guru dan teman'],
   ['17-profil-tampilan', '<b>Tampilan profil</b> — cover, tema, dan pratinjau profil publik'],
   ['18-dashboard-guru', '<b>Dashboard guru</b> — antrean verifikasi dan ringkasan dampak'],
 ].filter(([name]) => fs.existsSync(path.join(here, 'assets', 'screens', `${name}.jpg`)))

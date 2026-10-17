@@ -36,7 +36,7 @@ const shots = {
     ['13-form-karya', '/portal/siswa/karya/baru', { wait: 2500 }],
     ['14-tracker-daftar', '/portal/siswa/tracker', { wait: 3500 }],
     ['15-tracker-papan', '/portal/siswa/tracker/4', { wait: 4000 }],
-    ['16-pesan', '/portal/siswa/pesan', { wait: 4000 }],
+    ['16-pesan', '/portal/siswa/pesan', { wait: 4000, click: '.ch-item:has-text("RuangKarya")', after: 2500 }],
     ['17-profil-tampilan', '/portal/siswa/tampilan', { wait: 3000 }],
   ],
   teacher: [
@@ -82,6 +82,7 @@ for (const [group, list] of Object.entries(shots)) {
     try {
       await page.goto(`${base}${route}`, { waitUntil: 'load', timeout: 60000 })
       await settle(page, opts.wait ?? 3000)
+      if (opts.click) { await page.click(opts.click); await page.waitForTimeout(opts.after ?? 1500) }
       await page.screenshot({ path: path.join(out, `${name}.jpg`), type: 'jpeg', quality: 88, fullPage: false })
       console.log('ok', name, page.url().replace(base, ''))
     } catch (error) {

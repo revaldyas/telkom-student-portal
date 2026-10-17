@@ -11,7 +11,7 @@
   "Masalah 3: di sekolah, karya hilang dan kerja tim tak terlihat": {},
   "Masalah 4: sekolah dan yayasan sulit menunjukkan hasil belajar": {},
   "Solusi: satu platform, tiga fungsi": { "images": [{ "file": "03-detail-karya", "spec": "bg right:44% fit" }] },
-  "Produk: yang sudah berjalan hari ini": { "class": "tight", "images": [{ "file": "11-dashboard-siswa", "spec": "bg right:36% fit vertical" }, { "file": "02-katalog-karya", "spec": "bg fit" }] },
+  "Produk: yang sudah berjalan hari ini": { "class": "tight", "images": [{ "file": "15-tracker-papan", "spec": "bg right:36% fit vertical" }, { "file": "16-pesan", "spec": "bg fit" }] },
   "Cara kerja validasi (mengapa dipercaya)": { "class": "dense" },
   "Manfaat untuk siswa": { "class": "dense", "images": [{ "file": "06-profil-siswa", "spec": "bg right:42% fit" }] },
   "Manfaat untuk guru": { "class": "dense", "images": [{ "file": "18-dashboard-guru", "spec": "bg right:42% fit" }] },
