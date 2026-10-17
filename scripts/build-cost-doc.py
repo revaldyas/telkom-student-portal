@@ -172,7 +172,7 @@ Nilai pasar memakai tarif gabungan Rp {nf(G, 2)} juta per hari-orang (sudah turu
 
 1. Ubah `BASE_RATES`, `MARKET_DISCOUNT`, `OVERHEAD_*`, `MVP_BUDGET_JUTA`, `BUILT`, dan `FUTURE` di `scripts/estimate-cost.py`.
 2. Jalankan `python3 scripts/build-cost-doc.py` untuk membuat ulang dokumen ini; `python3 scripts/estimate-cost.py --school` (harga sekolah), `--packages` (nilai pasar kumulatif), atau tanpa argumen untuk seluruh rincian.
-3. Perbarui ringkasan di [PROPOSAL.md](PROPOSAL.md) bagian 10.5.
+3. Perbarui ringkasan di [PROPOSAL.md](PROPOSAL.md) bagian 7.3 dan 8.
 """
 (root / 'docs' / 'BIAYA-PENGEMBANGAN.md').write_text(doc)
 print('ok')

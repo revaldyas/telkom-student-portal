@@ -1,6 +1,6 @@
 # Simulasi Adopsi dan Kebutuhan Sumber Daya
 
-Simulasi untuk sekolah berskala SMK Telkom: berapa siswa yang akan aktif, berapa karya dan proyek yang terkumpul, berapa storage, database, dan beban server yang dibutuhkan, serta beban kerja guru. Angka dipakai sebagai dasar [PROPOSAL.md](PROPOSAL.md) bagian 8.6 dan 10.
+Simulasi untuk sekolah berskala SMK Telkom: berapa siswa yang akan aktif, berapa karya dan proyek yang terkumpul, berapa storage, database, dan beban server yang dibutuhkan, serta beban kerja guru. Angka dipakai sebagai dasar [PROPOSAL.md](PROPOSAL.md) bagian 7 dan 8.
 
 > **Penting – ini simulasi, bukan data sekolah.** Pencarian publik tidak menemukan angka resmi jumlah siswa, rombongan belajar, dan guru SMK Telkom yang dapat diverifikasi (data pasti ada di Dapodik atau pihak yayasan). Karena itu simulasi memakai **tiga ukuran sekolah** (800, 1.200, 1.800 siswa) sebagai rentang. Semua parameter perilaku (berapa karya per siswa, ukuran file, dan sebagainya) adalah **asumsi perencanaan** yang dibuat penulis, bukan hasil pengukuran. Ganti dengan data sekolah lalu jalankan ulang skripnya.
 

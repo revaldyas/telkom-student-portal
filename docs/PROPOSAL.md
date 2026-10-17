@@ -2,23 +2,42 @@
 
 **Platform portofolio, kolaborasi proyek, dan jembatan menuju dunia kerja bagi siswa SMK Telkom**
 
-> Dokumen ini ditujukan kepada pimpinan sekolah dan pemangku kepentingan. Angka target dan biaya di bagian 8.6 dan 10 adalah **hasil simulasi** untuk sekolah berskala SMK Telkom (lihat [SIMULASI.md](SIMULASI.md)), bukan data produksi; ganti dengan data sekolah yang sebenarnya (terutama jumlah siswa dan guru) lalu jalankan ulang simulasi sebelum dipresentasikan. Fitur yang disebut "tersedia" sudah berjalan di aplikasi saat ini (lihat [FEATURES.md](FEATURES.md)); fitur "usulan" ada di [REKOMENDASI.md](REKOMENDASI.md) dan belum dibangun.
+| | |
+| --- | --- |
+| **Diajukan kepada** | Kepala Sekolah dan Pimpinan Sekolah |
+| **Diajukan oleh** | Tim Pengembang Telkom Student Creation |
+| **Periode** | Oktober 2026 |
+| **Jenis permohonan** | Persetujuan anggaran dan penugasan untuk tahap MVP (peluncuran ke seluruh sekolah) |
 
 ---
 
-## 1. Ringkasan eksekutif
+## 1. Ringkasan satu halaman
 
-Siswa SMK menghasilkan banyak karya dan proyek, tetapi sebagian besar hanya berakhir di folder laptop, grup chat, atau lemari penilaian. Akibatnya kemampuan siswa sulit dibuktikan ke luar sekolah, kerja tim sulit dipantau guru, dan peluang (lomba, magang, kolaborasi industri) tersebar di banyak kanal.
+**Apa ini?** Telkom Student Creation adalah platform tempat siswa menampilkan karya dan proyek yang **divalidasi guru pembimbing**, bekerja dalam tim memakai papan tugas seperti di industri, berkomunikasi, dan menemukan peluang (lomba, magang, kolaborasi). Hasilnya menjadi **portofolio terverifikasi** yang dapat dilampirkan untuk PKL, kuliah, dan melamar kerja.
 
-**Telkom Student Creation** adalah satu platform yang menyatukan:
+**Masalah yang diselesaikan.** Karya siswa hilang setelah penilaian, kemampuan sulit dibuktikan ke pihak luar, kerja kelompok tidak terpantau, dan informasi peluang tersebar.
 
-1. **Etalase karya dan proyek** yang tervalidasi guru pembimbing.
-2. **Ruang kerja tim**: tracker proyek bergaya industri dan pesan antar siswa.
-3. **Kanal peluang**: lomba, pameran, mentoring, dan kolaborasi industri.
-4. **Penghargaan dan leaderboard** yang mendorong budaya berkarya.
-5. **Portofolio publik** yang dapat dilampirkan saat melamar PKL, kuliah, atau kerja.
+**Sudah sampai di mana?** Platform inti **sudah berjalan dan teruji** (16 modul fitur, 409 uji otomatis lulus): karya dan verifikasi guru, proyek tim dengan mentor, tracker tugas, chat antar siswa, penghargaan, leaderboard, peluang, dan profil publik. Yang tersisa adalah tahap **MVP peluncuran**: pendaftaran otomatis dari data sekolah, keamanan, dan hal-hal wajib untuk pengguna siswa di bawah umur.
 
-Dengan satu platform, sekolah mendapatkan bukti nyata capaian kompetensi siswa, guru mendapat alat pemantauan yang efisien, dan siswa mendapat rekam jejak yang dapat dipercaya.
+**Yang dimohonkan sekarang:**
+
+| | |
+| --- | --- |
+| **Anggaran** | **Rp 10.000.000** (sekali, untuk tahap MVP) |
+| **Waktu** | **2 minggu**: 1 minggu pengerjaan + 1 minggu testing dan Quality Assurance (QA) |
+| **Isi** | Pendaftaran guru dan siswa tervalidasi data sekolah, lupa kata sandi, perlindungan anti-bot dan keamanan, kebijakan privasi, notifikasi tersimpan di server, moderasi konten |
+| **Hasil** | Platform siap dipakai seluruh siswa dan guru, dengan keamanan yang layak untuk pengguna di bawah umur |
+| **Di luar anggaran ini** | Biaya layanan berjalan (server, domain, email), ditanggung sekolah; perkiraan di bagian 7 |
+
+**Mengapa layak disetujui?**
+
+1. **Risiko rendah:** fondasi sudah berjalan; yang diminta hanya tahap akhir, dengan hasil jelas dan dapat diuji.
+2. **Biaya kecil:** Rp 10 juta untuk pekerjaan yang bernilai ±Rp 88 juta pada acuan pasar saat ini.
+3. **Komitmen bertahap:** hanya MVP yang diminta sekarang. Tahap lanjutan diputuskan setelah hasil MVP dan percontohan terlihat.
+4. **Manfaat terukur:** target dan indikator keberhasilan sudah ditetapkan (bagian 8).
+5. **Aset milik sekolah:** kode, data, dan dokumentasi lengkap sehingga tidak bergantung pada satu orang atau satu vendor.
+
+**Keputusan yang diminta:** persetujuan anggaran Rp 10 juta, penunjukan koordinator sekolah, dan akses data siswa/guru (lihat bagian 11 dan formulir persetujuan di bagian 12).
 
 ---
 
@@ -27,103 +46,262 @@ Dengan satu platform, sekolah mendapatkan bukti nyata capaian kompetensi siswa, 
 | Masalah | Dampak |
 | --- | --- |
 | Karya siswa tidak terdokumentasi terpusat | Hasil belajar hilang setelah penilaian; sulit dipamerkan |
-| Tidak ada validasi yang dapat ditunjukkan ke pihak luar | Klaim "bisa membuat aplikasi" sulit dibuktikan ke perusahaan PKL |
-| Kerja kelompok tidak terpantau | Guru tidak tahu siapa berkontribusi apa; anggota pasif tidak terlihat |
-| Siswa belum terbiasa dengan alur kerja tim profesional | Lulusan kaget dengan pembagian tugas, tenggat, dan tinjauan di dunia kerja |
+| Tidak ada validasi yang dapat ditunjukkan ke pihak luar | Klaim kemampuan sulit dibuktikan kepada perusahaan PKL |
+| Kerja kelompok tidak terpantau | Guru tidak tahu kontribusi tiap anggota; anggota pasif tidak terlihat |
+| Siswa belum terbiasa alur kerja tim profesional | Lulusan kaget dengan pembagian tugas, tenggat, dan tinjauan di industri |
 | Informasi peluang tersebar | Siswa terlewat lomba, magang, atau program kolaborasi |
-| Komunikasi siswa lewat aplikasi umum | Informasi proyek tercampur dengan obrolan pribadi; sulit dirujuk dan tidak ada moderasi sekolah |
-| Pengakuan prestasi tidak merata | Hanya yang menang lomba besar yang terlihat; karya baik lain tidak dikenal |
-| Sekolah sulit menunjukkan hasil pembelajaran berbasis proyek | Bahan promosi dan akreditasi masih bergantung dokumentasi manual |
+| Komunikasi proyek lewat aplikasi umum | Tercampur obrolan pribadi, tanpa moderasi sekolah |
+| Pengakuan prestasi tidak merata | Hanya pemenang lomba besar yang terlihat |
+| Sulit menunjukkan hasil pembelajaran berbasis proyek | Bahan promosi dan akreditasi bergantung dokumentasi manual |
 
 ---
 
-## 3. Solusi: apa yang dilakukan platform
+## 3. Solusi
 
-### 3.1 Etalase karya dan proyek (tersedia)
+### 3.1 Yang sudah tersedia
 
-- Siswa mengunggah karya dengan sampul, galeri, deskripsi, perangkat yang digunakan, dan tautan/berkas pendukung.
-- Beranda dan katalog publik menampilkan karya terbaru, filter jurusan dan kategori, serta pencarian.
-- Profil publik siswa: cover, karya semat (maksimal 3), pencapaian, kartu bagikan dengan **QR code** untuk dibagikan saat melamar.
-- Siswa maupun guru dapat memberi **suka dan komentar** sehingga karya mendapat umpan balik.
+| Bidang | Fitur |
+| --- | --- |
+| **Etalase karya dan proyek** | Unggah karya (sampul, galeri, perangkat, tautan), katalog dengan filter jurusan dan kategori, pencarian, profil publik siswa dengan kartu bagikan QR, karya semat |
+| **Validasi guru** | Karya diajukan, guru dalam cakupan kelas/program menyetujui atau meminta revisi dengan catatan; tanda "Terverifikasi oleh [nama guru]"; riwayat tinjauan tersimpan |
+| **Proyek kolaborasi** | Tim dengan peran masing-masing, mentor utama dan pendamping, alur undangan dan persetujuan, halaman proyek bergaya poster |
+| **Tracker proyek** | Papan kanban (rencana, dikerjakan, review, selesai), tenggat, prioritas, label, daftar periksa, penanggung jawab, komentar, riwayat aktivitas |
+| **Komunikasi** | Pesan langsung, grup, ruang kelas dan ruang proyek, status online (dapat disembunyikan), blokir dan laporan pesan |
+| **Peluang dan penghargaan** | Kanal peluang dikelola guru, minat siswa, penghargaan dengan nominasi dan voting, leaderboard, Most Valuable Student, pencapaian otomatis |
+| **Interaksi** | Suka dan komentar (siswa dan guru) pada karya dan proyek, dengan edit dan hapus oleh penulis |
+| **Alat guru dan sekolah** | Antrean verifikasi, notifikasi, dashboard dampak, panel admin untuk data sekolah |
 
-### 3.2 Validasi guru pembimbing (tersedia)
+Rincian: [FEATURES.md](FEATURES.md). Arsitektur dan keamanan: [ARCHITECTURE.md](ARCHITECTURE.md).
 
-- Karya tidak langsung tayang: siswa **mengajukan**, guru dalam cakupan kelas/program **menyetujui atau meminta revisi** dengan catatan tertulis.
-- Karya yang lolos diberi tanda **"Terverifikasi oleh [nama guru]"**; riwayat tinjauan tersimpan.
-- Proyek kolaborasi memiliki **mentor utama** dan mentor pendamping; hanya mentor utama yang memutuskan, sehingga tanggung jawab jelas.
-- Nilai tambah: validasi ini adalah jawaban atas pertanyaan perusahaan, "siapa yang bisa menjamin karya ini asli dan sesuai standar?"
+### 3.2 Yang dikerjakan pada tahap MVP
 
-### 3.3 Kerja tim seperti di dunia nyata (tersedia)
-
-- **Tracker proyek**: papan kanban (To do, Doing, Review, Done), tenggat, prioritas, label, daftar periksa, penanggung jawab, komentar, dan riwayat aktivitas.
-- **Peran dan kontribusi** tiap anggota tercatat pada proyek.
-- Guru melihat **kemajuan dan kontribusi** tanpa harus menanyakan satu per satu.
-- Siswa berlatih praktik yang dipakai industri: pembagian tugas, tinjauan (review), tenggat, dan komunikasi tertulis.
-
-### 3.4 Komunikasi antar siswa (tersedia)
-
-- Pesan langsung, grup, **ruang kelas**, dan **ruang proyek** otomatis mengikuti keanggotaan kelas atau tim.
-- Foto grup, info anggota, status online (dapat disembunyikan), nada notifikasi.
-- **Keselamatan**: blokir pengguna, laporan pesan, batas laju pengiriman; akun hanya untuk siswa dan guru yang terdaftar (bukan publik anonim).
-
-### 3.5 Peluang dan penghargaan (tersedia)
-
-- Kanal **peluang**: kompetisi, pameran, tantangan proyek, mentoring, kolaborasi industri; guru yang mengelola dan menindaklanjuti siswa yang berminat.
-- **Penghargaan** dengan nominasi dan voting siswa (satu suara per award, tidak boleh memilih karya sendiri), hasil diumumkan.
-- **Leaderboard** karya dan proyek, serta Most Valuable Student, untuk mendorong budaya saling mengapresiasi.
-- Riwayat pencapaian otomatis masuk ke profil siswa.
-
-### 3.6 Alat kerja guru dan sekolah (tersedia)
-
-- Antrean verifikasi dengan cakupan kelas/program, notifikasi, dan dashboard dampak (partisipasi, kategori proyek, status verifikasi, peluang).
-- Panel admin untuk mengelola data sekolah, banner, testimoni, penghargaan, dan moderasi.
+| Pekerjaan | Manfaat |
+| --- | --- |
+| **Pendaftaran tervalidasi data sekolah** (NIS/NISN siswa, NIP/NUPTK guru; peran ditentukan oleh data sekolah) | Admin tidak lagi membuat akun satu per satu; hanya orang terdaftar yang dapat masuk |
+| **Lupa kata sandi dan verifikasi email** | Pengguna dapat memulihkan akun sendiri |
+| **Perlindungan keamanan**: pembatasan percobaan login, CAPTCHA anti-bot, header keamanan, validasi unggahan, audit data publik | Melindungi akun siswa dari penyalahgunaan dan bot |
+| **Kebijakan privasi dan aturan komunitas** | Dasar hukum dan etika untuk pengguna di bawah umur |
+| **Notifikasi tersimpan di server** | Status "sudah dibaca" konsisten di semua perangkat |
+| **Moderasi konten dan log audit** | Laporan konten ditinjau admin; jejak perubahan tercatat |
 
 ---
 
-## 4. Manfaat per pemangku kepentingan
+## 4. Manfaat
 
-### 4.1 Siswa
+### Bagi siswa
 
-| Manfaat | Penjelasan |
-| --- | --- |
-| **Portofolio yang diakui** | Karya terverifikasi guru, dapat dibuka lewat satu tautan atau QR |
-| **Siap PKL dan kerja** | Rekam jejak proyek, peran, dan hasil untuk dilampirkan saat melamar |
-| **Belajar kerja tim profesional** | Tracker, tenggat, tinjauan, dan komunikasi tertulis sebelum masuk industri |
-| **Umpan balik nyata** | Komentar dari teman dan guru, bukan hanya nilai |
-| **Motivasi** | Pengakuan lewat suka, penghargaan, leaderboard, dan pencapaian |
-| **Akses peluang** | Lomba, magang, dan kolaborasi terkumpul di satu tempat |
-| **Jejaring** | Mengenal karya dan keahlian teman lintas kelas/jurusan |
-| **Identitas digital** | Belajar mengelola reputasi dan etika di ruang digital |
+- **Portofolio yang diakui:** karya terverifikasi guru, dibuka lewat satu tautan atau QR.
+- **Siap PKL dan kerja:** rekam jejak proyek, peran, dan hasil untuk dilampirkan saat melamar.
+- **Belajar kerja tim profesional:** tracker, tenggat, tinjauan, dan komunikasi tertulis sebelum masuk industri.
+- **Umpan balik nyata** dan **pengakuan** (suka, penghargaan, leaderboard, pencapaian).
+- **Akses peluang** (lomba, magang, kolaborasi) di satu tempat.
 
-### 4.2 Guru
+### Bagi guru
 
-| Manfaat | Penjelasan |
-| --- | --- |
-| **Verifikasi terstruktur** | Satu antrean, catatan revisi tersimpan, tidak lagi lewat chat pribadi |
-| **Pemantauan proyek** | Melihat kemajuan, tenggat, dan kontribusi anggota tanpa rapat berulang |
-| **Dokumentasi pembimbingan** | Riwayat tinjauan menjadi bukti kegiatan pembimbingan |
-| **Penyaluran peluang** | Mengelola peluang dan menindaklanjuti siswa yang berminat |
-| **Pengakuan** | Nama guru pembimbing tampil pada karya yang diverifikasi |
+- **Verifikasi terstruktur:** satu antrean, catatan revisi tersimpan.
+- **Pemantauan proyek** tanpa rapat berulang: kemajuan, tenggat, dan kontribusi anggota terlihat.
+- **Dokumentasi pembimbingan** otomatis; nama guru tampil pada karya yang diverifikasi.
+- **Penyaluran peluang** dan tindak lanjut siswa yang berminat.
 
-### 4.3 Sekolah / pimpinan
+### Bagi sekolah
 
-| Manfaat | Penjelasan |
-| --- | --- |
-| **Bukti capaian pembelajaran berbasis proyek** | Data karya dan proyek per kelas/jurusan, sebagai bahan evaluasi dan akreditasi |
-| **Promosi sekolah** | Etalase publik yang selalu diperbarui untuk calon siswa dan orang tua (PPDB) |
-| **Pengambilan keputusan berbasis data** | Statistik partisipasi, kategori, dan tingkat verifikasi |
-| **Penguatan hubungan industri** | Industri dapat melihat langsung kualitas lulusan dan menawarkan peluang |
-| **Kepemilikan data** | Karya dan rekam jejak tersimpan di sistem sekolah, bukan tersebar di akun pribadi |
-| **Efisiensi administrasi** | Berkurangnya pengumpulan dan penilaian karya secara manual |
+- **Bukti capaian pembelajaran berbasis proyek** per kelas dan jurusan untuk evaluasi dan akreditasi.
+- **Etalase publik** yang selalu diperbarui untuk promosi dan PPDB.
+- **Keputusan berbasis data:** statistik partisipasi dan verifikasi.
+- **Hubungan industri:** mitra melihat kualitas lulusan dan menawarkan peluang.
+- **Kepemilikan data dan aset** di sistem sekolah.
 
-### 4.4 Orang tua dan industri
+### Bagi orang tua dan industri
 
-- **Orang tua:** melihat perkembangan keterampilan anak lewat karya nyata (bila siswa mengizinkan profil publik).
-- **Industri / mitra PKL:** dapat meninjau portofolio terverifikasi sebelum menerima peserta PKL atau merekrut, serta memasang peluang kolaborasi.
+- Orang tua melihat perkembangan keterampilan anak lewat karya nyata (bila siswa mengizinkan profil publik).
+- Mitra PKL dan industri meninjau portofolio terverifikasi sebelum menerima peserta atau merekrut.
 
 ---
 
-## 5. Kaitan dengan tujuan pendidikan vokasi
+## 5. Perbandingan dengan alternatif
+
+| Alternatif | Keterbatasan | Telkom Student Creation |
+| --- | --- | --- |
+| Grup chat umum | Tidak terstruktur, tanpa moderasi sekolah | Chat terikat kelas/proyek dengan blokir dan laporan |
+| Drive / folder berbagi | Tanpa validasi, tampilan, atau interaksi | Etalase publik dengan verifikasi guru |
+| Media sosial umum | Risiko privasi, tidak fokus kompetensi | Akun terverifikasi sekolah, konten fokus karya |
+| Platform portofolio global | Tidak mengenal kelas dan guru pembimbing | Cakupan kelas/program, pembimbing, penghargaan sekolah |
+| LMS | Fokus tugas dan nilai | Melengkapi LMS: etalase, tracker, dan peluang |
+
+---
+
+## 6. Rencana dan jadwal
+
+### 6.1 Peta jalan
+
+| Tahap | Isi | Durasi | Yang diputuskan sekolah |
+| --- | --- | --- | --- |
+| **Persiapan** | Penunjukan koordinator, penyediaan data siswa/guru, keputusan hosting, persetujuan kebijakan privasi | menyesuaikan sekolah | Persetujuan proposal ini |
+| **MVP** | Pekerjaan pada bagian 3.2 | **2 minggu** (1 pengerjaan + 1 testing dan QA) | - |
+| **Percontohan** | Sepertiga sekolah (2 program keahlian), pelatihan guru dan siswa, pengumpulan umpan balik | ±3 bulan | Lanjut ke seluruh sekolah |
+| **Peluncuran sekolah** | Pembukaan untuk seluruh siswa dan guru | mengikuti hasil percontohan | - |
+| **Penguatan (opsional)** | Rubrik penilaian, notifikasi realtime, ekspor portofolio PDF, laporan proyek, analitik | 2 minggu per paket | Disetujui terpisah |
+| **Ekosistem (opsional)** | Mentor industri/alumni, pencocokan peluang, dan lainnya | 2 minggu per paket | Disetujui terpisah |
+
+### 6.2 Jadwal MVP
+
+| Minggu | Kegiatan | Hasil |
+| --- | --- | --- |
+| **1 – Pengerjaan** | Pendaftaran tervalidasi data sekolah, lupa kata sandi dan verifikasi email, perlindungan keamanan dan anti-bot, kebijakan privasi, notifikasi di server, moderasi dan log audit | Seluruh fitur MVP berjalan di lingkungan uji |
+| **2 – Testing dan QA** | Seluruh uji otomatis (409 uji yang ada ditambah uji fitur baru), uji manual per peran (siswa, guru, admin), uji keamanan dasar, uji perangkat dan peramban, perbaikan temuan, pembaruan dokumentasi, uji penerimaan oleh perwakilan guru dan siswa | Platform lolos kriteria penerimaan dan siap dibuka |
+
+### 6.3 Kriteria penerimaan MVP
+
+- Seluruh uji otomatis lulus.
+- Pendaftaran siswa dan guru hanya berhasil untuk identitas yang ada di data sekolah; peran ditentukan oleh data sekolah.
+- Pengguna dapat memulihkan kata sandi; email terverifikasi.
+- Percobaan login berulang dan pendaftaran massal dibatasi; CAPTCHA aktif.
+- Tidak ada data pribadi (email, NIS, kontak) pada respons halaman publik.
+- Kebijakan privasi dan aturan komunitas tampil dan wajib disetujui saat mendaftar.
+- Laporan konten sampai ke antrean admin; perubahan penting tercatat di log audit.
+- Dokumentasi diperbarui dan disetujui oleh koordinator sekolah.
+
+---
+
+## 7. Anggaran
+
+### 7.1 Permohonan
+
+| Pos | Nilai |
+| --- | ---: |
+| **Pengembangan tahap MVP** (pengerjaan, UI/UX, testing dan QA, dokumentasi) | **Rp 10.000.000** |
+| Biaya layanan berjalan (ditanggung sekolah, bukan bagian permohonan ini) | Rp 0,3-1,5 juta per bulan |
+
+Harga pengembangan sudah mencakup UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran. Nilai pasar pekerjaan yang sama sekitar **Rp 88 juta** (acuan tarif pengembang Indonesia saat ini); harga yang diajukan adalah harga khusus sekolah.
+
+### 7.2 Biaya layanan berjalan (perkiraan untuk sekolah ±1.200 siswa)
+
+| Komponen | Perkiraan | Catatan |
+| --- | --- | --- |
+| Hosting, database, penyimpanan berkas | Rp 0,3-1,5 juta per bulan | Bergantung pilihan: server sendiri sampai layanan cloud terkelola |
+| Domain | ±Rp 0,3 juta per tahun | |
+| Email transaksional dan CAPTCHA | Rp 0-0,3 juta per bulan | Banyak yang memiliki paket gratis |
+| Pelatihan guru dan siswa | Rp 3-10 juta (sekali) | Honor narasumber dan materi |
+| Audit keamanan pihak ketiga | Rp 15-40 juta per tahun | Opsional untuk tahap awal |
+
+Kebutuhan teknis diperkirakan kecil: penyimpanan ±3-4 GB pada tahun pertama, database di bawah 0,5 GB, dan beban puncak ±12 permintaan per detik, cukup untuk satu server kecil (lihat [SIMULASI.md](SIMULASI.md)).
+
+### 7.3 Opsi pengembangan lanjutan (tidak diminta sekarang)
+
+Diputuskan di akhir tiap tahap berdasarkan hasil. Setiap paket dikerjakan **paling lama 2 minggu**, termasuk testing dan QA.
+
+| Paket | Isi | Harga | Jadwal |
+| --- | --- | ---: | --- |
+| Prioritas sedang | Rubrik penilaian dan lencana keahlian, notifikasi realtime, ekspor portofolio PDF, laporan proyek mingguan, analitik sekolah, impor CSV dan kenaikan kelas | Rp 10 juta | 2 minggu |
+| Prioritas kecil | PWA dan mode gelap, aksesibilitas, pencarian lebih baik, riwayat revisi karya, tracker lanjutan | Rp 7 juta | 1,5 minggu |
+| Ekosistem | Mentor industri/alumni, pencocokan peluang, penghargaan berbasis juri, integrasi GitHub | Rp 9,5 juta | 2 minggu |
+| Fitur AI | Bantuan AI untuk guru (draf umpan balik), siswa (asisten penulisan), dan admin (moderasi); belum termasuk biaya pemakaian model AI | Rp 12,5 juta | 2 minggu |
+| Migrasi hosting sendiri | Server, penyimpanan, dan database milik sekolah | Rp 2,5 juta | 1 minggu |
+
+Total seluruh opsi lanjutan Rp 41,5 juta; bersama MVP Rp 51,5 juta. Dasar perhitungan: [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md).
+
+---
+
+## 8. Dampak dan indikator keberhasilan
+
+Target berikut berasal dari simulasi untuk sekolah berskala SMK Telkom (acuan 1.200 siswa, 36 rombel, 90 guru); metode dan rentang ketidakpastian di [SIMULASI.md](SIMULASI.md). Nilai yang ditampilkan adalah median simulasi.
+
+| Indikator | Akhir tahun 1 | Akhir tahun 2 |
+| --- | --- | --- |
+| Siswa aktif (punya minimal 1 karya terverifikasi) | **±550 (46%)** | **±820 (69%)** |
+| Karya terverifikasi (kumulatif) | **±420** | **±1.440** |
+| Proyek tim terbit (kumulatif) | **±23** | **±83** |
+| Beban verifikasi per guru pembimbing | **±3 karya per bulan** | sama |
+| Waktu verifikasi guru | median ≤ 5 hari kerja, 90% ≤ 10 hari | sama |
+| Siswa kelas XI yang memakai portofolio untuk PKL/lamaran | ≥ 50% | sama |
+| Peluang aktif per semester | ≥ 8 | sama |
+| Keterlibatan: siswa terdaftar membuka platform tiap bulan | ≥ 60% | sama |
+| Kepuasan siswa dan guru (survei semester, responden ≥ 50%) | ≥ 4,0 dari 5 | sama |
+
+Indikator diukur dari dashboard platform dan survei; garis dasar ditetapkan pada bulan pertama percontohan. Capaian bergantung pada adopsi: bila siswa aktif hanya mencapai 50% di tahun kedua, hasilnya ±600 siswa aktif; bila 85%, ±1.020. Karena itu pelatihan dan kebijakan penggunaan di sekolah menjadi faktor kunci (bagian 11).
+
+---
+
+## 9. Risiko dan mitigasi
+
+| Risiko | Mitigasi |
+| --- | --- |
+| Rendahnya partisipasi | Kebijakan sekolah, pelatihan, duta platform dari guru dan siswa, indikator dipantau tiap bulan |
+| Konten tidak pantas atau perundungan | Aturan komunitas, laporan dan blokir (sudah ada), antrean moderasi (MVP) |
+| Kebocoran data pribadi | Data publik diminimalkan dan diaudit, kebijakan privasi, keamanan berlapis (MVP) |
+| Penyalahgunaan oleh bot atau pihak luar | Pembatasan percobaan, CAPTCHA, header keamanan (MVP) |
+| Beban verifikasi guru menumpuk di akhir semester | Cakupan per kelas/program, notifikasi, tenggat bertahap, ringkasan mingguan (paket lanjutan) |
+| Akses data sekolah terlambat | Mulai dari impor daftar siswa/guru (CSV); integrasi langsung menyusul |
+| Ketergantungan pada satu pengembang | Dokumentasi lengkap, 409 uji otomatis, tim dua orang, kode milik sekolah |
+| Ketergantungan layanan pihak ketiga | Tidak terkunci pada vendor; panduan migrasi tersedia ([REKOMENDASI-MIGRASI.md](REKOMENDASI-MIGRASI.md)) |
+| Biaya layanan meningkat | Kompresi gambar otomatis, batas ukuran berkas, retensi pesan, opsi server sendiri |
+| Plagiarisme atau karya bukan milik siswa | Verifikasi guru, riwayat revisi, laporan konten |
+
+---
+
+## 10. Keamanan, privasi, dan tata kelola
+
+Siswa adalah pengguna di bawah umur sehingga platform dirancang dengan prinsip **minim data, akses terbatas, dan jejak yang jelas**:
+
+- **Akun terverifikasi sekolah:** hanya siswa dan guru yang terdaftar di data sekolah; login siswa/guru dan admin dipisahkan.
+- **Hak akses per peran:** siswa tidak dapat menerbitkan atau memverifikasi karyanya sendiri; guru hanya meninjau siswa dalam cakupannya; draf bersifat pribadi.
+- **Data publik minimal:** profil menampilkan nama, kelas, dan karya; tidak menampilkan email atau NIS.
+- **Kontrol pengguna:** status online dapat disembunyikan, profil dapat dikelola, laporan dan blokir tersedia.
+- **Keamanan teknis:** sesi aman, pembatasan laju, perlindungan anti-bot, enkripsi koneksi, dan log audit (MVP); pengujian otomatis menjaga aturan akses tidak rusak.
+- **Tata kelola:** koordinator sekolah, admin platform, dan moderator ditunjuk; kebijakan privasi dan aturan komunitas disetujui sekolah.
+
+Rincian teknis: [ARCHITECTURE.md](ARCHITECTURE.md) dan [REKOMENDASI-KEAMANAN.md](REKOMENDASI-KEAMANAN.md).
+
+---
+
+## 11. Dukungan yang dibutuhkan dari sekolah
+
+| Kebutuhan | Waktu |
+| --- | --- |
+| **Koordinator sekolah** (penghubung, pemantauan, pelatihan) dan admin platform | Sebelum pengerjaan |
+| **Data siswa dan guru** (NIS/NISN, nama, kelas, program; NIP/NUPTK guru) dalam bentuk CSV atau akses API portal sekolah | Sebelum pengerjaan |
+| **Keputusan hosting** (layanan cloud atau server sekolah) dan penyediaan domain serta email pengirim | Sebelum pengerjaan |
+| **Persetujuan kebijakan privasi dan aturan komunitas** | Sebelum atau saat minggu testing dan QA |
+| **Perwakilan guru dan siswa untuk uji penerimaan** | Minggu 2 |
+| **Kebijakan penggunaan:** proyek akhir semester didokumentasikan di platform; guru memakainya untuk bimbingan | Sebelum percontohan |
+| **Pelatihan:** sesi guru ±6 jam dan orientasi siswa ±30 menit per kelas | Saat percontohan |
+
+---
+
+## 12. Permintaan persetujuan
+
+Kami memohon persetujuan atas hal berikut:
+
+| No. | Keputusan | Setuju |
+| --- | --- | --- |
+| 1 | Anggaran pengembangan tahap MVP sebesar **Rp 10.000.000** dengan jadwal **2 minggu** (1 pengerjaan + 1 testing dan QA) | ☐ |
+| 2 | Penunjukan koordinator sekolah dan admin platform | ☐ |
+| 3 | Penyediaan data siswa dan guru untuk validasi pendaftaran | ☐ |
+| 4 | Keputusan hosting dan penyediaan domain/email pengirim | ☐ |
+| 5 | Pelaksanaan percontohan pada 2 program keahlian setelah MVP | ☐ |
+
+| Disetujui oleh | |
+| --- | --- |
+| Nama | |
+| Jabatan | |
+| Tanda tangan | |
+| Tanggal | |
+
+---
+
+## Lampiran
+
+### A. Skenario penggunaan
+
+**Melamar PKL.** Siswa menyematkan 3 karya terbaik di profil, memastikan statusnya "Terverifikasi", lalu membagikan tautan atau QR profil pada surat lamaran. Perusahaan melihat karya, perangkat yang dipakai, nama guru pembimbing, dan riwayat proyek tim.
+
+**Proyek kelompok.** Lima siswa membuat aplikasi. Ketua membuat proyek dan mengundang guru pembimbing, lalu tim memecah pekerjaan di tracker. Guru melihat tugas yang terlambat dan memberi masukan. Setelah selesai, mentor utama menyetujui dan proyek tayang dengan nama seluruh anggota dan perannya.
+
+**Lomba.** Guru memasang peluang lomba. Siswa yang berminat mendaftarkan minat dan guru menindaklanjuti. Hasil lomba dicatat sebagai pencapaian di profil.
+
+**Akhir semester.** Sekolah membuka penghargaan dengan nominasi; siswa memilih; hasil diumumkan dan pemenang tampil di beranda.
+
+### B. Keselarasan dengan tujuan pendidikan vokasi
 
 > Selaraskan istilah dengan kebijakan dan kurikulum yang berlaku di sekolah.
 
@@ -133,224 +311,17 @@ Dengan satu platform, sekolah mendapatkan bukti nyata capaian kompetensi siswa, 
 | Kolaborasi, komunikasi, dan berpikir kritis | Tracker, ruang proyek, komentar, dan tinjauan sejawat |
 | Kesiapan PKL dan dunia kerja | Portofolio terverifikasi, kebiasaan kerja tim, tenggat |
 | Pengakuan kompetensi keahlian | Karya dikategorikan per jurusan dan divalidasi guru program keahlian |
-| Penguatan karakter dan literasi digital | Etika komentar, moderasi, privasi, dan identitas digital |
-| Keterhubungan dengan industri | Kanal peluang dan (usulan) mentor industri |
+| Penguatan karakter dan literasi digital | Etika komentar, moderasi, privasi, identitas digital |
+| Keterhubungan dengan industri | Kanal peluang dan (opsional) mentor industri |
 
----
+### C. Dokumen pendukung
 
-## 6. Nilai pembeda
-
-| Dibanding | Keterbatasan | Telkom Student Creation |
-| --- | --- | --- |
-| Grup chat umum | Tidak terstruktur, tercampur obrolan, tanpa moderasi sekolah | Chat terikat kelas/proyek dengan blokir dan laporan |
-| Drive / folder berbagi | Tidak ada validasi, tampilan, atau interaksi | Etalase publik dengan verifikasi dan umpan balik |
-| Media sosial umum | Risiko privasi, tidak fokus kompetensi, tanpa kendali sekolah | Akun terverifikasi sekolah, konten fokus karya |
-| Platform portofolio global | Tidak mengenal struktur sekolah (kelas, guru pembimbing) | Cakupan kelas/program, pembimbing, dan penghargaan sekolah |
-| LMS | Berfokus tugas dan nilai, bukan etalase dan kolaborasi lintas kelas | Melengkapi LMS dengan etalase, tracker, dan peluang |
-
----
-
-## 7. Bagaimana siswa memakainya di dunia nyata (skenario)
-
-**Skenario 1 – Melamar PKL.** Siswa menyematkan 3 karya terbaik di profil, memastikan statusnya "Terverifikasi", lalu membagikan tautan/QR profil di surat lamaran. Perusahaan melihat karya, perangkat yang dipakai, nama guru pembimbing, dan riwayat proyek tim.
-
-**Skenario 2 – Proyek kelompok.** Lima siswa membuat aplikasi. Ketua membuat proyek, mengundang guru pembimbing, lalu tim memecah pekerjaan di tracker. Guru melihat tugas yang terlambat dan memberi masukan. Setelah selesai, mentor utama menyetujui dan proyek tayang dengan nama seluruh anggota dan perannya.
-
-**Skenario 3 – Lomba.** Guru memasang peluang lomba. Siswa yang berminat mendaftarkan minat; guru menindaklanjuti. Hasil lomba dicatat sebagai pencapaian di profil.
-
-**Skenario 4 – Akhir semester.** Sekolah membuka penghargaan dengan nominasi karya; siswa memilih; hasil diumumkan dan pemenang tampil di beranda.
-
----
-
-## 8. Hal yang belum tercakup dan direkomendasikan
-
-Bagian ini merangkum poin penting yang perlu disepakati atau dilengkapi agar manfaat di atas berkelanjutan.
-
-### 8.1 Validasi keilmuan yang lebih kuat (usulan)
-
-- **Rubrik penilaian** per kategori sehingga verifikasi tidak hanya "setuju/revisi" tetapi menyertakan skor kompetensi.
-- **Lencana keahlian** (mis. "UI Design – 3 karya terverifikasi") sebagai ringkasan kompetensi.
-- **Mentor industri/alumni** yang dapat memberi masukan dan menilai karya.
-- **Ekspor portofolio/CV PDF** dari karya terverifikasi untuk lamaran.
-- **Keterkaitan dengan Uji Kompetensi Keahlian dan sertifikasi** (bila sekolah menghendaki, karya dapat menjadi bukti pendukung).
-
-### 8.2 Identitas dan akses (usulan)
-
-- Registrasi guru dan siswa **otomatis tervalidasi dari data sekolah** (NIS/NISN, NIP/NUPTK) tanpa admin menambahkan akun satu per satu; lihat [REKOMENDASI-IDENTITAS.md](REKOMENDASI-IDENTITAS.md).
-- Fitur **lupa kata sandi** dan verifikasi email.
-- Status **alumni**: karya tetap tersimpan dan dapat dibuka setelah lulus.
-
-### 8.3 Keselamatan dan etika
-
-- Siswa adalah pengguna di bawah umur: perlu **kebijakan privasi, persetujuan**, dan aturan komunitas yang disepakati sekolah.
-- **Moderasi**: laporan konten, antrean admin, dan (usulan) moderasi otomatis sebagai bantuan.
-- **Kontrol privasi** profil: pilihan apa yang tampil publik, status online yang dapat disembunyikan.
-- **Keamanan sistem**: pembatasan percobaan login, CAPTCHA, header keamanan, audit; lihat [REKOMENDASI-KEAMANAN.md](REKOMENDASI-KEAMANAN.md).
-- **Hak cipta karya**: pilihan lisensi dan aturan bahwa siswa hanya mengunggah karya sendiri atau memberi atribusi.
-
-### 8.4 Keberlanjutan operasional
-
-| Hal | Pertanyaan yang perlu dijawab |
+| Dokumen | Isi |
 | --- | --- |
-| **Penanggung jawab** | Siapa admin platform, siapa moderator, siapa pengelola teknis? |
-| **Hosting dan biaya** | Tetap di cloud terkelola, atau server sekolah; lihat [REKOMENDASI-MIGRASI.md](REKOMENDASI-MIGRASI.md) |
-| **Backup dan pemulihan** | Siapa menjalankan dan menguji; di mana disimpan? |
-| **Storage** | Gambar sudah dikompresi otomatis (WebP, maks 2400 px); perlu kebijakan batas ukuran video/PDF dan pembersihan berkas |
-| **Dukungan pengguna** | Kanal bantuan untuk siswa/guru, panduan singkat, pelatihan |
-| **Pembaruan** | Jadwal pembaruan keamanan dan fitur |
-
-### 8.5 Adopsi dan budaya
-
-- Platform hanya bernilai bila **dipakai**. Perlu **kebijakan sekolah**: misalnya setiap proyek akhir semester wajib terdokumentasi di platform, dan guru memakainya untuk bimbingan.
-- **Pelatihan guru** (verifikasi, rubrik, pemantauan proyek) dan **orientasi siswa** di awal tahun.
-- **Duta platform** (siswa/guru) untuk menjaga aktivitas.
-- Hindari persaingan tidak sehat: leaderboard dapat diperluas dengan kategori yang adil (per jurusan, per periode) dan opsi menyembunyikan peringkat.
-
-### 8.6 Pengukuran dampak
-
-Angka berasal dari **simulasi** untuk sekolah berskala SMK Telkom (acuan 1.200 siswa, 36 rombel, 90 guru; rentang 800-1.800 siswa), bukan dari data produksi. Metode, parameter, dan analisis sensitivitas ada di [SIMULASI.md](SIMULASI.md); skripnya dapat dijalankan ulang dengan data sekolah (`scripts/simulate-adoption.py`). Nilai di bawah adalah median simulasi; rentang P10-P90 ada di dokumen simulasi.
-
-#### Target tahun pertama dan kedua (acuan 1.200 siswa)
-
-| Indikator | Akhir tahun 1 | Akhir tahun 2 | Sumber data |
-| --- | --- | --- | --- |
-| Siswa terdaftar | ±1.140 (95%) | ±1.140 | dashboard / admin |
-| Siswa aktif (minimal 1 karya terverifikasi) | **±550 (46%)**; rentang 460-650 | **±820 (69%)**; rentang 700-940 | dashboard |
-| Karya terverifikasi (kumulatif) | **±420** | **±1.440** | dashboard |
-| Proyek tim terbit (kumulatif) | **±23** | **±83** | dashboard / tracker |
-| Beban verifikasi per guru pembimbing | **±3 karya per bulan** (maks. ±4 di bulan ramai) | sama | riwayat tinjauan |
-| Waktu verifikasi oleh guru | **median ≤ 5 hari kerja**, 90% selesai ≤ 10 hari | sama | riwayat tinjauan |
-| Siswa yang memakai portofolio untuk PKL/lamaran | **≥ 50% siswa kelas XI (±200 dari ±400)** | sama | survei akhir PKL |
-| Peluang dipasang dan peminatnya | **≥ 8 peluang aktif per semester**; ±15% siswa menyatakan minat (±180) | sama | modul peluang |
-| Keterlibatan | **≥ 60% siswa terdaftar membuka platform tiap bulan** | sama | log aktivitas |
-| Kepuasan siswa dan guru | **≥ 4,0 dari 5**, responden ≥ 50% | sama | survei tiap semester |
-
-Target PKL, peluang, keterlibatan, dan kepuasan adalah **sasaran kebijakan**, bukan keluaran simulasi.
-
-#### Catatan
-
-- Selisih terbesar pada hasil datang dari adopsi: bila siswa aktif hanya mencapai 50% (bukan 70%) di tahun kedua, siswa aktif turun dari ±820 menjadi ±600; bila 85%, naik menjadi ±1.020.
-- Simulasi mengasumsikan percontohan 3 bulan pada sepertiga sekolah, lalu seluruh sekolah dibuka dari bulan ke-4.
-- Tetapkan baseline pada bulan pertama percontohan, lalu ganti asumsi dengan data terukur.
-- Angka suka dan komentar pada data contoh di database tidak dipakai sebagai tolok ukur karena dibuat oleh skrip seed.
-
-### 8.7 Risiko dan mitigasi
-
-| Risiko | Mitigasi |
-| --- | --- |
-| Rendahnya partisipasi | Kebijakan sekolah, integrasi ke penugasan, pelatihan, duta platform |
-| Konten tidak pantas / perundungan | Aturan komunitas, laporan dan blokir (sudah ada), antrean moderasi, moderasi otomatis (usulan) |
-| Kebocoran data pribadi | Minimalkan data publik, kebijakan privasi, audit endpoint, keamanan berlapis |
-| Beban verifikasi guru menumpuk | Cakupan per kelas/program, notifikasi, email ringkasan mingguan, bantuan AI untuk draf umpan balik (usulan) |
-| Ketergantungan pada satu orang pengelola | Dokumentasi lengkap ([docs/](.)), tim pengelola ≥ 2 orang, repositori milik sekolah |
-| Ketergantungan layanan pihak ketiga | Kode tidak terkunci ke vendor; panduan migrasi tersedia |
-| Biaya meningkat seiring pengguna | Kompresi gambar, cache, pembatasan ukuran berkas, opsi server sendiri |
-| Plagiarisme / karya bukan milik siswa | Verifikasi guru, riwayat revisi, laporan konten, (usulan) deteksi kemiripan sebagai bantuan |
-
----
-
-## 9. Rencana implementasi dan peta jalan
-
-| Fase | Isi | Hasil |
-| --- | --- | --- |
-| **0 – Kesiapan** | Keputusan kebijakan, penanggung jawab, pemetaan data sekolah, konfirmasi sumber identitas | Persetujuan dan tim pengelola |
-| **1 – Percontohan** | 1-2 jurusan/kelas, guru pembimbing terpilih, pelatihan, kumpulkan umpan balik | Bukti manfaat dan perbaikan |
-| **2 – Peluncuran sekolah (MVP)** | Registrasi tervalidasi data sekolah, lupa kata sandi, keamanan dasar, kebijakan privasi, notifikasi di server, moderasi; pengerjaan 1 minggu + testing dan QA 1 minggu | Seluruh siswa dan guru terdaftar |
-| **3 – Penguatan** | Rubrik penilaian, notifikasi realtime, ekspor portofolio, laporan untuk guru, analitik sekolah | Nilai lebih bagi guru dan siswa |
-| **4 – Ekosistem** | Mentor industri/alumni, kemitraan PKL, fitur AI bantu guru/siswa | Jembatan ke industri |
-
-Rincian teknis tiap fase ada pada dokumen [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) dan [REKOMENDASI.md](REKOMENDASI.md).
-
----
-
-## 10. Kebutuhan sumber daya
-
-> Biaya dalam rupiah adalah perkiraan dengan kurs ±Rp 16.000 per USD dan harga layanan sepengetahuan penulis; **periksa harga dan ketentuan layanan terkini** sebelum dijadikan anggaran.
-
-### 10.1 Tim
-
-| Peran | Beban | Jumlah |
-| --- | --- | --- |
-| Admin platform (akun, data sekolah, moderasi) | paruh waktu | 1 orang |
-| Koordinator guru (pelatihan, pemantauan verifikasi) | paruh waktu | 1 orang |
-| Pemelihara teknis (pembaruan, backup, pemantauan) | paruh waktu; bisa dari guru jurusan RPL atau pihak ketiga | 1 orang |
-| Duta platform (guru dan siswa) | sukarela | 3-5 orang |
-
-Kebutuhan inti: **3 orang paruh waktu**, ditambah duta platform.
-
-### 10.2 Perkiraan kapasitas (dari simulasi, acuan 1.200 siswa)
-
-| Komponen | Akhir tahun 1 | Akhir tahun 2 | Catatan |
-| --- | --- | --- | --- |
-| Penyimpanan berkas | **±3,4 GB** (1,9-5,7) | **±11,6 GB** (6,9-18,9) | Penggerak terbesar: video; batasi ≤ 50 MB per berkas. Rencanakan 25-30 GB untuk dua tahun |
-| Database | **±0,4 GB** | **±1,1 GB** | Didominasi pesan chat; terapkan retensi pesan |
-| Beban puncak | **±117 pengguna online ≈ 12 permintaan/dtk** | sama | Polling notifikasi tiap 25 detik ditambah chat/tracker; ±5-6 juta permintaan per bulan |
-
-Untuk sekolah 800 siswa: ±8 GB dan ±8 permintaan/dtk di akhir tahun 2; untuk 1.800 siswa: ±18 GB dan ±18 permintaan/dtk. Semuanya ringan untuk satu server kecil atau layanan serverless.
-
-### 10.3 Perkiraan biaya bulanan
-
-| Komponen | Opsi A: cloud terkelola (Vercel + Supabase) | Opsi B: VPS sendiri (lihat [REKOMENDASI-MIGRASI.md](REKOMENDASI-MIGRASI.md)) |
-| --- | --- | --- |
-| Hosting aplikasi | ±US$ 20 (±Rp 320 rb) | VPS 2 vCPU / 4 GB: ±Rp 200-450 rb |
-| Database | ±US$ 25 (±Rp 400 rb) | termasuk di VPS |
-| Penyimpanan berkas 4-8 GB | ±Rp 5-30 rb | object storage ±Rp 5-30 rb |
-| Backup | termasuk | ±Rp 50-100 rb |
-| Keamanan dan pemantauan (CAPTCHA, pemantauan error) | ±Rp 0-300 rb (banyak yang memiliki paket gratis) | ±Rp 0-300 rb |
-| **Perkiraan total per bulan** | **±Rp 0,7-1,5 juta** | **±Rp 0,3-0,9 juta** (+ waktu pengelola server) |
-| Domain | ±Rp 150-300 rb per tahun | sama |
-
-Opsi A menukar biaya yang lebih tinggi dengan perawatan yang lebih ringan; opsi B lebih murah tetapi membutuhkan pemelihara teknis yang disiplin (backup, pembaruan, pemantauan).
-
-### 10.4 Pelatihan
-
-| Kegiatan | Perkiraan |
-| --- | --- |
-| Pelatihan guru (verifikasi, rubrik, tracker) | 3 sesi × 2 jam = **6 jam** per kelompok guru (±90 guru, 3-4 kelompok) |
-| Orientasi siswa | 30 menit per kelas × 36 kelas = **±18 jam** (dapat digabung dengan jam wali kelas) |
-| Panduan singkat dan video tutorial | dibuat sekali, ±2-3 hari kerja |
-
-### 10.5 Pengembangan lanjutan: biaya dan jadwal
-
-Biaya pengembangan (harga sekolah, tim 2 orang, di luar biaya layanan seperti server dan API AI); rincian, dasar perhitungan, dan syarat jadwal di [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md). **Setiap paket dikerjakan paling lama 2 minggu**, termasuk testing dan Quality Assurance (QA):
-
-| Paket | Harga sekolah | Kumulatif | Jadwal |
-| --- | ---: | ---: | --- |
-| **MVP – prioritas tinggi** (keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi) | **Rp 10 juta** | Rp 10 juta | **2 minggu**: 1 minggu pengerjaan + 1 minggu testing dan QA |
-| Prioritas sedang (rubrik, realtime, ekspor PDF, laporan proyek, analitik) | Rp 10 juta | Rp 20 juta | 2 minggu: 1 + 1 |
-| Prioritas kecil (PWA, aksesibilitas, pencarian, tracker lanjutan) | Rp 7 juta | Rp 27 juta | 1,5 minggu: 1 + 0,5 |
-| Ekosistem non-AI (mentor industri, pencocokan peluang, juri, GitHub) | Rp 9,5 juta | Rp 36,5 juta | 2 minggu: 1 + 1 |
-| Fitur AI (belum termasuk biaya API) | Rp 12,5 juta | Rp 49 juta | 2 minggu: 1,5 + 0,5 |
-| Migrasi hosting sendiri (opsional) | Rp 2,5 juta | Rp 51,5 juta | 1 minggu |
-
-Seluruh paket berurutan membutuhkan ±10,5 minggu. Jadwal mengasumsikan pengembangan dibantu AI oleh tim 2 orang yang bekerja penuh, serta data/akses dari sekolah (misalnya daftar siswa dan guru) tersedia sebelum paket dimulai.
-
-Fitur yang sudah tersedia saat ini bernilai ±Rp 32 juta pada tarif yang sama (nilai pasar konvensional ±Rp 0,26 miliar, dengan acuan tarif yang sudah disesuaikan ke kondisi pasar saat ini) dan sudah dikerjakan. Harga di atas sengaja jauh di bawah tarif pasar karena ini proyek sekolah.
-
----
-
-## 11. Kesimpulan dan permintaan persetujuan
-
-Telkom Student Creation mengubah karya dan proyek siswa dari "tugas yang selesai" menjadi **bukti kompetensi yang dapat dipercaya**, sekaligus melatih siswa bekerja dalam tim seperti di industri dan membuka akses ke peluang. Fitur inti sudah tersedia dan teruji (329 test otomatis lulus); langkah berikutnya adalah keputusan kebijakan, penyiapan data identitas sekolah, dan penguatan keamanan sebelum diluncurkan ke seluruh siswa.
-
-**Yang dimohon:**
-
-1. Persetujuan untuk fase percontohan di **sepertiga sekolah (2 program keahlian, ±12 kelas, ±400 siswa)**.
-2. Penunjukan penanggung jawab platform dan koordinator guru.
-3. Akses ke informasi sumber data siswa/guru (API portal sekolah) untuk validasi pendaftaran.
-4. Keputusan hosting (cloud terkelola atau server sekolah) dan alokasi anggaran operasional.
-5. Persetujuan kebijakan privasi dan aturan komunitas bagi siswa.
-
----
-
-## Lampiran
-
-| Lampiran | Dokumen |
-| --- | --- |
-| Daftar fitur lengkap | [FEATURES.md](FEATURES.md) |
-| Arsitektur, diagram, ERD | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Referensi API | [API.md](API.md) |
-| Pengujian | [TESTING.md](TESTING.md) |
-| Rekomendasi pengembangan | [REKOMENDASI.md](REKOMENDASI.md) |
-| Simulasi adopsi dan sumber daya | [SIMULASI.md](SIMULASI.md) |
-| Rincian biaya pengembangan | [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md) |
+| [FEATURES.md](FEATURES.md) | Daftar fitur lengkap per peran |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Arsitektur, diagram, ERD, deployment |
+| [API.md](API.md) | Referensi endpoint |
+| [TESTING.md](TESTING.md) | Strategi dan cakupan pengujian |
+| [SIMULASI.md](SIMULASI.md) | Simulasi adopsi, kapasitas, dan beban |
+| [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md) | Dasar perhitungan biaya dan jadwal |
+| [REKOMENDASI.md](REKOMENDASI.md) | Usulan identitas, migrasi, realtime, keamanan, dan fitur |
