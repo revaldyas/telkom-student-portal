@@ -169,7 +169,7 @@ Daftar lengkap endpoint ada di [docs/API.md](docs/API.md). Endpoint REST Payload
 ## Pengujian
 
 ```bash
-npm test              # Vitest, 329 test di tests/
+npm test              # Vitest, 409 test di tests/
 npx tsc --noEmit      # pemeriksaan tipe
 ```
 

@@ -22,7 +22,7 @@ Persyaratan: `.env` berisi `DATABASE_URL` dan `PAYLOAD_SECRET`. **Test berjalan 
 
 Catatan: karena transaksi dibagi, test baru sebaiknya memakai pembantu dari `world.ts` dan tidak membuat koneksi database terpisah.
 
-## Cakupan (329 test, 11 file)
+## Cakupan (409 test, 13 file)
 
 | File | Yang diuji |
 | --- | --- |
@@ -35,12 +35,14 @@ Catatan: karena transaksi dibagi, test baru sebaiknya memakai pembantu dari `wor
 | `awards.test.ts` | Pengaturan award oleh admin, alur voting (satu suara per award, tidak boleh karya sendiri, ganti pilihan selama terbuka), hasil `GET /api/awards/[id]/results` |
 | `social.test.ts` | Suka dan komentar karya (guru dan siswa boleh, pengunjung tidak; batas 2-1200 karakter; tidak bisa dipalsukan; penulis dapat mengedit; penulis dan pemilik karya dapat menghapus), stats dan daftar komentar |
 | `public-routes.test.ts` | Feed beranda, pencarian, detail karya per tingkat akses, profil siswa/guru, leaderboard, notifikasi portal |
+| `chat.test.ts` | Akses (401/404), DM (idempoten dua arah, tidak ke diri sendiri), pesan (urutan, 2000 karakter, `?after=`), belum dibaca dan penanda baca (`lastReadId` tidak mundur), blokir dua arah dan pencarian pengguna, grup (undangan, terima/tolak, pemilik, keluarkan, pindah kepemilikan, hapus grup kosong, ganti nama/foto), ruang kelas dan proyek (akses menurut data sekolah, mentor yang menolak), laporan pesan (tanpa duplikat), batas 25 pesan/menit |
+| `tracker.test.ts` | Akses proyek (pengelola/anggota/mentor utama/pendamping, mentor yang menolak, orang luar), membuat tugas (nilai bawaan, penyaringan penanggung jawab/label/checklist, posisi, aktivitas), mengubah tugas (status dan `completedAt`, tanpa aktivitas bila tidak berubah, penugasan, tenggat, checklist), menghapus (pembuat, pengelola, mentor utama; pendamping ditolak), komentar tugas, paginasi riwayat aktivitas, ringkasan daftar proyek dan "tugas saya", badge aktivitas baru |
 | `project-comments.test.ts` | `GET/POST/PATCH/DELETE /api/community/projects/[id]/comments`: penulis mengedit, pengelola proyek dan penulis menghapus, orang lain ditolak (403), tanpa sesi (401), validasi panjang, `canDelete`/`mine`/`edited` |
 | `uploads.test.ts` | Konversi WebP, batas 2400px, teks alt otomatis, tipe berkas, crop dan titik fokus, hak akses |
 
 ## Status terakhir
 
-Run penuh terakhir (18 Okt 2026): **329 lulus dari 329** (11 file). Jumlah ini dihitung saat dijalankan; sebagian test berparameter menjadi beberapa kasus, sehingga `vitest list` menampilkan angka lebih kecil.
+Run penuh sebelum test chat/tracker ditambahkan (18 Okt 2026): **329 lulus dari 329** (11 file). `chat.test.ts` (41) dan `tracker.test.ts` (39) lulus pada run terpisah; total 409 test di 13 file. Run penuh gabungan belum diulang. Jumlah ini dihitung saat dijalankan; sebagian test berparameter menjadi beberapa kasus, sehingga `vitest list` menampilkan angka lebih kecil.
 
 Catatan harness: `lib/dbCounts.ts` menjalankan SQL lewat `payload.db.drizzle`, di luar API Payload. `guardTransaction` di `tests/harness.ts` mengarahkan `drizzle` ke sesi transaksi test selama transaksi aktif, sehingga suka/komentar/suara yang dibuat di dalam test ikut terhitung. Tanpa itu hitungan bernilai 0 di test (tetapi benar di produksi).
 
@@ -48,8 +50,6 @@ Catatan harness: `lib/dbCounts.ts` menjalankan SQL lewat `payload.db.drizzle`, d
 
 Fitur berikut dibuat setelah rangkaian test di atas dan **belum punya test otomatis**:
 
-- Chat: percakapan DM/grup/ruang, pesan, batas laju, blokir, laporan, hitungan belum dibaca
-- Tracker proyek: izin `projectAccess`, CRUD tugas, log aktivitas, badge
 - Suka proyek (`/api/community/projects/[id]/like`), stats proyek, dan leaderboard proyek (komentar proyek sudah teruji)
 - Presence dan `/api/portal/pulse`
 - Profil: karya semat (maks 3, validasi hook), pengaturan tampilan
