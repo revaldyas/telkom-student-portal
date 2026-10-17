@@ -1,3 +1,4 @@
+import '../app/(site)/auth.css'
 import type { ReactNode } from 'react'
 
 type CountProps = { count?: number; className?: string }
@@ -27,9 +28,9 @@ export function WorkGridSkeleton({ count = 6, className = '' }: CountProps) {
   </div></LoadingStatus>
 }
 
-export function AwardCardsSkeleton() {
-  return <LoadingStatus label="Memuat penghargaan"><div className="award-home-grid">
-    {[0, 1].map((index) => <div className="skeleton-award-home" key={index}><span className="sk sk-kicker" /><div><span className="sk sk-award-title" /><span className="sk sk-line" /><span className="sk sk-line sk-line-short" /></div><span className="sk sk-award-footer" /></div>)}
+export function AwardCardsSkeleton({ count = 3 }: CountProps = {}) {
+  return <LoadingStatus label="Memuat penghargaan"><div className="award-home-grid home-awards-track">
+    {Array.from({ length: count }, (_, index) => <div className="skeleton-award-home" key={index}><span className="sk sk-kicker" /><div><span className="sk sk-award-title" /><span className="sk sk-line" /><span className="sk sk-line sk-line-short" /></div><span className="sk sk-award-footer" /></div>)}
   </div></LoadingStatus>
 }
 
@@ -43,7 +44,7 @@ export function AwardListSkeleton({ count = 2 }: CountProps) {
 }
 
 export function LeaderboardSkeleton({ rows = 3 }: { rows?: number }) {
-  return <LoadingStatus label="Memuat peringkat komunitas"><div className="leader-grid skeleton-leader-grid">
+  return <LoadingStatus label="Memuat peringkat komunitas"><div className="lb-grid skeleton-leader-grid">
     {[0, 1, 2].map((panel) => <div className="lowfi-panel skeleton-leader-panel" key={panel}><span className="sk sk-panel-title" />
       {Array.from({ length: rows }, (_, row) => <div className="skeleton-leader-row" key={row}><span className="sk sk-rank" /><span className={`sk ${panel === 0 ? 'sk-avatar' : 'sk-work-thumb'}`} /><div><span className="sk sk-card-title" /><span className="sk sk-author-line" /></div></div>)}
     </div>)}
@@ -84,7 +85,7 @@ export function HomePageSkeleton() {
 }
 
 export function AuthSkeleton() {
-  return <main className="auth-shell"><LoadingStatus label="Memuat formulir akun"><div className="skeleton-auth-layout"><div className="skeleton-auth-side"><span className="sk sk-kicker" /><div><span className="sk sk-title" /><span className="sk sk-title sk-title-short" /><span className="sk sk-line" /></div></div><div className="skeleton-auth-form"><span className="sk sk-breadcrumb" /><span className="sk sk-panel-title" /><span className="sk sk-line sk-line-short" />{[0, 1, 2, 3].map((row) => <div className="skeleton-auth-field" key={row}><span className="sk sk-kicker" /><span className="sk sk-filter" /></div>)}<span className="sk sk-button" /></div></div></LoadingStatus></main>
+  return <main className="au"><LoadingStatus label="Memuat formulir akun"><div className="au-side" aria-hidden="true" /><section className="au-main"><div className="au-card" style={{ display: 'grid', gap: 16 }}><span className="sk sk-title sk-title-short" /><span className="sk sk-line sk-line-short" /><span className="sk sk-filter" /><span className="sk sk-filter" /><span className="sk sk-button" /></div></section></LoadingStatus></main>
 }
 
 /* ——— Portal siswa dan guru ——— */
