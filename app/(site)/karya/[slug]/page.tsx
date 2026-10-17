@@ -35,7 +35,7 @@ type Portfolio = {
   student?: Relation
   isNominee?: boolean
 }
-type Comment = { id: string | number; content: string; createdAt: string; student?: Relation }
+type Comment = { id: string | number; content: string; createdAt: string; updatedAt?: string; student?: Relation }
 type Award = { id: string | number; title: string; status: string; opensAt: string; closesAt: string; nominees: Relation[] }
 type Vote = { id: string | number; portfolio: Relation }
 
@@ -50,6 +50,8 @@ export default function WorkPage() {
   const [awards, setAwards] = useState<Award[]>([])
   const [counts, setCounts] = useState({ likes: 0, comments: 0 })
   const [role, setRole] = useState('')
+  const [meID, setMeID] = useState<string | number | null>(null)
+  const [editing, setEditing] = useState<{ id: string | number; text: string } | null>(null)
   const [myLike, setMyLike] = useState<string | number | null>(null)
   const [myVotes, setMyVotes] = useState<Record<string, Vote>>({})
   const [commentText, setCommentText] = useState('')
@@ -118,6 +120,7 @@ export default function WorkPage() {
       const [meData, leaderboard] = await Promise.all([sessionPromise, boardPromise])
       const currentRole = meData?.user?.role || ''
       setRole(currentRole)
+      setMeID(meData?.user?.id ?? null)
       if (work.status === 'published' && leaderboard) {
         const rankIndex = (leaderboard.topOverall || []).findIndex((student: { id: string | number; score?: number }) => String(student.id) === String(relationId(work.student)))
         if (rankIndex >= 0 && rankIndex < 3 && (leaderboard.topOverall[rankIndex].score || 0) > 0) setMvsRank(rankIndex + 1)
@@ -190,6 +193,33 @@ export default function WorkPage() {
     finally { setBusy(false) }
   }
 
+  async function saveComment(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!editing || editing.text.trim().length < 2) return
+    setBusy(true)
+    try {
+      const response = await siteFetch(`/api/portfolio-comments/${editing.id}?depth=1`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: editing.text }) })
+      const data = await response.json()
+      if (!response.ok) throw new Error(data.errors?.[0]?.message || data.message || 'Komentar belum tersimpan.')
+      setComments((current) => current.map((item) => item.id === editing.id ? { ...data.doc, updatedAt: new Date(Date.parse(data.doc.createdAt) + 5000).toISOString() } : item))
+      setEditing(null)
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Komentar belum tersimpan.') }
+    finally { setBusy(false) }
+  }
+
+  async function removeComment(comment: Comment) {
+    if (!window.confirm('Hapus komentar ini?')) return
+    setBusy(true)
+    try {
+      const response = await siteFetch(`/api/portfolio-comments/${comment.id}`, { method: 'DELETE' })
+      if (!response.ok) throw new Error('Komentar belum terhapus.')
+      setComments((current) => current.filter((item) => item.id !== comment.id))
+      setCounts((current) => ({ ...current, comments: Math.max(0, current.comments - 1) }))
+      void fetch('/api/community/leaderboard', { cache: 'no-store' }).catch(() => null)
+    } catch (error) { setMessage(error instanceof Error ? error.message : 'Komentar belum terhapus.') }
+    finally { setBusy(false) }
+  }
+
   async function vote(award: Award) {
     if (role !== 'student' || !portfolio) { router.push('/login'); return }
     const now = Date.now()
@@ -246,6 +276,7 @@ export default function WorkPage() {
   const gallery = (portfolio.galleryImages || []).filter((item) => item.url)
   const verified = portfolio.verificationStatus === 'verified'
   const canInteract = role !== 'teacher' && role !== 'admin'
+  const ownsWork = meID !== null && String(relationId(portfolio.student)) === String(meID)
 
   return <main className={`lowfi-shell wd-shell${isDraft ? ' work-detail-shell work-detail-shell--draft' : ''}`} style={{ '--site-nav-height': `${siteNavHeight}px` } as CSSProperties}>
     {isDraft && <aside className="work-review-sidebar" aria-label="Status dan riwayat verifikasi">
@@ -291,7 +322,7 @@ export default function WorkPage() {
 
           {portfolio.status === 'published' ? <section className="wd-section wd-comments" id="komentar"><h2>Komentar <small>{comments.length}</small></h2>
             <form onSubmit={submitComment} className="wd-comment-form"><label htmlFor="comment" className="sr-only">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder={role === 'student' || role === 'teacher' ? 'Berikan tanggapan yang membangun…' : 'Masuk untuk berkomentar'} /><div><small>{commentText.length}/1200</small><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></div></form>
-            {comments.length ? <ul className="wd-comment-list">{[...comments].reverse().map((comment) => { const commenterPhoto = typeof comment.student === 'object' && comment.student && typeof comment.student.profilePhoto === 'object' && comment.student.profilePhoto ? comment.student.profilePhoto.url : null; const commenter = relationName(comment.student) || 'Siswa'; return <li key={comment.id}><span className="wd-avatar sm">{commenterPhoto ? <SkeletonImage src={commenterPhoto} alt="" /> : commenter.slice(0, 1).toUpperCase()}</span><div><p className="wd-comment-meta"><Link href={`/siswa/${relationId(comment.student)}`}>{commenter}</Link><time dateTime={comment.createdAt}>{new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}</time></p><p>{comment.content}</p></div></li> })}</ul> : <p className="wd-empty">Belum ada komentar. Jadilah yang pertama memberi tanggapan.</p>}
+            {comments.length ? <ul className="wd-comment-list">{[...comments].reverse().map((comment) => { const commenterPhoto = typeof comment.student === 'object' && comment.student && typeof comment.student.profilePhoto === 'object' && comment.student.profilePhoto ? comment.student.profilePhoto.url : null; const commenter = relationName(comment.student) || 'Siswa'; const mine = meID !== null && String(relationId(comment.student)) === String(meID); return <li key={comment.id}><span className="wd-avatar sm">{commenterPhoto ? <SkeletonImage src={commenterPhoto} alt="" /> : commenter.slice(0, 1).toUpperCase()}</span><div><p className="wd-comment-meta"><Link href={`/siswa/${relationId(comment.student)}`}>{commenter}</Link><time dateTime={comment.createdAt}>{new Intl.DateTimeFormat('id-ID', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}</time>{comment.updatedAt && Date.parse(comment.updatedAt) - Date.parse(comment.createdAt) > 2000 && <em className="wd-edited">diedit</em>}<span className="wd-comment-actions">{mine && editing?.id !== comment.id && <button type="button" className="wd-link-btn" onClick={() => setEditing({ id: comment.id, text: comment.content })}>Edit</button>}{(mine || ownsWork) && <button type="button" className="wd-link-btn is-danger" disabled={busy} onClick={() => void removeComment(comment)}>Hapus</button>}</span></p>{editing?.id === comment.id ? <form className="wd-comment-edit" onSubmit={saveComment}><textarea value={editing.text} onChange={(event) => setEditing({ id: comment.id, text: event.target.value })} required minLength={2} maxLength={1200} aria-label="Edit komentar" /><div><button type="button" onClick={() => setEditing(null)}>Batal</button><button disabled={busy || editing.text.trim().length < 2}>{busy ? 'Menyimpan…' : 'Simpan'}</button></div></form> : <p>{comment.content}</p>}</div></li> })}</ul> : <p className="wd-empty">Belum ada komentar. Jadilah yang pertama memberi tanggapan.</p>}
           </section> : <section className="wd-section"><h2>Interaksi karya</h2><p className="wd-empty">Suka, komentar, dan voting akan tersedia setelah karya diterbitkan.</p></section>}
         </div>
 

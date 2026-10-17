@@ -20,6 +20,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
         id: comment.id,
         content: comment.content,
         createdAt: comment.createdAt,
+        updatedAt: comment.updatedAt,
         student: typeof comment.student === 'object' ? {
           id: comment.student.id,
           name: comment.student.name,

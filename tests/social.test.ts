@@ -118,19 +118,38 @@ describe('Komentar karya', () => {
     await expect(comment(work, 'Halo dari guru', w.teacher)).rejects.toThrow()
     await expect(comment(work, 'Halo tamu', null)).rejects.toThrow()
   })
-  it('komentar tidak bisa diedit', async () => {
+  it('penulis dapat mengedit isi komentarnya; karya dan penulis tidak berubah', async () => {
+    const work = await publishedWork()
+    const doc = await comment(work, 'Versi awal')
+    const updated = await w.payload.update({ collection: 'portfolio-comments', id: doc.id, data: { content: 'Versi baru' } as never, depth: 0, ...as(w.studentA) })
+    expect(updated.content).toBe('Versi baru')
+    expect(idOf(updated.portfolio)).toBe(work.id)
+    expect(idOf(updated.student)).toBe(w.studentA.id)
+  })
+  it('hasil edit tetap divalidasi (minimal 2 karakter)', async () => {
     const doc = await comment(await publishedWork(), 'Versi awal')
-    await expect(w.payload.update({ collection: 'portfolio-comments', id: doc.id, data: { content: 'Versi baru' }, ...as(w.studentA) })).rejects.toThrow()
+    await expect(w.payload.update({ collection: 'portfolio-comments', id: doc.id, data: { content: 'x' } as never, ...as(w.studentA) })).rejects.toThrow()
+  })
+  it('siswa lain, termasuk pemilik karya, tidak bisa mengedit komentar orang lain', async () => {
+    const work = await publishedWork(w.studentB)
+    const doc = await comment(work, 'Komentar dari A')
+    await expect(w.payload.update({ collection: 'portfolio-comments', id: doc.id, data: { content: 'Diubah' } as never, ...as(w.studentC) })).rejects.toThrow()
+    await expect(w.payload.update({ collection: 'portfolio-comments', id: doc.id, data: { content: 'Diubah' } as never, ...as(w.studentB) })).rejects.toThrow()
   })
   it('penulis dapat menghapus komentarnya, siswa lain tidak', async () => {
     const doc = await comment(await publishedWork(), 'Akan dihapus')
     await expect(w.payload.delete({ collection: 'portfolio-comments', id: doc.id, ...as(w.studentC) })).rejects.toThrow()
     await expect(w.payload.delete({ collection: 'portfolio-comments', id: doc.id, ...as(w.studentA) })).resolves.toBeTruthy()
   })
-  it('pemilik karya tidak bisa menghapus komentar orang lain', async () => {
+  it('pemilik karya dapat menghapus komentar orang lain di karyanya', async () => {
     const work = await publishedWork(w.studentB)
     const doc = await comment(work, 'Komentar dari A')
-    await expect(w.payload.delete({ collection: 'portfolio-comments', id: doc.id, ...as(w.studentB) })).rejects.toThrow()
+    await expect(w.payload.delete({ collection: 'portfolio-comments', id: doc.id, ...as(w.studentB) })).resolves.toBeTruthy()
+  })
+  it('pemilik karya lain tidak bisa menghapus komentar di karya yang bukan miliknya', async () => {
+    const work = await publishedWork(w.studentB)
+    const doc = await comment(work, 'Komentar dari A')
+    await expect(w.payload.delete({ collection: 'portfolio-comments', id: doc.id, ...as(w.studentC) })).rejects.toThrow()
   })
 })
 
