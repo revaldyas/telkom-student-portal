@@ -28,4 +28,11 @@
 .pd .project-workflow-actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 .ps-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:22px}
 .ps-like{min-width:150px;padding:0 22px}.wd-like.ps-like{display:inline-flex}
-.ps-del{margin-left:auto;padding:0;border:0;background:none;color:#c8102e;font-size:12px;font-weight:800;cursor:pointer}.ps-del:hover{text-decoration:underline}
+.ps-del{padding:0;border:0;background:none;color:#c8102e;font-size:12px;font-weight:800;cursor:pointer}.ps-del:hover{text-decoration:underline}
+
+.wd-edited{color:var(--muted);font-size:12px;font-style:normal}
+.wd-comment-actions{margin-left:auto;display:inline-flex;gap:12px}
+.wd-link-btn,.ps-edit{padding:0;border:0;background:none;color:var(--muted);font-size:12px;font-weight:800;cursor:pointer}.wd-link-btn:hover,.ps-edit:hover{color:var(--ink);text-decoration:underline}
+.wd-link-btn.is-danger{color:#c8102e}
+.wd-comment-edit{display:grid;gap:8px;margin-top:4px}.wd-comment-edit textarea{width:100%;min-height:76px;padding:10px 12px;border:1px solid var(--line,#d9dde3);border-radius:10px;font:inherit;resize:vertical}
+.wd-comment-edit div{display:flex;justify-content:flex-end;gap:8px}.wd-comment-edit button{padding:7px 14px;border-radius:999px;border:1px solid var(--line,#d9dde3);background:#fff;font-weight:800;cursor:pointer}.wd-comment-edit button:last-child{background:var(--ink,#111);color:#fff;border-color:transparent}.wd-comment-edit button:disabled{opacity:.5;cursor:default}
