@@ -2,7 +2,7 @@
 
 **Platform portofolio, kolaborasi proyek, dan jembatan menuju dunia kerja bagi siswa SMK Telkom**
 
-> Dokumen ini ditujukan kepada pimpinan sekolah dan pemangku kepentingan. Bagian bertanda **[isi]** perlu dilengkapi dengan data sekolah (jumlah siswa, anggaran, target). Fitur yang disebut "tersedia" sudah berjalan di aplikasi saat ini (lihat [FEATURES.md](FEATURES.md)); fitur "usulan" ada di [REKOMENDASI.md](REKOMENDASI.md) dan belum dibangun.
+> Dokumen ini ditujukan kepada pimpinan sekolah dan pemangku kepentingan. Angka target dan biaya di bagian 8.6 dan 10 adalah **estimasi** yang dihitung dari data sistem dan asumsi yang dicantumkan di bagian 8.6; ganti dengan data sekolah yang sebenarnya (terutama jumlah siswa dan guru) sebelum dipresentasikan. Fitur yang disebut "tersedia" sudah berjalan di aplikasi saat ini (lihat [FEATURES.md](FEATURES.md)); fitur "usulan" ada di [REKOMENDASI.md](REKOMENDASI.md) dan belum dibangun.
 
 ---
 
@@ -208,18 +208,51 @@ Bagian ini merangkum poin penting yang perlu disepakati atau dilengkapi agar man
 
 ### 8.6 Pengukuran dampak
 
-| Indikator | Contoh target **[isi]** | Sumber data |
-| --- | --- | --- |
-| Persentase siswa aktif (punya minimal 1 karya terverifikasi) | [isi]% di akhir tahun ajaran | dashboard |
-| Jumlah karya terverifikasi per semester | [isi] | dashboard |
-| Jumlah proyek tim yang selesai dan terbit | [isi] | dashboard / tracker |
-| Waktu rata-rata verifikasi oleh guru | ≤ [isi] hari | riwayat tinjauan |
-| Siswa yang memakai portofolio untuk PKL/lamaran | [isi] | survei |
-| Peluang yang dipasang dan peminatnya | [isi] | modul peluang |
-| Kepuasan siswa dan guru | ≥ [isi]/5 | survei semester |
-| Jumlah kunjungan publik / calon siswa dari etalase | [isi] | analitik |
+#### Dasar perhitungan
 
-Sebelum peluncuran, tetapkan garis dasar (baseline) agar peningkatan dapat dibuktikan.
+Data yang terbaca dari sistem saat ini (lingkungan demo, bukan data produksi sekolah):
+
+| Data | Nilai |
+| --- | --- |
+| Program keahlian terdaftar | 6 |
+| Kelas terdaftar | 23 |
+| Karya contoh terverifikasi | 88 (rata-rata 6,3 suka dan 3,0 komentar per karya pada data contoh) |
+| Proyek contoh terbit / peluang terbuka / award terbuka | 5 / 5 / 2 |
+| Rata-rata ukuran gambar setelah kompresi (data contoh) | ±63 KB (maksimum 271 KB) |
+| Ukuran database saat ini | 18 MB |
+
+Asumsi untuk memperkirakan skala sekolah (**verifikasi dan ganti dengan data sekolah**):
+
+| Asumsi | Nilai | Dasar |
+| --- | --- | --- |
+| Jumlah siswa | ±780 (rentang 700-830) | 23 kelas × ±34 siswa per kelas |
+| Siswa kelas XI (calon/peserta PKL) | ±260 | sepertiga dari seluruh siswa |
+| Jumlah guru | ±50 | rasio ±1 : 16 |
+| Guru pembimbing yang aktif memverifikasi | ±25 | separuh dari guru |
+| Cakupan percontohan | 2 program keahlian (±8 kelas, ±260 siswa) | 23 kelas / 6 program ≈ 3,8 kelas per program |
+| Karya per siswa aktif per tahun | 1,5 | satu proyek per semester, sebagian lebih |
+| Siswa aktif yang bergabung dalam proyek tim | 20% | tim beranggotakan ±4 siswa |
+
+#### Target tahun pertama
+
+| Indikator | Target | Perhitungan | Sumber data |
+| --- | --- | --- | --- |
+| Siswa aktif (minimal 1 karya terverifikasi) | **Percontohan: 60% (±156 siswa)**; seluruh sekolah akhir tahun pertama: **50% (±390 siswa)**; tahun kedua: 70% (±550) | 60% × 260; 50% × 780; 70% × 780 | dashboard |
+| Karya terverifikasi | **±590 per tahun (±290 per semester)** | 390 siswa aktif × 1,5 karya | dashboard |
+| Proyek tim yang selesai dan terbit | **20-25 per tahun** | 390 × 20% ÷ 4 anggota ≈ 20 | dashboard / tracker |
+| Waktu verifikasi oleh guru | **median ≤ 5 hari kerja**, 90% selesai ≤ 10 hari | - | riwayat tinjauan |
+| Beban verifikasi per guru pembimbing | **±23 karya per tahun (±2 per bulan)** | 590 karya ÷ 25 guru | dashboard |
+| Siswa yang memakai portofolio untuk PKL/lamaran | **±130 siswa per tahun (50% siswa kelas XI)** | 50% × 260 | survei akhir PKL |
+| Peluang dipasang dan peminatnya | **≥ 8 peluang aktif per semester; ±115 pernyataan minat per tahun** | 15% × 780 | modul peluang |
+| Siswa yang berinteraksi (menyukai/berkomentar/menilai) | **≥ 60% siswa aktif membuka platform tiap bulan** | - | log presence / analitik |
+| Kepuasan siswa dan guru | **≥ 4,0 dari 5**, dengan responden ≥ 50% | - | survei tiap semester |
+| Kunjungan publik | **±3.000-5.000 tampilan halaman per bulan (±1.500 pengunjung unik)** pada akhir tahun pertama | perkiraan kasar dari siswa, guru, orang tua, dan calon siswa PPDB | analitik |
+
+Catatan:
+
+- Angka di atas adalah **target perencanaan**, bukan prediksi pasti. Tetapkan baseline pada bulan pertama percontohan lalu koreksi.
+- Beban verifikasi ±2 karya per guru per bulan menunjukkan platform tidak menambah pekerjaan guru secara signifikan; kenyataan bergantung pada seberapa merata verifikasi dibagi.
+- Angka suka/komentar pada data contoh bukan tolok ukur: data itu dibuat oleh skrip seed, bukan interaksi nyata.
 
 ### 8.7 Risiko dan mitigasi
 
@@ -252,15 +285,64 @@ Rincian teknis tiap fase ada pada dokumen [REKOMENDASI-FITUR.md](REKOMENDASI-FIT
 
 ## 10. Kebutuhan sumber daya
 
-| Kebutuhan | Keterangan | Estimasi **[isi]** |
-| --- | --- | --- |
-| Tim pengelola | Admin platform, koordinator guru, pengembang/pemelihara teknis | [isi] orang |
-| Infrastruktur | Hosting aplikasi, database, penyimpanan berkas, domain | Rp [isi] per bulan |
-| Keamanan dan cadangan | CAPTCHA, pemantauan, backup | Rp [isi] per bulan |
-| Pelatihan | Sesi guru dan orientasi siswa | [isi] jam |
-| Pengembangan lanjutan | Fitur fase 3-4 | [isi] |
+> Biaya dalam rupiah adalah perkiraan dengan kurs ±Rp 16.000 per USD dan harga layanan sepengetahuan penulis; **periksa harga dan ketentuan layanan terkini** sebelum dijadikan anggaran.
 
-Catatan: aplikasi sudah berjalan dan berfungsi; biaya terutama untuk operasional, kebijakan, dan pengembangan lanjutan. Perkiraan biaya yang akurat memerlukan jumlah pengguna dan keputusan hosting.
+### 10.1 Tim
+
+| Peran | Beban | Jumlah |
+| --- | --- | --- |
+| Admin platform (akun, data sekolah, moderasi) | paruh waktu | 1 orang |
+| Koordinator guru (pelatihan, pemantauan verifikasi) | paruh waktu | 1 orang |
+| Pemelihara teknis (pembaruan, backup, pemantauan) | paruh waktu; bisa dari guru jurusan RPL atau pihak ketiga | 1 orang |
+| Duta platform (guru dan siswa) | sukarela | 3-5 orang |
+
+Kebutuhan inti: **3 orang paruh waktu**, ditambah duta platform.
+
+### 10.2 Perkiraan kapasitas
+
+| Komponen | Perkiraan tahun pertama | Cara menghitung |
+| --- | --- | --- |
+| Penyimpanan gambar | ±1,5-3 GB | 590 karya × 5 gambar × 0,5-1 MB setelah kompresi (data contoh jauh lebih kecil, ±63 KB, karena gambarnya sintetis) |
+| Penyimpanan video/PDF | ±2-5 GB bila video dibatasi ≤ 50 MB dan hanya ±10% karya memakai video | 59 video × 30-50 MB, ditambah PDF |
+| **Total penyimpanan berkas** | **±4-8 GB**, tumbuh ±4-8 GB per tahun | jumlah di atas |
+| Database | **< 1 GB** | 18 MB saat ini; pertumbuhan terbesar dari pesan chat (±350 MB per tahun bila 30% siswa mengirim ±15 pesan per hari selama ±200 hari sekolah) |
+| Beban puncak | **±100 pengguna bersamaan ≈ 4 permintaan per detik** dari polling notifikasi (satu permintaan per 25 detik per tab aktif), ditambah aktivitas chat dan tracker, perkiraan puncak ±10 permintaan per detik | 100 × 60 ÷ 25 = 240 permintaan per menit |
+
+Beban ini ringan untuk satu server kecil maupun layanan terkelola.
+
+### 10.3 Perkiraan biaya bulanan
+
+| Komponen | Opsi A: cloud terkelola (Vercel + Supabase) | Opsi B: VPS sendiri (lihat [REKOMENDASI-MIGRASI.md](REKOMENDASI-MIGRASI.md)) |
+| --- | --- | --- |
+| Hosting aplikasi | ±US$ 20 (±Rp 320 rb) | VPS 2 vCPU / 4 GB: ±Rp 200-450 rb |
+| Database | ±US$ 25 (±Rp 400 rb) | termasuk di VPS |
+| Penyimpanan berkas 4-8 GB | ±Rp 5-30 rb | object storage ±Rp 5-30 rb |
+| Backup | termasuk | ±Rp 50-100 rb |
+| Keamanan dan pemantauan (CAPTCHA, pemantauan error) | ±Rp 0-300 rb (banyak yang memiliki paket gratis) | ±Rp 0-300 rb |
+| **Perkiraan total per bulan** | **±Rp 0,7-1,5 juta** | **±Rp 0,3-0,9 juta** (+ waktu pengelola server) |
+| Domain | ±Rp 150-300 rb per tahun | sama |
+
+Opsi A menukar biaya yang lebih tinggi dengan perawatan yang lebih ringan; opsi B lebih murah tetapi membutuhkan pemelihara teknis yang disiplin (backup, pembaruan, pemantauan).
+
+### 10.4 Pelatihan
+
+| Kegiatan | Perkiraan |
+| --- | --- |
+| Pelatihan guru (verifikasi, rubrik, tracker) | 3 sesi × 2 jam = **6 jam** |
+| Orientasi siswa | 30 menit per kelas × 23 kelas = **±12 jam** (dapat digabung dengan jam wali kelas) |
+| Panduan singkat dan video tutorial | dibuat sekali, ±2-3 hari kerja |
+
+### 10.5 Pengembangan lanjutan (usaha dalam minggu-orang)
+
+Perkiraan dari estimasi S/M/L pada [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) (S ≈ 0,5 minggu, M ≈ 1-2 minggu, L ≈ 3+ minggu):
+
+| Paket | Isi | Perkiraan usaha |
+| --- | --- | --- |
+| Fase 2 – peluncuran sekolah | Registrasi tervalidasi data sekolah, lupa kata sandi + verifikasi email, keamanan dasar (rate limit, CAPTCHA, header), kebijakan privasi | **±4-7 minggu-orang** (bergantung pada API sekolah) |
+| Fase 3 – penguatan | Rubrik penilaian, notifikasi di server + realtime, ekspor portofolio PDF, laporan kemajuan proyek, analitik sekolah | **±6-10 minggu-orang** |
+| Fase 4 – ekosistem | Mentor industri/alumni, fitur AI bantu guru/siswa, PWA | **±6-12 minggu-orang** |
+
+Konversi ke rupiah menggunakan tarif pengembang yang berlaku di sekolah/mitra. Fitur inti yang sudah ada tidak membutuhkan pengembangan ulang.
 
 ---
 
@@ -270,7 +352,7 @@ Telkom Student Creation mengubah karya dan proyek siswa dari "tugas yang selesai
 
 **Yang dimohon:**
 
-1. Persetujuan untuk fase percontohan di [isi] kelas/jurusan.
+1. Persetujuan untuk fase percontohan di **2 program keahlian (±8 kelas, ±260 siswa)**.
 2. Penunjukan penanggung jawab platform dan koordinator guru.
 3. Akses ke informasi sumber data siswa/guru (API portal sekolah) untuk validasi pendaftaran.
 4. Keputusan hosting (cloud terkelola atau server sekolah) dan alokasi anggaran operasional.
