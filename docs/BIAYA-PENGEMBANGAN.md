@@ -2,7 +2,7 @@
 
 Biaya pengembangan Telkom Student Creation dalam bentuk paket bertingkat, **dirancang untuk proyek sekolah yang dikerjakan tim 2 orang** dan disusun agar realistis untuk anggaran sekolah. Nilai pasar ditampilkan hanya sebagai pembanding untuk menunjukkan nilai yang diterima sekolah.
 
-> **Ini estimasi, bukan penawaran mengikat.** Rincian usaha dihitung bottom-up per modul dan dapat dihitung ulang lewat [`scripts/estimate-cost.py`](../scripts/estimate-cost.py). Dokumen terkait: [PROPOSAL.md](PROPOSAL.md), [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md), [SIMULASI.md](SIMULASI.md).
+> **Ini estimasi, bukan penawaran mengikat.** Rincian usaha dihitung bottom-up per modul dan dapat dihitung ulang lewat [`scripts/estimate-cost.py`](../scripts/estimate-cost.py) (dokumen ini dibuat oleh [`scripts/build-cost-doc.py`](../scripts/build-cost-doc.py)). Dokumen terkait: [PROPOSAL.md](PROPOSAL.md), [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md), [SIMULASI.md](SIMULASI.md).
 
 ## 1. Ringkasan
 
@@ -10,15 +10,15 @@ Anggaran jangkar: **MVP (prioritas tinggi) = Rp 10 juta** untuk biaya coding, UI
 
 | Paket | Isi singkat | Harga sekolah | Kumulatif | Nilai pasar (acuan)* |
 | --- | --- | ---: | ---: | ---: |
-| **Prioritas tinggi – MVP (Fase 2)** | Keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi, privasi, audit | **Rp 10 juta** | Rp 10 juta | Rp 177 juta |
-| **Prioritas sedang – pasca-MVP** | Rubrik + lencana, realtime, ekspor PDF, laporan proyek, analitik, impor CSV | **Rp 10 juta** | Rp 20 juta | Rp 177 juta |
-| **Prioritas kecil – penyempurnaan** | PWA + mode gelap + aksesibilitas, pencarian, riwayat revisi, tracker lanjutan | **Rp 7 juta** | Rp 27 juta | Rp 122 juta |
-| **Ekosistem (non-AI)** | Mentor industri/alumni, pencocokan peluang, juri, integrasi GitHub | **Rp 9,5 juta** | Rp 36,5 juta | Rp 166 juta |
-| **Fitur AI** | AI untuk guru, siswa, admin (belum termasuk biaya API) | **Rp 12,5 juta** | Rp 49 juta | Rp 220 juta |
-| **Infrastruktur (opsional)** | Pindah ke hosting sendiri (jika dipilih) | **Rp 2,5 juta** | Rp 51,5 juta | Rp 41 juta |
-| *Sudah dibangun (tersedia sekarang)* | 16 modul, 409 test | *Rp 32 juta* | - | Rp 522 juta |
+| **Prioritas tinggi – MVP (Fase 2)** | Keamanan, registrasi via data sekolah, lupa kata sandi, notifikasi di server, moderasi, privasi, audit | **Rp 10 juta** | Rp 10 juta | Rp 88 juta |
+| **Prioritas sedang – pasca-MVP** | Rubrik + lencana, realtime, ekspor PDF, laporan proyek, analitik, impor CSV | **Rp 10 juta** | Rp 20 juta | Rp 88 juta |
+| **Prioritas kecil – penyempurnaan** | PWA + mode gelap + aksesibilitas, pencarian, riwayat revisi, tracker lanjutan | **Rp 7 juta** | Rp 27 juta | Rp 61 juta |
+| **Ekosistem (non-AI)** | Mentor industri/alumni, pencocokan peluang, juri, integrasi GitHub | **Rp 9,5 juta** | Rp 36,5 juta | Rp 83 juta |
+| **Fitur AI** | AI untuk guru, siswa, admin (belum termasuk biaya API) | **Rp 12,5 juta** | Rp 49 juta | Rp 110 juta |
+| **Infrastruktur (opsional)** | Pindah ke hosting sendiri (jika dipilih) | **Rp 2,5 juta** | Rp 51,5 juta | Rp 20 juta |
+| *Sudah dibangun (tersedia sekarang)* | 16 modul, 409 test | *Rp 32 juta* | - | Rp 261 juta |
 
-\* Nilai pasar acuan = tarif gabungan freelancer + tim kecil (Rp 1,5 juta per hari-orang) dengan overhead desain, manajemen proyek, dan QA. Perhitungan lengkap di bagian 6.
+\* Nilai pasar acuan = tarif gabungan freelancer + tim kecil (Rp 0,75 juta per hari-orang, sudah diturunkan 50% dari acuan lama karena harga jasa pengembangan di Indonesia melemah sejak maraknya AI) dengan overhead desain, manajemen proyek, dan QA. Perhitungan lengkap di bagian 6.
 
 Gambaran total:
 
@@ -32,7 +32,7 @@ Gambaran total:
 | Seluruh rekomendasi + migrasi hosting | **Rp 51,5 juta** |
 | Seluruh rekomendasi + nilai fitur yang sudah ada (Rp 32 juta) | Rp 83,5 juta |
 
-**Pesan utama untuk pengambil keputusan:** MVP diajukan dengan harga Rp 10 juta, sedangkan nilai pasarnya sekitar Rp 177 juta; fitur yang sudah tersedia bernilai ±Rp 522 juta bila dibangun konvensional.
+**Pesan utama untuk pengambil keputusan:** MVP diajukan dengan harga Rp 10 juta, sedangkan nilai pasarnya sekitar Rp 88 juta; fitur yang sudah tersedia bernilai ±Rp 261 juta bila dibangun konvensional.
 
 ## 2. Dasar penetapan harga
 
@@ -43,6 +43,7 @@ Gambaran total:
 | Cakupan harga | Coding, UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran |
 | **Tidak termasuk** | API model AI, langganan server/database/storage, domain, layanan email dan CAPTCHA, audit keamanan pihak ketiga, pelatihan pengguna, dan PPN (lihat bagian 5) |
 | Bukan harga pasar | Sengaja jauh di bawah tarif pasar karena ini proyek sekolah; selisihnya adalah kontribusi tim |
+| Tarif pasar acuan | Internal/freelancer Rp 0,45 juta; gabungan Rp 0,75 juta; software house Rp 1,10 juta per hari-orang. Sudah diturunkan 50% dari tarif dasar (Rp 0,9 / 1,5 / 2,2 juta) karena pasar jasa pengembangan melemah sejak maraknya AI. Untuk potongan 60%, ubah `MARKET_DISCOUNT` di skrip |
 | Ketidakpastian | ±30%. Terbesar pada registrasi via API sekolah dan fitur AI |
 
 ## 3. Paket dan waktu pengerjaan
@@ -129,9 +130,9 @@ Seluruh 16 modul yang sudah berjalan (karya, proyek, verifikasi guru, chat, trac
 | Cara menilai | Biaya |
 | --- | ---: |
 | **Harga sekolah** (tarif yang sama dengan paket di atas) | **Rp 32 juta** |
-| Nilai pasar: internal/freelancer | Rp 313 juta |
-| Nilai pasar: gabungan | Rp 522 juta |
-| Nilai pasar: software house | Rp 766 juta |
+| Nilai pasar: internal/freelancer | Rp 157 juta |
+| Nilai pasar: gabungan | Rp 261 juta |
+| Nilai pasar: software house | Rp 383 juta |
 
 Bagian ini **sudah dikerjakan**. Pilihan untuk sekolah: (a) dicatat sebagai kontribusi tim tanpa tagihan, (b) diajukan penggantian sebagian, atau (c) diajukan penuh Rp 32 juta. Apa pun pilihannya, mencantumkan nilai pasar membantu sekolah memahami aset yang diterimanya. Rincian modul yang sudah dibangun:
 
@@ -159,9 +160,9 @@ Dengan pengali overhead ×1,35 (desain UI/UX, manajemen proyek, QA/UAT): **348 h
 
 | Skenario tarif | Tarif / hari | Pengembangan murni | Dengan overhead |
 | --- | ---: | ---: | ---: |
-| Internal / freelancer | Rp 900 rb | Rp 232 juta | **Rp 313 juta** |
-| Gabungan (freelancer + tim kecil) | Rp 1.500 rb | Rp 387 juta | **Rp 522 juta** |
-| Software house | Rp 2.200 rb | Rp 568 juta | **Rp 766 juta** |
+| Internal / freelancer | Rp 450 rb | Rp 116 juta | **Rp 157 juta** |
+| Gabungan (freelancer + tim kecil) | Rp 750 rb | Rp 194 juta | **Rp 261 juta** |
+| Software house | Rp 1.100 rb | Rp 284 juta | **Rp 383 juta** |
 
 ## 5. Biaya di luar harga pengembangan (ditanggung sekolah / terpisah)
 
@@ -181,15 +182,15 @@ Perkiraan untuk sekolah ±1.200 siswa (lihat [SIMULASI.md](SIMULASI.md)); harga 
 
 | Paket | Hari-orang (total) | Harga sekolah | Nilai pasar (gabungan) | Hemat bagi sekolah |
 | --- | ---: | ---: | ---: | ---: |
-| Prioritas tinggi – MVP (Fase 2) | 81 | Rp 10 juta | Rp 177 juta | 94% |
-| Prioritas sedang – pasca-MVP | 81 | Rp 10 juta | Rp 177 juta | 94% |
-| Prioritas kecil – penyempurnaan | 56 | Rp 7 juta | Rp 122 juta | 94% |
-| Ekosistem (non-AI) | 76 | Rp 9,5 juta | Rp 166 juta | 94% |
-| Fitur AI | 101 | Rp 12,5 juta | Rp 220 juta | 94% |
-| Infrastruktur (opsional) | 19 | Rp 2,5 juta | Rp 41 juta | 94% |
-| Sudah dibangun | 258 | Rp 32 juta | Rp 522 juta | 94% |
+| Prioritas tinggi – MVP (Fase 2) | 81 | Rp 10 juta | Rp 88 juta | 89% |
+| Prioritas sedang – pasca-MVP | 81 | Rp 10 juta | Rp 88 juta | 89% |
+| Prioritas kecil – penyempurnaan | 56 | Rp 7 juta | Rp 61 juta | 89% |
+| Ekosistem (non-AI) | 76 | Rp 9,5 juta | Rp 83 juta | 89% |
+| Fitur AI | 101 | Rp 12,5 juta | Rp 110 juta | 89% |
+| Infrastruktur (opsional) | 19 | Rp 2,5 juta | Rp 20 juta | 88% |
+| Sudah dibangun | 258 | Rp 32 juta | Rp 261 juta | 88% |
 
-Nilai pasar memakai tarif Rp 1,5 juta per hari-orang dan pengali overhead ×1,45 (paket baru) atau ×1,35 (yang sudah dibangun). Skenario tarif lain (internal Rp 0,9 juta; software house Rp 2,2 juta) tersedia dengan menjalankan `python3 scripts/estimate-cost.py --packages`.
+Nilai pasar memakai tarif gabungan Rp 0,75 juta per hari-orang (sudah turun 50% dari acuan lama) dan pengali overhead ×1,45 (paket baru) atau ×1,35 (yang sudah dibangun). Skenario tarif lain tersedia dengan menjalankan `python3 scripts/estimate-cost.py --packages`.
 
 ## 7. Catatan untuk tim
 
@@ -202,6 +203,6 @@ Nilai pasar memakai tarif Rp 1,5 juta per hari-orang dan pengali overhead ×1,45
 
 ## 8. Memperbarui perhitungan
 
-1. Ubah `RATES`, `OVERHEAD_*`, `MVP_BUDGET_JUTA`, `BUILT`, dan `FUTURE` di `scripts/estimate-cost.py`.
-2. Jalankan `python3 scripts/estimate-cost.py --school` (harga sekolah), `--packages` (nilai pasar kumulatif), atau tanpa argumen (seluruh rincian).
-3. Perbarui tabel di dokumen ini dan ringkasannya di [PROPOSAL.md](PROPOSAL.md) bagian 10.5.
+1. Ubah `BASE_RATES`, `MARKET_DISCOUNT`, `OVERHEAD_*`, `MVP_BUDGET_JUTA`, `BUILT`, dan `FUTURE` di `scripts/estimate-cost.py`.
+2. Jalankan `python3 scripts/build-cost-doc.py` untuk membuat ulang dokumen ini; `python3 scripts/estimate-cost.py --school` (harga sekolah), `--packages` (nilai pasar kumulatif), atau tanpa argumen untuk seluruh rincian.
+3. Perbarui ringkasan di [PROPOSAL.md](PROPOSAL.md) bagian 10.5.

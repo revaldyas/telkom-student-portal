@@ -331,7 +331,7 @@ Perkiraan dari estimasi S/M/L pada [REKOMENDASI-FITUR.md](REKOMENDASI-FITUR.md) 
 | Fitur AI (belum termasuk biaya API) | Rp 12,5 juta | Rp 49 juta |
 | Migrasi hosting sendiri (opsional) | Rp 2,5 juta | Rp 51,5 juta |
 
-Fitur yang sudah tersedia saat ini bernilai ±Rp 32 juta pada tarif yang sama (nilai pasar konvensional ±Rp 0,5 miliar) dan sudah dikerjakan. Harga di atas sengaja jauh di bawah tarif pasar karena ini proyek sekolah.
+Fitur yang sudah tersedia saat ini bernilai ±Rp 32 juta pada tarif yang sama (nilai pasar konvensional ±Rp 0,26 miliar, dengan acuan tarif yang sudah disesuaikan ke kondisi pasar saat ini) dan sudah dikerjakan. Harga di atas sengaja jauh di bawah tarif pasar karena ini proyek sekolah.
 
 ---
 

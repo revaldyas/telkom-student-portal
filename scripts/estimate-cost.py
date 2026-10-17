@@ -7,8 +7,11 @@ Semua angka adalah ASUMSI perencanaan; ubah tabel di bawah lalu jalankan ulang:
     python3 scripts/estimate-cost.py          # cetak tabel Markdown
 """
 
-# Tarif per hari-orang (Rp juta), 8 jam kerja. Perkiraan; sesuaikan dengan kondisi sekolah/mitra.
-RATES = {'Internal / freelancer': 0.9, 'Gabungan (freelancer + tim kecil)': 1.5, 'Software house': 2.2}
+# Tarif pasar acuan per hari-orang (Rp juta), 8 jam kerja. Nilai dasar diturunkan karena harga pasar jasa pengembangan
+# di Indonesia melemah sejak maraknya AI; MARKET_DISCOUNT adalah potongan atas tarif dasar (0,5 = turun 50%, 0,6 = turun 60%).
+BASE_RATES = {'Internal / freelancer': 0.9, 'Gabungan (freelancer + tim kecil)': 1.5, 'Software house': 2.2}
+MARKET_DISCOUNT = 0.5
+RATES = {name: round(rate * (1 - MARKET_DISCOUNT), 3) for name, rate in BASE_RATES.items()}
 HARI_PER_BULAN = 22
 
 # Pengali di atas usaha pengembangan murni
