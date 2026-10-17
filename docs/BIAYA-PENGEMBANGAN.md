@@ -205,7 +205,6 @@ Nilai pasar memakai tarif gabungan Rp 0,75 juta per hari-orang (sudah turun 50% 
 
 ## 7. Catatan untuk tim
 
-- **Tarif efektif.** Rp 10 juta untuk MVP berarti Rp 5 juta per orang. Dengan jadwal 2 minggu (20 hari-orang nyata) itu ±Rp 500 ribu per orang per hari kerja; diukur dengan usaha konvensional (81 hari-orang) hanya ±Rp 123 ribu per hari-orang. Dua angka ini menjelaskan kenapa harga tampak sangat rendah di atas kertas tetapi tetap wajar sebagai kompensasi untuk 2 minggu kerja penuh.
 - **Opsi mengurangi lingkup MVP** bila jadwal 2 minggu terasa mepet: melakukan registrasi lewat impor CSV dulu (bukan API sekolah) mengurangi usaha registrasi dari 25 menjadi ±12 hari-orang. MVP menjadi ±52 hari murni → ±65 hari total → ±Rp 8 juta pada tarif yang sama, atau tetap Rp 10 juta dengan margin waktu lebih besar. API sekolah masuk sebagai tambahan bila aksesnya sudah jelas.
 - **Hindari menurunkan keamanan demi harga.** Rate limit, CAPTCHA, lupa kata sandi, dan privasi adalah syarat peluncuran ke siswa di bawah umur; sebaiknya tetap di MVP.
 - **Pembayaran bertahap** mengurangi risiko kedua pihak. Contoh untuk MVP: 30% saat mulai, 40% saat keamanan + registrasi selesai dan lolos test, 30% setelah uji penerimaan di sekolah.
