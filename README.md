@@ -33,6 +33,7 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 | [docs/REKOMENDASI.md](docs/REKOMENDASI.md) | Usulan tahap berikutnya: validasi identitas via API sekolah, migrasi hosting/storage/database, notifikasi realtime, keamanan, fitur dan AI |
 | [docs/SIMULASI.md](docs/SIMULASI.md) | Simulasi adopsi, storage, database, beban server, dan biaya untuk sekolah berskala SMK Telkom (skrip: `scripts/simulate-adoption.py`) |
 | [docs/BIAYA-PENGEMBANGAN.md](docs/BIAYA-PENGEMBANGAN.md) | Biaya pengembangan dengan harga sekolah per paket (MVP, sedang, kecil, ekosistem, AI), nilai fitur yang sudah ada, dan pembanding nilai pasar (skrip: `scripts/estimate-cost.py`) |
+| [docs/PITCH-DECK.md](docs/PITCH-DECK.md) | Naskah pitch deck (format Marp) beserta data pendukung dan sumber, siap dikonversi menjadi slide |
 | [docs/FEATURES.md](docs/FEATURES.md) | Daftar fitur per area: publik, portal siswa, portal Guru, admin CMS, pesan, tracker, dan fitur lintas bagian |
 | [docs/API.md](docs/API.md) | Referensi endpoint `/api`: akses, parameter, dan aturan validasi |
 | [docs/TESTING.md](docs/TESTING.md) | Cara menjalankan test, cara kerja harness, cakupan per file, dan area yang belum teruji |

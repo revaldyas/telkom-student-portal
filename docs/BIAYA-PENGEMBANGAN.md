@@ -149,7 +149,7 @@ Bagian ini **sudah dikerjakan**. Pilihan untuk sekolah: (a) dicatat sebagai kont
 
 | # | Modul | Hari-orang | Keterangan |
 | --- | --- | ---: | --- |
-| 1 | Fondasi: Next.js + Payload, autentikasi website dan CMS, access control, migrasi, konfigurasi deploy, skrip seed | 15 | users/admins, sesi, 22 collection, 24 migrasi |
+| 1 | Fondasi: Next.js + Payload, autentikasi website dan CMS, access control, migrasi, konfigurasi deploy, skrip seed | 15 | users/admins, sesi, 29 collection, 24 migrasi |
 | 2 | Data akademik dan admin CMS: program, kelas, data siswa, upload dengan kompresi WebP, navigasi admin | 10 | editor gambar, grup menu admin |
 | 3 | Karya: collection, validasi/slug, alur draf-ajukan-verifikasi, wizard portal, katalog, detail, antrean verifikasi guru | 28 | inti produk |
 | 4 | Proyek kolaborasi: anggota, undangan mentor, alur tinjauan, wizard, halaman detail, listing | 25 | mentor utama/pendamping |

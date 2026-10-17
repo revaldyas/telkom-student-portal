@@ -21,7 +21,7 @@ TEST_UPLIFT = 1.25      # fitur masa depan: ditambah 25% untuk test otomatis dan
 
 # (modul, hari-orang, keterangan)
 BUILT = [
-    ('Fondasi: Next.js + Payload, autentikasi website dan CMS, access control, migrasi, konfigurasi deploy, skrip seed', 15, 'users/admins, sesi, 22 collection, 24 migrasi'),
+    ('Fondasi: Next.js + Payload, autentikasi website dan CMS, access control, migrasi, konfigurasi deploy, skrip seed', 15, 'users/admins, sesi, 29 collection, 24 migrasi'),
     ('Data akademik dan admin CMS: program, kelas, data siswa, upload dengan kompresi WebP, navigasi admin', 10, 'editor gambar, grup menu admin'),
     ('Karya: collection, validasi/slug, alur draf-ajukan-verifikasi, wizard portal, katalog, detail, antrean verifikasi guru', 28, 'inti produk'),
     ('Proyek kolaborasi: anggota, undangan mentor, alur tinjauan, wizard, halaman detail, listing', 25, 'mentor utama/pendamping'),
