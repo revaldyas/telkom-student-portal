@@ -17,6 +17,8 @@ import * as migration_20261017_100200_testimonials from './20261017_100200_testi
 import * as migration_20261017_110000_profile_appearance from './20261017_110000_profile_appearance';
 import * as migration_20261017_110100_testimonials_lock_rels from './20261017_110100_testimonials_lock_rels';
 import * as migration_20261018_100000_pinned_works from './20261018_100000_pinned_works';
+import * as migration_20261018_110000_chat from './20261018_110000_chat';
+import * as migration_20261018_120000_chat_photo from './20261018_120000_chat_photo';
 
 export const migrations = [
   {
@@ -113,5 +115,15 @@ export const migrations = [
     up: migration_20261018_100000_pinned_works.up,
     down: migration_20261018_100000_pinned_works.down,
     name: '20261018_100000_pinned_works',
+  },
+  {
+    up: migration_20261018_110000_chat.up,
+    down: migration_20261018_110000_chat.down,
+    name: '20261018_110000_chat',
+  },
+  {
+    up: migration_20261018_120000_chat_photo.up,
+    down: migration_20261018_120000_chat_photo.down,
+    name: '20261018_120000_chat_photo',
   },
 ];
