@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical'
 
-export type ProjectStudentOption = { id: string | number; name: string }
-export type ProjectMentorOption = { id: string | number; name: string; skills: string[]; interests: string[] }
+export type ProjectStudentOption = { id: string | number; name: string; photo: string | null; className: string | null }
+export type ProjectMentorOption = { id: string | number; name: string; photo: string | null; skills: string[]; interests: string[] }
 export type ProjectEditorMember = { member: string | number; contribution: string }
 export type ProjectEditorMentor = { mentor: string | number; assignmentRole: 'primary' | 'supporting'; response: 'invited' | 'accepted' | 'declined' }
 export type ProjectEditorData = {
@@ -25,8 +25,8 @@ export async function getProjectEditorData(projectID?: string) {
   if (!user || user.collection !== 'users' || user.role !== 'student') redirect('/portal')
   const [categories, students, teachers, project] = await Promise.all([
     payload.find({ collection: 'portfolio-categories', limit: 100, sort: 'name', depth: 0, overrideAccess: true }),
-    payload.find({ collection: 'users', where: { role: { equals: 'student' } }, limit: 1000, sort: 'name', depth: 0, overrideAccess: true }),
-    payload.find({ collection: 'users', where: { role: { equals: 'teacher' } }, limit: 1000, sort: 'name', depth: 0, overrideAccess: true }),
+    payload.find({ collection: 'users', where: { role: { equals: 'student' } }, limit: 1000, sort: 'name', depth: 1, overrideAccess: true }),
+    payload.find({ collection: 'users', where: { role: { equals: 'teacher' } }, limit: 1000, sort: 'name', depth: 1, overrideAccess: true }),
     projectID ? payload.findByID({ collection: 'projects', id: projectID, depth: 2, overrideAccess: true }).catch(() => null) : Promise.resolve(null),
   ])
   if (projectID && (!project || String(typeof project.createdBy === 'object' ? project.createdBy.id : project.createdBy) !== String(user.id))) redirect('/portal/siswa/proyek')
@@ -43,8 +43,8 @@ export async function getProjectEditorData(projectID?: string) {
   return {
     userID: user.id,
     categories: categories.docs.map((item) => ({ id: item.id, name: item.name })),
-    students: students.docs.filter((student) => student.role === 'student').map((student) => ({ id: student.id, name: student.name || 'Siswa' })),
-    teachers: teachers.docs.filter((teacher) => teacher.role === 'teacher').map((teacher) => ({ id: teacher.id, name: teacher.name || 'Guru', skills: teacher.skills || [], interests: teacher.interests || [] })) as ProjectMentorOption[],
+    students: students.docs.filter((student) => student.role === 'student').map((student) => ({ id: student.id, name: student.name || 'Siswa', photo: typeof student.profilePhoto === 'object' && student.profilePhoto ? student.profilePhoto.url || null : null, className: typeof student.class === 'object' && student.class ? student.class.name || null : null })),
+    teachers: teachers.docs.filter((teacher) => teacher.role === 'teacher').map((teacher) => ({ id: teacher.id, name: teacher.name || 'Guru', photo: typeof teacher.profilePhoto === 'object' && teacher.profilePhoto ? teacher.profilePhoto.url || null : null, skills: teacher.skills || [], interests: teacher.interests || [] })) as ProjectMentorOption[],
     project: editorProject,
   }
 }

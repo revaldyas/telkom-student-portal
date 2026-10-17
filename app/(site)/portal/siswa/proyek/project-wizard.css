@@ -1,0 +1,25 @@
+.pj-av{display:inline-grid;flex:none;place-items:center;aspect-ratio:1;overflow:hidden;border-radius:50%;background:#17181b;color:#fff;font-weight:800;font-family:'Manrope',sans-serif;line-height:1}
+.pj-av img{width:100%;height:100%;object-fit:cover}
+.pj-team{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.pj-team>li{position:relative;display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid #ececea;border-radius:20px;background:#fafaf8}
+.pj-team-main{display:grid;flex:1;gap:8px;min-width:0}
+.pj-team-name{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}.pj-team-name strong{font-size:15px}.pj-team-name em{padding:2px 10px;border-radius:999px;background:#17181b;color:#fff;font-size:10.5px;font-style:normal;font-weight:800}.pj-team-name small{color:#77797d;font-size:12px}
+.pj-roles{display:flex;flex-wrap:wrap;gap:6px}.pj-roles button{padding:4px 12px;border:1px dashed #b9b9b4;border-radius:999px;background:#fff;color:#33363b;font-size:12px;font-weight:700;cursor:pointer}.pj-roles button:hover{border-color:#17181b;background:#f4f4f2}
+.pj-remove{display:grid;flex:none;place-items:center;width:32px;height:32px;border:0;border-radius:50%;background:#efefed;color:#55575b;font-size:20px;line-height:1;cursor:pointer}.pj-remove:hover{background:#fde8ea;color:#c8102e}
+.pj-skills{display:flex;flex-wrap:wrap;gap:5px}.pj-skills span{padding:2px 10px;border-radius:999px;background:#e3edff;color:#2563eb;font-size:11px;font-weight:700}
+.pj-resp{padding:2px 10px;border-radius:999px;background:#efefed;color:#55575b;font-size:11px;font-weight:800}.pj-resp--accepted{background:#e1f5ea;color:#0f6a40}.pj-resp--declined{background:#fde8ea;color:#c8102e}.pj-resp--invited{background:#fff1d6;color:#9a5b00}
+.pj-seg{display:inline-flex;flex-wrap:wrap;gap:6px}.pj-seg button{display:grid;gap:1px;padding:7px 16px;border:1.5px solid #deded9;border-radius:14px;background:#fff;color:#33363b;font-size:13px;font-weight:800;text-align:left;cursor:pointer}.pj-seg button small{color:#8a8c91;font-size:11px;font-weight:600}.pj-seg button.is-on{border-color:#17181b;background:#17181b;color:#fff}.pj-seg button.is-on small{color:rgba(255,255,255,.7)}
+.pj-note{margin:0;padding:14px 16px;border-radius:14px;background:#f4f4f2;color:#6b6d73;font-size:13px}
+.pj-prev-team{display:flex;align-items:center;margin-top:6px}.pj-prev-team .pj-av+.pj-av{margin-left:-8px}.pj-prev-team .pj-av{box-shadow:0 0 0 2px #fff}.pj-prev-team span:last-child{margin-left:10px;color:#6b6d73;font-size:12px;font-weight:700}
+.pj-modal-back{position:fixed;inset:0;z-index:300;display:grid;place-items:center;padding:16px;background:rgba(10,11,13,.55);backdrop-filter:blur(3px)}
+.pj-modal{display:flex;width:min(100%,480px);max-height:min(84vh,620px);flex-direction:column;gap:12px;padding:20px;border-radius:26px;background:#fff;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.pj-modal>header{display:flex;align-items:center;justify-content:space-between}.pj-modal h2{margin:0;font-size:1.15rem}.pj-modal>header button{width:34px;height:34px;border:0;border-radius:50%;background:#f0f0ee;font-size:20px;cursor:pointer}
+.pj-modal-hint{margin:0;color:#77797d;font-size:13px}
+.pj-search{position:relative;display:flex;align-items:center;color:#8a8c91}.pj-search svg{position:absolute;left:14px;pointer-events:none}.pj-search input{width:100%;min-height:44px;padding:8px 14px 8px 40px;border:1px solid #deded9;border-radius:999px;font:inherit;font-size:14px;outline:none}.pj-search input:focus{border-color:#17181b;box-shadow:0 0 0 4px rgba(25,26,29,.08)}
+.pj-modal ul{display:grid;gap:4px;margin:0;padding:0;overflow-y:auto;list-style:none}
+.pj-modal li button{display:flex;width:100%;align-items:center;gap:12px;padding:9px 10px;border:0;border-radius:14px;background:transparent;text-align:left;cursor:pointer}.pj-modal li button:hover{background:#f4f4f2}
+.pj-modal li button>span:not(.pj-av){display:grid;flex:1;min-width:0}
+.pj-modal li button>.pj-av{flex:none}.pj-modal strong{overflow:hidden;font-size:14px;text-overflow:ellipsis;white-space:nowrap}.pj-modal small{overflow:hidden;color:#77797d;font-size:12px;text-overflow:ellipsis;white-space:nowrap}
+.pj-modal li i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#efefed;font-style:normal;font-weight:800}
+.pj-empty{padding:20px;color:#8a8c91;text-align:center}
+@media(max-width:560px){.pj-team>li{flex-wrap:wrap}.pj-remove{position:absolute;top:10px;right:10px}}
