@@ -34,6 +34,7 @@ md = md.replace(/^> (Visual|Sumber):.*\n?/gm, '')
 const layout = JSON.parse(fs.readFileSync(path.join(here, 'deck-layout.json'), 'utf8'))
 const esc = (value) => String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const statsHtml = (stats) => `<div class="stats">${stats.map(([value, label]) => `<div class="stat"><b>${esc(value)}</b><span>${esc(label)}</span></div>`).join('')}</div>`
+const frameHtml = (file) => `<figure class="frame"><div class="bar"><i></i><i></i><i></i></div><img src="${screen(file)}" alt=""></figure>`
 const slides = md.split(/\n---\n/)
 const rebuilt = slides.map((slide, index) => {
   const isCover = /^# /m.test(slide)
@@ -43,14 +44,21 @@ const rebuilt = slides.map((slide, index) => {
   let out = slide
   if (spec.removeTable) out = out.replace(/\n\|[^\n]*\|\n\|[ :|-]+\|\n(?:\|[^\n]*\|\n?)+/, '\n')
   if (spec.removeList) out = out.replace(/\n(?:- [^\n]*\n(?:  [^\n]*\n)*)+/, '\n')
-  const lines = []
-  if (spec.class) lines.push(`<!-- _class: ${spec.class} -->`)
+  if (spec.replaceCode) out = out.replace(/```[\s\S]*?```/, spec.replaceCode)
+  const directive = spec.class ? `<!-- _class: ${spec.class} -->\n` : ''
   const headingRe = isCover ? /^# .*$/m : /^## .*$/m
-  const extras = []
-  if (spec.images) extras.push(...spec.images.map((item) => `![${item.spec}](${screen(item.file)})`))
-  if (spec.stats) extras.push(statsHtml(spec.stats))
-  out = out.replace(headingRe, (line) => `${lines.length ? lines.join('\n') + '\n' : ''}${line}${extras.length ? '\n\n' + extras.join('\n') : ''}`)
-  return out
+  const at = out.search(headingRe)
+  const headEnd = out.indexOf('\n', at) === -1 ? out.length : out.indexOf('\n', at)
+  const before = out.slice(0, at)
+  const headLine = out.slice(at, headEnd)
+  let rest = out.slice(headEnd).trim()
+  if (spec.stats) rest = `${statsHtml(spec.stats)}\n\n${rest}`
+  const files = (spec.images || []).map((item) => item.file)
+  if (!files.length) return `${before}${directive}${headLine}\n\n${rest}\n`
+  const shots = `<div class="shots${files.length > 1 ? ' two' : ''}">\n${files.map(frameHtml).join('\n')}\n</div>`
+  const splitClass = spec.wide ? 'split wide' : 'split'
+  if (isCover) return `${before}${directive}<div class="${splitClass}">\n<div class="text">\n\n${headLine}\n\n${rest}\n\n</div>\n${shots}\n</div>\n`
+  return `${before}${directive}${headLine}\n\n<div class="${splitClass}">\n<div class="text">\n\n${rest}\n\n</div>\n${shots}\n</div>\n`
 })
 md = rebuilt.join('\n---\n')
 const mdFile = path.join(buildDir, 'deck.md')

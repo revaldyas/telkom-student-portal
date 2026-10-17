@@ -1,38 +1,211 @@
 {
-  "__cover__": { "images": [{ "file": "01-beranda", "spec": "bg right:46% fit" }] },
+  "__cover__": {
+    "images": [
+      {
+        "file": "01-beranda",
+        "spec": "bg right:46% fit"
+      }
+    ]
+  },
   "Masalah 1: lulusan SMK paling rentan menganggur": {
-    "stats": [["8,6–9,0%", "pengangguran terbuka lulusan SMK (BPS, Agustus 2024), tertinggi di semua jenjang"], ["6,73%", "lulusan SMA"], ["4,91%", "rata-rata nasional"], ["±1,8×", "lulusan SMK lebih rentan menganggur dibanding rata-rata nasional"]],
+    "stats": [
+      [
+        "8,6–9,0%",
+        "pengangguran terbuka lulusan SMK (BPS, Agustus 2024), tertinggi di semua jenjang"
+      ],
+      [
+        "6,73%",
+        "lulusan SMA"
+      ],
+      [
+        "4,91%",
+        "rata-rata nasional"
+      ],
+      [
+        "±1,8×",
+        "lulusan SMK lebih rentan menganggur dibanding rata-rata nasional"
+      ]
+    ],
     "removeTable": true
   },
   "Masalah 2: kebutuhan talenta ada, tetapi sulit dibuktikan": {
-    "stats": [["±12 juta", "talenta digital dibutuhkan hingga 2030 (Komdigi)"], ["450–600 rb", "kebutuhan talenta digital per tahun"], ["72%", "perusahaan menerapkan perekrutan berbasis keterampilan (survei AS)"], ["45%", "hanya berubah \"dalam nama saja\": bukti yang tepercaya yang membedakan"]],
+    "stats": [
+      [
+        "±12 juta",
+        "talenta digital dibutuhkan hingga 2030 (Komdigi)"
+      ],
+      [
+        "450–600 rb",
+        "kebutuhan talenta digital per tahun"
+      ],
+      [
+        "72%",
+        "perusahaan menerapkan perekrutan berbasis keterampilan (survei AS)"
+      ],
+      [
+        "45%",
+        "hanya berubah \"dalam nama saja\": bukti yang tepercaya yang membedakan"
+      ]
+    ],
     "removeList": true
   },
   "Masalah 3: di sekolah, karya hilang dan kerja tim tak terlihat": {},
   "Masalah 4: sekolah dan yayasan sulit menunjukkan hasil belajar": {},
-  "Solusi: satu platform, tiga fungsi": { "images": [{ "file": "03-detail-karya", "spec": "bg right:44% fit" }] },
-  "Produk: yang sudah berjalan hari ini": { "class": "tight", "images": [{ "file": "15-tracker-papan", "spec": "bg right:36% fit vertical" }, { "file": "16-pesan", "spec": "bg fit" }] },
-  "Cara kerja validasi (mengapa dipercaya)": { "class": "dense" },
-  "Manfaat untuk siswa": { "class": "dense", "images": [{ "file": "06-profil-siswa", "spec": "bg right:42% fit" }] },
-  "Manfaat untuk guru": { "class": "dense", "images": [{ "file": "18-dashboard-guru", "spec": "bg right:42% fit" }] },
-  "Manfaat untuk sekolah dan yayasan": { "class": "tight", "images": [{ "file": "07-leaderboard", "spec": "bg right:34% fit" }] },
+  "Solusi: satu platform, tiga fungsi": {
+    "images": [
+      {
+        "file": "03-detail-karya",
+        "spec": "bg right:44% fit"
+      }
+    ]
+  },
+  "Produk: yang sudah berjalan hari ini": {
+    "class": "tight",
+    "images": [
+      {
+        "file": "15-tracker-papan",
+        "spec": "bg right:36% fit vertical"
+      },
+      {
+        "file": "16-pesan",
+        "spec": "bg fit"
+      }
+    ]
+  },
+  "Cara kerja validasi (mengapa dipercaya)": {
+    "class": "dense",
+    "replaceCode": "<div class=\"flow\"><div class=\"step\"><b>1</b><span>Siswa menyimpan draf</span></div><i>→</i><div class=\"step\"><b>2</b><span>Mengajukan ke guru</span></div><i>→</i><div class=\"step\"><b>3</b><span>Guru dalam cakupan kelas/program meninjau</span></div><i>→</i><div class=\"step ok\"><b>✓</b><span>Setujui: terbit dengan tanda &quot;Terverifikasi oleh [guru]&quot;</span></div></div>\n<p class=\"flow-note\">Atau guru meminta revisi dengan catatan tertulis, lalu siswa memperbaiki dan mengajukan ulang.</p>"
+  },
+  "Manfaat untuk siswa": {
+    "class": "dense",
+    "images": [
+      {
+        "file": "06-profil-siswa",
+        "spec": "bg right:42% fit"
+      }
+    ]
+  },
+  "Manfaat untuk guru": {
+    "class": "dense",
+    "images": [
+      {
+        "file": "18-dashboard-guru",
+        "spec": "bg right:42% fit"
+      }
+    ]
+  },
+  "Manfaat untuk sekolah dan yayasan": {
+    "class": "tight",
+    "images": [
+      {
+        "file": "07-leaderboard",
+        "spec": "bg right:34% fit"
+      }
+    ]
+  },
   "Manfaat untuk pihak luar: perusahaan, kampus, orang tua": {},
-  "Dari sekolah ke masa depan siswa": { "class": "dense", "images": [{ "file": "17-profil-tampilan", "spec": "bg right:38% fit" }] },
+  "Dari sekolah ke masa depan siswa": {
+    "class": "dense",
+    "images": [
+      {
+        "file": "17-profil-tampilan",
+        "spec": "bg right:38% fit"
+      }
+    ],
+    "replaceCode": "<div class=\"flow vertical\"><div class=\"step\"><b>X–XI</b><span>Karya dan proyek dibangun dan divalidasi guru</span></div><div class=\"step\"><b>PKL</b><span>Portofolio terverifikasi dilampirkan ke surat lamaran</span></div><div class=\"step ok\"><b>Lulus</b><span>Profil tetap ada (alumni), dibagikan ke kampus dan perekrut</span></div></div>"
+  },
   "Dampak yang diharapkan (simulasi sekolah ±1.200 siswa)": {
-    "stats": [["±550", "siswa aktif di akhir tahun 1 (46%)"], ["±820", "siswa aktif di akhir tahun 2 (69%)"], ["±1.440", "karya terverifikasi di akhir tahun 2"], ["±83", "proyek tim terbit di akhir tahun 2"]],
+    "stats": [
+      [
+        "±550",
+        "siswa aktif di akhir tahun 1 (46%)"
+      ],
+      [
+        "±820",
+        "siswa aktif di akhir tahun 2 (69%)"
+      ],
+      [
+        "±1.440",
+        "karya terverifikasi di akhir tahun 2"
+      ],
+      [
+        "±83",
+        "proyek tim terbit di akhir tahun 2"
+      ]
+    ],
     "class": "dense"
   },
   "Bagaimana platform mendukung akreditasi dan penilaian eksternal": {},
-  "Keamanan dan privasi untuk siswa di bawah umur": { "class": "dense", "images": [{ "file": "10-login", "spec": "bg right:40% fit" }] },
-  "Rencana: peluncuran bertahap dengan titik evaluasi": { "class": "tight" },
-  "Investasi yang diminta: kecil dan bertahap": { "class": "tight" },
-  "Biaya per siswa: sangat kecil": { "class": "dense", "stats": [["±Rp 14–32 ribu", "per siswa pada tahun pertama (pengembangan, hosting, pelatihan)"]] },
-  "Risiko dan cara mengatasinya": { "class": "tight" },
-  "Skala yayasan: dari satu sekolah ke jaringan": { "class": "dense", "stats": [["±50", "sekolah"], ["±15.000", "siswa"], ["±970", "pendidik"], ["11", "SMK"]] },
-  "Penutup": { "class": "closing", "images": [{ "file": "01-beranda", "spec": "bg right:42% fit" }] },
-  "Lampiran A – Perbandingan dengan alternatif": { "class": "dense" },
-  "Lampiran B – Skenario penggunaan": { "class": "dense" },
-  "Lampiran C – Arsitektur singkat dan kualitas": { "class": "dense" },
-  "Sumber data eksternal (1 dari 2)": { "class": "tight" },
-  "Sumber data eksternal (2 dari 2)": { "class": "tight" }
+  "Keamanan dan privasi untuk siswa di bawah umur": {
+    "class": "dense",
+    "images": [
+      {
+        "file": "10-login",
+        "spec": "bg right:40% fit"
+      }
+    ]
+  },
+  "Rencana: peluncuran bertahap dengan titik evaluasi": {
+    "class": "tight"
+  },
+  "Investasi yang diminta: kecil dan bertahap": {
+    "class": "tight"
+  },
+  "Biaya per siswa: sangat kecil": {
+    "class": "dense",
+    "stats": [
+      [
+        "±Rp 14–32 ribu",
+        "per siswa pada tahun pertama (pengembangan, hosting, pelatihan)"
+      ]
+    ]
+  },
+  "Risiko dan cara mengatasinya": {
+    "class": "tight"
+  },
+  "Skala yayasan: dari satu sekolah ke jaringan": {
+    "class": "dense",
+    "stats": [
+      [
+        "±50",
+        "sekolah"
+      ],
+      [
+        "±15.000",
+        "siswa"
+      ],
+      [
+        "±970",
+        "pendidik"
+      ],
+      [
+        "11",
+        "SMK"
+      ]
+    ]
+  },
+  "Penutup": {
+    "class": "closing",
+    "images": [
+      {
+        "file": "01-beranda",
+        "spec": "bg right:42% fit"
+      }
+    ]
+  },
+  "Lampiran A – Perbandingan dengan alternatif": {
+    "class": "dense"
+  },
+  "Lampiran B – Skenario penggunaan": {
+    "class": "dense"
+  },
+  "Lampiran C – Arsitektur singkat dan kualitas": {
+    "class": "dense"
+  },
+  "Sumber data eksternal (1 dari 2)": {
+    "class": "tight"
+  },
+  "Sumber data eksternal (2 dari 2)": {
+    "class": "tight"
+  }
 }
