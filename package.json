@@ -18,6 +18,7 @@
     "seed:bios": "tsx scripts/seed-student-bios.mts",
     "seed:community": "tsx scripts/seed-community-interactions.mts",
     "seed:awards": "tsx scripts/seed-awards.mts",
+    "seed:testimonials": "tsx scripts/seed-testimonials.mts",
     "seed:cms-admin": "tsx scripts/seed-cms-admin.mts",
     "test": "vitest run"
   },
@@ -31,11 +32,15 @@
     "@payloadcms/next": "3.90.2",
     "@payloadcms/richtext-lexical": "3.90.2",
     "@payloadcms/storage-vercel-blob": "^3.90.2",
+    "@types/qrcode": "^1.5.5",
+    "framer-motion": "^14.3.0",
     "next": "16.4.0",
     "payload": "3.90.2",
+    "qrcode": "^1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "sharp": "0.35.5"
+    "sharp": "0.35.5",
+    "swiper": "^14.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
