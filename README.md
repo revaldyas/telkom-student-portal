@@ -31,6 +31,7 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 | --- | --- |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Topologi sistem, diagram alur, ERD, status, deployment, migrasi, keamanan, dan batasan |
 | [docs/REKOMENDASI.md](docs/REKOMENDASI.md) | Usulan tahap berikutnya: validasi identitas via API sekolah, migrasi hosting/storage/database, notifikasi realtime, keamanan, fitur dan AI |
+| [docs/SIMULASI.md](docs/SIMULASI.md) | Simulasi adopsi, storage, database, beban server, dan biaya untuk sekolah berskala SMK Telkom (skrip: `scripts/simulate-adoption.py`) |
 | [docs/FEATURES.md](docs/FEATURES.md) | Daftar fitur per area: publik, portal siswa, portal Guru, admin CMS, pesan, tracker, dan fitur lintas bagian |
 | [docs/API.md](docs/API.md) | Referensi endpoint `/api`: akses, parameter, dan aturan validasi |
 | [docs/TESTING.md](docs/TESTING.md) | Cara menjalankan test, cara kerja harness, cakupan per file, dan area yang belum teruji |
