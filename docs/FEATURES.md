@@ -45,7 +45,7 @@ Navbar berurutan: Karya, Proyek Siswa, Peluang Kolaborasi, Awards, Leaderboard.
 | Pesan | `/portal/siswa/pesan` | Lihat bagian 4 |
 | Profil | `/portal/siswa/profil` | Nama, bio, minat, keterampilan, pengalaman, foto, karya semat |
 | Tampilan | `/portal/siswa/tampilan` | Cover banner, tema/aksen profil, tampilkan status online |
-| Suka & komentar | di halaman karya/proyek | Siswa tidak boleh menyukai karya sendiri; komentar 2-1200 karakter |
+| Suka & komentar | di halaman karya/proyek | Siswa tidak boleh menyukai karya sendiri; komentar 2-1200 karakter. Penulis dapat **mengedit** (ditandai "diedit") dan **menghapus** komentarnya; pemilik karya dapat menghapus komentar orang lain di karyanya, begitu pula pengelola proyek di proyeknya (pengelola tidak dapat mengedit komentar orang lain) |
 | Voting award | `/awards` | Satu suara per award, tidak boleh memilih karya sendiri, dapat diganti selama voting terbuka |
 | Minat peluang | `/peluang` | Daftar/batalkan minat, catatan maks 800 karakter, hanya program sasaran dan dalam jendela pendaftaran |
 | Notifikasi | lonceng header | Revisi karya, respons undangan, suka/komentar baru, pencapaian, tenggat peluang/voting |
@@ -58,7 +58,7 @@ Navbar berurutan: Karya, Proyek Siswa, Peluang Kolaborasi, Awards, Leaderboard.
 | Verifikasi karya | `/portal/guru/verifikasi` | Antrean karya yang sudah diajukan siswa di kelas/program guru; setujui (terbit + terverifikasi) atau minta revisi dengan umpan balik (min. 5 karakter) |
 | Verifikasi proyek | halaman detail proyek | Terima/tolak undangan; mentor utama menyetujui atau meminta revisi, mentor pendamping hanya memberi masukan |
 | Peluang | `/portal/guru/peluang`, `/baru`, `/[id]/edit` | Buat draf/terbitkan/tutup peluang; tindak lanjut peminat (`interested` → `contacted` → `completed`) hanya untuk siswa dalam cakupan |
-| Suka & komentar | karya/proyek siswa | Guru dapat menyukai dan berkomentar di semua karya dan proyek |
+| Suka & komentar | karya/proyek siswa | Guru dapat menyukai dan berkomentar di semua karya dan proyek, serta mengedit dan menghapus komentarnya sendiri |
 | Tracker, Pesan | `/portal/guru/tracker`, `/pesan` | Sama seperti siswa; akses tracker hanya untuk proyek tempat guru menjadi pembimbing yang menerima |
 | Profil, Tampilan | `/portal/guru/profil`, `/tampilan` | Keahlian dan minat dipakai saat siswa mengundang pembimbing |
 
@@ -104,7 +104,7 @@ Login terpisah memakai collection `admins`. Navigasi dikelompokkan:
 | Media | `uploads` |
 | Administrasi | `admins` |
 
-Catatan: `portfolio-likes` dan `portfolio-comments` tidak ditampilkan dalam grup. Editor gambar (crop, titik fokus) tersedia pada `uploads`. Suara award tidak dapat dihapus; suka dan komentar tidak dapat diedit. Collection pesan, tracker, dan sosial dikunci hanya untuk admin; klien memakai `/api/*` yang menegakkan keanggotaan.
+Catatan: `portfolio-likes` dan `portfolio-comments` tidak ditampilkan dalam grup. Editor gambar (crop, titik fokus) tersedia pada `uploads`. Suara award tidak dapat dihapus; suka tidak dapat diedit; komentar hanya dapat diedit oleh penulisnya. Collection pesan, tracker, dan sosial dikunci hanya untuk admin; klien memakai `/api/*` yang menegakkan keanggotaan.
 
 ## 8. Fitur lintas bagian
 

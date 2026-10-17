@@ -40,12 +40,14 @@ Semua endpoint ada di `app/(payload)/api/` dan berjalan di bawah `/api`. Selain 
 | Method | Path | Akses | Keterangan |
 | --- | --- | --- | --- |
 | GET | `/api/community/portfolios/[id]/stats` | Publik; sesi opsional | Jumlah suka, komentar, dan status suka pengguna. 404 jika belum terbit |
-| GET | `/api/community/portfolios/[id]/comments` | Publik | Komentar urut terlama, memuat nama penulis |
+| GET | `/api/community/portfolios/[id]/comments` | Publik | Komentar urut terlama, memuat nama penulis, `createdAt` dan `updatedAt` (komentar dianggap diedit bila `updatedAt` lebih dari 2 detik setelah `createdAt`) |
 | GET | `/api/community/projects/[id]/stats` | Publik; sesi opsional | Jumlah suka dan komentar proyek |
 | POST | `/api/community/projects/[id]/like` | Siswa/Guru | Toggle suka. Anggota tim tidak dapat menyukai proyeknya sendiri |
-| GET / POST / DELETE | `/api/community/projects/[id]/comments` | GET publik; POST/DELETE login | POST body `{ body }`; DELETE `?commentID=` hanya komentar sendiri. Dibatasi laju |
+| GET / POST / PATCH / DELETE | `/api/community/projects/[id]/comments` | GET publik; lainnya login | GET: daftar komentar dengan `mine` (milik pemanggil), `canDelete`, dan `edited`. POST body `{ body }` (2-1200 karakter, dibatasi 8 komentar/menit). PATCH `?commentID=` body `{ body }`: hanya penulis (403 untuk lainnya, termasuk pengelola proyek), mengembalikan komentar dengan `edited: true`. DELETE `?commentID=`: penulis atau pengelola proyek (`createdBy`); 404 bila komentar bukan milik proyek itu |
 
-Suka/komentar karya dibuat lewat REST Payload (`portfolio-likes`, `portfolio-comments`) dengan aturan akses di collection: siswa dan guru boleh, tidak bisa menyukai karya sendiri, tidak bisa dua kali, komentar tidak bisa diedit.
+Suka/komentar karya dibuat lewat REST Payload (`portfolio-likes`, `portfolio-comments`) dengan aturan akses di collection: siswa dan guru boleh, tidak bisa menyukai karya sendiri, tidak bisa dua kali.
+
+Aturan komentar karya (`portfolio-comments`): siswa dan guru dapat membuat komentar; **penulis** dapat mengedit isi komentarnya lewat `PATCH /api/portfolio-comments/:id` (hanya `content`, karya dan penulis dikunci oleh hook, validasi 2-1200 karakter tetap berlaku); **penulis dan pemilik karya** dapat menghapus lewat `DELETE /api/portfolio-comments/:id`; admin dapat keduanya. Siswa atau guru lain tidak dapat mengedit maupun menghapus.
 
 ## Verifikasi dan pembimbingan
 

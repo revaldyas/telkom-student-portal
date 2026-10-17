@@ -29,6 +29,7 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 
 | Dokumen | Isi |
 | --- | --- |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Topologi sistem, diagram alur, ERD, status, deployment, migrasi, keamanan, dan batasan |
 | [docs/FEATURES.md](docs/FEATURES.md) | Daftar fitur per area: publik, portal siswa, portal Guru, admin CMS, pesan, tracker, dan fitur lintas bagian |
 | [docs/API.md](docs/API.md) | Referensi endpoint `/api`: akses, parameter, dan aturan validasi |
 | [docs/TESTING.md](docs/TESTING.md) | Cara menjalankan test, cara kerja harness, cakupan per file, dan area yang belum teruji |
@@ -139,7 +140,7 @@ Guru menerima atau menolak undangan dari halaman detail proyek. Proyek hanya dap
 | `project-tasks`, `project-task-comments`, `project-activity` | Tugas tracker, komentarnya, dan log aktivitas proyek. |
 | `chat-conversations`, `chat-members`, `chat-messages`, `chat-blocks`, `chat-reports` | Pesan: percakapan, anggota, pesan, blokir, dan laporan. Hanya admin yang dapat mengakses langsung; klien memakai `/api/chat/*`. |
 
-Mayoritas collection sekolah dan konten dapat dikelola admin CMS. Suara voting tidak dapat dihapus melalui CMS; likes dan komentar tidak dapat diedit. Aturan akses lengkap berada di masing-masing file `collections/`.
+Mayoritas collection sekolah dan konten dapat dikelola admin CMS. Suara voting tidak dapat dihapus melalui CMS; suka tidak dapat diedit; komentar hanya dapat diedit oleh penulisnya. Aturan akses lengkap berada di masing-masing file `collections/`.
 
 ## Struktur kode
 
