@@ -40,14 +40,9 @@ Catatan: karena transaksi dibagi, test baru sebaiknya memakai pembantu dari `wor
 
 ## Status terakhir
 
-Run penuh terakhir (18 Okt 2026): **327 lulus, 2 gagal dari 329**. Jumlah ini dihitung saat dijalankan; sebagian test berparameter menjadi beberapa kasus, sehingga `vitest list` menampilkan angka lebih kecil.
+Run penuh terakhir (18 Okt 2026): **329 lulus dari 329** (11 file). Jumlah ini dihitung saat dijalankan; sebagian test berparameter menjadi beberapa kasus, sehingga `vitest list` menampilkan angka lebih kecil.
 
-Dua test yang gagal, keduanya di `public-routes.test.ts`:
-
-- `Feed beranda`: "memuat karya terbit lengkap dengan jumlah suka dan komentar, tanpa karya draf"
-- `Profil siswa dan guru`: "profil siswa memuat total suka/komentar dan karya terbit saja"
-
-Keduanya memeriksa hitungan suka/komentar. Penyebab: `lib/dbCounts.ts` mengeksekusi SQL lewat `payload.db.drizzle.execute`, yang tidak berada di transaksi test, sehingga suka/komentar yang dibuat di dalam transaksi tidak terhitung (hasilnya 0). Ini efek samping optimasi performa, bukan bug di aplikasi: pada produksi tidak ada transaksi pembungkus. Perbaikan yang memungkinkan: membuat `dbCounts` memakai sesi transaksi aktif (`payload.db.sessions[...]`) bila ada, atau memberi harness cara menjalankan SQL di transaksi yang sama.
+Catatan harness: `lib/dbCounts.ts` menjalankan SQL lewat `payload.db.drizzle`, di luar API Payload. `guardTransaction` di `tests/harness.ts` mengarahkan `drizzle` ke sesi transaksi test selama transaksi aktif, sehingga suka/komentar/suara yang dibuat di dalam test ikut terhitung. Tanpa itu hitungan bernilai 0 di test (tetapi benar di produksi).
 
 ## Belum ada test
 

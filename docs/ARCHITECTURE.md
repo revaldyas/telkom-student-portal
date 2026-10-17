@@ -598,6 +598,6 @@ Kronologi migrasi (kelompok): Blob key, review portofolio, detail dan galeri por
 - **Notifikasi tidak disimpan.** Daftar dibuat dari status data saat ini; status "sudah dibaca" hanya di `localStorage` per browser.
 - **Cache memori per instance.** Leaderboard dapat berbeda sedikit antar instance dalam jendela 30 detik.
 - **Satu database untuk semua lingkungan** bila `DATABASE_URL` yang sama dipakai. Test berjalan di database itu (dibungkus transaksi yang di-rollback); jangan arahkan ke produksi tanpa pertimbangan.
-- **Hitungan SQL mentah tidak ikut transaksi test.** `lib/dbCounts.ts` memakai `payload.db.drizzle` langsung sehingga data yang dibuat di dalam transaksi test tidak terlihat oleh hitungan itu (lihat [TESTING.md](TESTING.md)).
+- **Hitungan SQL mentah di test.** `lib/dbCounts.ts` memakai `payload.db.drizzle` langsung; harness test mengarahkannya ke transaksi test aktif (lihat [TESTING.md](TESTING.md)). Query SQL baru di luar API Payload perlu memakai jalur yang sama agar teruji.
 - **Skema awal belum dapat dibuat dari nol** hanya dengan migrasi yang ada.
 - **Kapasitas koneksi.** `DATABASE_POOL_MAX` dikalikan jumlah instance serverless aktif harus tetap di bawah batas pooler Supabase.
