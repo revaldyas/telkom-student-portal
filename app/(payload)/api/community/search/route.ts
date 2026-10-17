@@ -11,15 +11,15 @@ export async function GET(request: Request) {
   const payload = await getPayload({ config })
   const contains = { contains: query }
   const [works, projects, students, teachers, classes, programs, categories, awards, opportunities] = await Promise.all([
-    payload.find({ collection: 'portfolios', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
-    payload.find({ collection: 'projects', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
-    payload.find({ collection: 'users', where: { and: [{ role: { equals: 'student' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
-    payload.find({ collection: 'users', where: { and: [{ role: { equals: 'teacher' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true }),
-    payload.find({ collection: 'classes', where: { name: contains }, depth: 1, limit: 3, overrideAccess: true }),
-    payload.find({ collection: 'programs', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
-    payload.find({ collection: 'portfolio-categories', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
-    payload.find({ collection: 'awards', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
-    payload.find({ collection: 'opportunities', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true }),
+    payload.find({ collection: 'portfolios', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'projects', where: { and: [{ status: { equals: 'published' } }, { title: contains }] }, depth: 1, limit: 4, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'users', where: { and: [{ role: { equals: 'student' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'users', where: { and: [{ role: { equals: 'teacher' } }, { name: contains }] }, depth: 1, limit: 4, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'classes', where: { name: contains }, depth: 1, limit: 3, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'programs', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'portfolio-categories', where: { or: [{ name: contains }, { code: contains }] }, depth: 0, limit: 3, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'awards', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true, pagination: false }),
+    payload.find({ collection: 'opportunities', where: { and: [{ status: { not_equals: 'draft' } }, { title: contains }] }, depth: 0, limit: 3, overrideAccess: true, pagination: false }),
   ])
 
   const items: SearchItem[] = [

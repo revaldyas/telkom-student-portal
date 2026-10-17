@@ -68,7 +68,18 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'project-likes': ProjectLike;
+    'project-comments': ProjectComment;
+    'project-tasks': ProjectTask;
+    'project-task-comments': ProjectTaskComment;
+    'project-activity': ProjectActivity;
+    'chat-conversations': ChatConversation;
+    'chat-members': ChatMember;
+    'chat-messages': ChatMessage;
+    'chat-blocks': ChatBlock;
+    'chat-reports': ChatReport;
     'home-banners': HomeBanner;
+    testimonials: Testimonial;
     portfolios: Portfolio;
     projects: Project;
     'portfolio-categories': PortfolioCategory;
@@ -93,7 +104,18 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'project-likes': ProjectLikesSelect<false> | ProjectLikesSelect<true>;
+    'project-comments': ProjectCommentsSelect<false> | ProjectCommentsSelect<true>;
+    'project-tasks': ProjectTasksSelect<false> | ProjectTasksSelect<true>;
+    'project-task-comments': ProjectTaskCommentsSelect<false> | ProjectTaskCommentsSelect<true>;
+    'project-activity': ProjectActivitySelect<false> | ProjectActivitySelect<true>;
+    'chat-conversations': ChatConversationsSelect<false> | ChatConversationsSelect<true>;
+    'chat-members': ChatMembersSelect<false> | ChatMembersSelect<true>;
+    'chat-messages': ChatMessagesSelect<false> | ChatMessagesSelect<true>;
+    'chat-blocks': ChatBlocksSelect<false> | ChatBlocksSelect<true>;
+    'chat-reports': ChatReportsSelect<false> | ChatReportsSelect<true>;
     'home-banners': HomeBannersSelect<false> | HomeBannersSelect<true>;
+    testimonials: TestimonialsSelect<false> | TestimonialsSelect<true>;
     portfolios: PortfoliosSelect<false> | PortfoliosSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'portfolio-categories': PortfolioCategoriesSelect<false> | PortfolioCategoriesSelect<true>;
@@ -170,26 +192,204 @@ export interface AdminAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-banners".
+ * via the `definition` "project-likes".
  */
-export interface HomeBanner {
+export interface ProjectLike {
   id: number;
-  eyebrow: string;
+  project: number | Project;
+  user: number | User;
+  /**
+   * proyek:pengguna, mencegah suka ganda
+   */
+  likeKey: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
   title: string;
-  description: string;
   /**
-   * Opsional. Banner tanpa gambar akan menampilkan placeholder skeleton.
+   * Dibuat otomatis dari nama proyek.
    */
-  image?: (number | null) | Upload;
-  primaryButtonLabel: string;
-  primaryButtonUrl: string;
-  secondaryButtonLabel?: string | null;
-  secondaryButtonUrl?: string | null;
+  slug: string;
+  summary?: string | null;
   /**
-   * Angka lebih kecil ditampilkan lebih dahulu.
+   * Jelaskan tujuan, proses kolaborasi, dan hasil proyek.
    */
-  sortOrder: number;
+  details?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  categoryRef?: (number | null) | PortfolioCategory;
+  members?:
+    | {
+        member: number | User;
+        contribution: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Satu mentor utama mengambil keputusan akhir. Mentor pendamping dapat memberi masukan.
+   */
+  mentorAssignments?:
+    | {
+        mentor: number | User;
+        assignmentRole: 'primary' | 'supporting';
+        response: 'invited' | 'accepted' | 'declined';
+        id?: string | null;
+      }[]
+    | null;
+  reviewHistory?:
+    | {
+        reviewer: number | User;
+        reviewerRole: 'primary' | 'supporting';
+        decision: 'comment' | 'verified' | 'revision-requested';
+        feedback: string;
+        reviewedAt: string;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  coverImage?: (number | null) | Upload;
+  galleryImages?: (number | Upload)[] | null;
+  year?: number | null;
+  tools?: string[] | null;
+  projectUrl?: string | null;
+  verificationStatus?: ('unreviewed' | 'submitted' | 'verified' | 'revision-requested') | null;
+  verifiedBy?: (number | null) | User;
+  verifiedAt?: string | null;
+  reviewFeedback?: string | null;
   status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "portfolio-categories".
+ */
+export interface PortfolioCategory {
+  id: number;
+  name: string;
+  code: string;
+  description?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name: string;
+  /**
+   * Opsional. Tampil pada profil publik.
+   */
+  bio?: string | null;
+  /**
+   * Bidang yang ingin dipelajari atau dikembangkan.
+   */
+  interests?: string[] | null;
+  skills?: string[] | null;
+  /**
+   * Satu pengalaman per baris, misalnya: Proyek Aplikasi — pembimbing, 2025.
+   */
+  experiences?: string[] | null;
+  role: 'student' | 'teacher';
+  /**
+   * Wajib diisi dan harus terdaftar pada Data Siswa.
+   */
+  nis?: string | null;
+  class?: (number | null) | Class;
+  program?: (number | null) | Program;
+  lastSeenAt?: string | null;
+  /**
+   * Jika dimatikan, kamu selalu tampil offline bagi pengguna lain.
+   */
+  showPresence?: boolean | null;
+  /**
+   * ID karya terbit yang disematkan di profil (maksimal 3, urutan = urutan tampil).
+   */
+  pinnedWorks?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Personalisasi profil publik. Siswa dan guru mengaturnya dari portal.
+   */
+  appearance?: {
+    coverMode?: ('gradient' | 'image') | null;
+    gradient?: string | null;
+    pattern?: string | null;
+    accent?: string | null;
+    avatarShape?: ('circle' | 'rounded') | null;
+    tagline?: string | null;
+    coverImage?: (number | null) | Upload;
+  };
+  /**
+   * Unggah foto profil (JPG, PNG, atau WebP).
+   */
+  profilePhoto?: (number | null) | Upload;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  resetPasswordRequestedAt?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "classes".
+ */
+export interface Class {
+  id: number;
+  name: string;
+  program: number | Program;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "programs".
+ */
+export interface Program {
+  id: number;
+  name: string;
+  code: string;
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -215,6 +415,240 @@ export interface Upload {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-comments".
+ */
+export interface ProjectComment {
+  id: number;
+  project: number | Project;
+  author: number | User;
+  body: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-tasks".
+ */
+export interface ProjectTask {
+  id: number;
+  project: number | Project;
+  title: string;
+  description?: string | null;
+  /**
+   * todo, doing, review, atau done
+   */
+  status?: string | null;
+  /**
+   * low, medium, high, atau urgent
+   */
+  priority?: string | null;
+  /**
+   * Daftar ID pengguna
+   */
+  assignees?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  dueDate?: string | null;
+  position?: number | null;
+  labels?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Daftar {id, text, done}
+   */
+  checklist?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  createdBy?: (number | null) | User;
+  completedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-task-comments".
+ */
+export interface ProjectTaskComment {
+  id: number;
+  task: number | ProjectTask;
+  author: number | User;
+  body: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-activity".
+ */
+export interface ProjectActivity {
+  id: number;
+  project: number | Project;
+  task?: number | null;
+  actor?: (number | null) | User;
+  action: string;
+  summary: string;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-conversations".
+ */
+export interface ChatConversation {
+  id: number;
+  /**
+   * dm, group, class, atau project
+   */
+  kind: string;
+  /**
+   * dm:1:2, class:ID, project:ID, atau group:UUID
+   */
+  refKey: string;
+  title?: string | null;
+  createdBy?: (number | null) | User;
+  photo?: (number | null) | Upload;
+  lastMessageAt?: string | null;
+  lastMessagePreview?: string | null;
+  lastMessageSender?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-members".
+ */
+export interface ChatMember {
+  id: number;
+  conversation: number | ChatConversation;
+  user: number | User;
+  /**
+   * owner, admin, atau member
+   */
+  role?: string | null;
+  /**
+   * invited, active, atau left
+   */
+  status?: string | null;
+  invitedBy?: (number | null) | User;
+  lastReadId?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages".
+ */
+export interface ChatMessage {
+  id: number;
+  conversation: number | ChatConversation;
+  sender: number | User;
+  body: string;
+  deleted?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-blocks".
+ */
+export interface ChatBlock {
+  id: number;
+  blocker: number | User;
+  blocked: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-reports".
+ */
+export interface ChatReport {
+  id: number;
+  message: number | ChatMessage;
+  reporter: number | User;
+  reason: string;
+  note?: string | null;
+  /**
+   * open, reviewed, atau dismissed
+   */
+  status?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-banners".
+ */
+export interface HomeBanner {
+  id: number;
+  eyebrow: string;
+  title: string;
+  description: string;
+  /**
+   * Opsional. Banner tanpa gambar akan menampilkan placeholder skeleton.
+   */
+  image?: (number | null) | Upload;
+  primaryButtonLabel: string;
+  primaryButtonUrl: string;
+  secondaryButtonLabel?: string | null;
+  secondaryButtonUrl?: string | null;
+  /**
+   * Angka lebih kecil ditampilkan lebih dahulu.
+   */
+  sortOrder: number;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials".
+ */
+export interface Testimonial {
+  id: number;
+  seedKey: string;
+  quote: string;
+  name: string;
+  role: string;
+  program?: string | null;
+  /**
+   * Tandai testimoni demonstrasi agar tidak disalahartikan sebagai kutipan asli.
+   */
+  isSample?: boolean | null;
+  sortOrder: number;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -300,165 +734,6 @@ export interface Portfolio {
   reviewFeedback?: string | null;
   status: 'draft' | 'published';
   featured?: boolean | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  name: string;
-  /**
-   * Opsional. Tampil pada profil publik.
-   */
-  bio?: string | null;
-  /**
-   * Bidang yang ingin dipelajari atau dikembangkan.
-   */
-  interests?: string[] | null;
-  skills?: string[] | null;
-  /**
-   * Satu pengalaman per baris, misalnya: Proyek Aplikasi — pembimbing, 2025.
-   */
-  experiences?: string[] | null;
-  role: 'student' | 'teacher';
-  /**
-   * Wajib diisi dan harus terdaftar pada Data Siswa.
-   */
-  nis?: string | null;
-  class?: (number | null) | Class;
-  program?: (number | null) | Program;
-  /**
-   * Unggah foto profil (JPG, PNG, atau WebP).
-   */
-  profilePhoto?: (number | null) | Upload;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  resetPasswordRequestedAt?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
-  collection: 'users';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "classes".
- */
-export interface Class {
-  id: number;
-  name: string;
-  program: number | Program;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "programs".
- */
-export interface Program {
-  id: number;
-  name: string;
-  code: string;
-  description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "portfolio-categories".
- */
-export interface PortfolioCategory {
-  id: number;
-  name: string;
-  code: string;
-  description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "projects".
- */
-export interface Project {
-  id: number;
-  title: string;
-  /**
-   * Dibuat otomatis dari nama proyek.
-   */
-  slug: string;
-  summary?: string | null;
-  /**
-   * Jelaskan tujuan, proses kolaborasi, dan hasil proyek.
-   */
-  details?: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  categoryRef?: (number | null) | PortfolioCategory;
-  members?:
-    | {
-        member: number | User;
-        contribution: string;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Satu mentor utama mengambil keputusan akhir. Mentor pendamping dapat memberi masukan.
-   */
-  mentorAssignments?:
-    | {
-        mentor: number | User;
-        assignmentRole: 'primary' | 'supporting';
-        response: 'invited' | 'accepted' | 'declined';
-        id?: string | null;
-      }[]
-    | null;
-  reviewHistory?:
-    | {
-        reviewer: number | User;
-        reviewerRole: 'primary' | 'supporting';
-        decision: 'comment' | 'verified' | 'revision-requested';
-        feedback: string;
-        reviewedAt: string;
-        id?: string | null;
-      }[]
-    | null;
-  createdBy: number | User;
-  coverImage?: (number | null) | Upload;
-  galleryImages?: (number | Upload)[] | null;
-  year?: number | null;
-  tools?: string[] | null;
-  projectUrl?: string | null;
-  verificationStatus?: ('unreviewed' | 'submitted' | 'verified' | 'revision-requested') | null;
-  verifiedBy?: (number | null) | User;
-  verifiedAt?: string | null;
-  reviewFeedback?: string | null;
-  status: 'draft' | 'published';
   updatedAt: string;
   createdAt: string;
 }
@@ -651,8 +926,52 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'project-likes';
+        value: number | ProjectLike;
+      } | null)
+    | ({
+        relationTo: 'project-comments';
+        value: number | ProjectComment;
+      } | null)
+    | ({
+        relationTo: 'project-tasks';
+        value: number | ProjectTask;
+      } | null)
+    | ({
+        relationTo: 'project-task-comments';
+        value: number | ProjectTaskComment;
+      } | null)
+    | ({
+        relationTo: 'project-activity';
+        value: number | ProjectActivity;
+      } | null)
+    | ({
+        relationTo: 'chat-conversations';
+        value: number | ChatConversation;
+      } | null)
+    | ({
+        relationTo: 'chat-members';
+        value: number | ChatMember;
+      } | null)
+    | ({
+        relationTo: 'chat-messages';
+        value: number | ChatMessage;
+      } | null)
+    | ({
+        relationTo: 'chat-blocks';
+        value: number | ChatBlock;
+      } | null)
+    | ({
+        relationTo: 'chat-reports';
+        value: number | ChatReport;
+      } | null)
+    | ({
         relationTo: 'home-banners';
         value: number | HomeBanner;
+      } | null)
+    | ({
+        relationTo: 'testimonials';
+        value: number | Testimonial;
       } | null)
     | ({
         relationTo: 'portfolios';
@@ -776,6 +1095,138 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-likes_select".
+ */
+export interface ProjectLikesSelect<T extends boolean = true> {
+  project?: T;
+  user?: T;
+  likeKey?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-comments_select".
+ */
+export interface ProjectCommentsSelect<T extends boolean = true> {
+  project?: T;
+  author?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-tasks_select".
+ */
+export interface ProjectTasksSelect<T extends boolean = true> {
+  project?: T;
+  title?: T;
+  description?: T;
+  status?: T;
+  priority?: T;
+  assignees?: T;
+  dueDate?: T;
+  position?: T;
+  labels?: T;
+  checklist?: T;
+  createdBy?: T;
+  completedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-task-comments_select".
+ */
+export interface ProjectTaskCommentsSelect<T extends boolean = true> {
+  task?: T;
+  author?: T;
+  body?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "project-activity_select".
+ */
+export interface ProjectActivitySelect<T extends boolean = true> {
+  project?: T;
+  task?: T;
+  actor?: T;
+  action?: T;
+  summary?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-conversations_select".
+ */
+export interface ChatConversationsSelect<T extends boolean = true> {
+  kind?: T;
+  refKey?: T;
+  title?: T;
+  createdBy?: T;
+  photo?: T;
+  lastMessageAt?: T;
+  lastMessagePreview?: T;
+  lastMessageSender?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-members_select".
+ */
+export interface ChatMembersSelect<T extends boolean = true> {
+  conversation?: T;
+  user?: T;
+  role?: T;
+  status?: T;
+  invitedBy?: T;
+  lastReadId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-messages_select".
+ */
+export interface ChatMessagesSelect<T extends boolean = true> {
+  conversation?: T;
+  sender?: T;
+  body?: T;
+  deleted?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-blocks_select".
+ */
+export interface ChatBlocksSelect<T extends boolean = true> {
+  blocker?: T;
+  blocked?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-reports_select".
+ */
+export interface ChatReportsSelect<T extends boolean = true> {
+  message?: T;
+  reporter?: T;
+  reason?: T;
+  note?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-banners_select".
  */
 export interface HomeBannersSelect<T extends boolean = true> {
@@ -787,6 +1238,22 @@ export interface HomeBannersSelect<T extends boolean = true> {
   primaryButtonUrl?: T;
   secondaryButtonLabel?: T;
   secondaryButtonUrl?: T;
+  sortOrder?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "testimonials_select".
+ */
+export interface TestimonialsSelect<T extends boolean = true> {
+  seedKey?: T;
+  quote?: T;
+  name?: T;
+  role?: T;
+  program?: T;
+  isSample?: T;
   sortOrder?: T;
   status?: T;
   updatedAt?: T;
@@ -908,6 +1375,20 @@ export interface UsersSelect<T extends boolean = true> {
   nis?: T;
   class?: T;
   program?: T;
+  lastSeenAt?: T;
+  showPresence?: T;
+  pinnedWorks?: T;
+  appearance?:
+    | T
+    | {
+        coverMode?: T;
+        gradient?: T;
+        pattern?: T;
+        accent?: T;
+        avatarShape?: T;
+        tagline?: T;
+        coverImage?: T;
+      };
   profilePhoto?: T;
   updatedAt?: T;
   createdAt?: T;

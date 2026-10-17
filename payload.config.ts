@@ -22,6 +22,10 @@ import { Students } from './collections/Students'
 import { StudentRecords } from './collections/StudentRecords'
 import { Uploads } from './collections/Uploads'
 import { Users } from './collections/Users'
+import { Testimonials } from './collections/Testimonials'
+import { ProjectComments, ProjectLikes } from './collections/ProjectSocial'
+import { ProjectActivity, ProjectTaskComments, ProjectTasks } from './collections/Tracker'
+import { ChatBlocks, ChatConversations, ChatMembers, ChatMessages, ChatReports } from './collections/Chat'
 
 const databaseURL = process.env.DATABASE_URL || ''
 const configuredPoolMax = Number(process.env.DATABASE_POOL_MAX || 5)
@@ -33,7 +37,7 @@ export default buildConfig({
     components: { Nav: '@/components/payload/PayloadNav' },
     importMap: { baseDir: process.cwd() },
   },
-  collections: [HomeBanners, Portfolio, Projects, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
+  collections: [ProjectLikes, ProjectComments, ProjectTasks, ProjectTaskComments, ProjectActivity, ChatConversations, ChatMembers, ChatMessages, ChatBlocks, ChatReports, HomeBanners, Testimonials, Portfolio, Projects, PortfolioCategories, Awards, Users, Students, StudentRecords, Programs, Classes, Uploads, Admins, PortfolioLikes, PortfolioComments, AwardVotes, PortfolioReviews, Opportunities, OpportunityInterests],
   plugins: [
     vercelBlobStorage({
       // Use the same storage adapter locally when a Blob token is configured;

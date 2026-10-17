@@ -35,11 +35,10 @@ export async function GET(request: Request) {
     depth: 3,
     limit: 200,
     sort: '-updatedAt',
-    overrideAccess: true,
-  })
+    overrideAccess: true, pagination: false })
   const docs = result.docs.filter((doc) => inScope(user as unknown as Record<string, unknown>, doc as unknown as Record<string, unknown>))
   const reviews = await Promise.all(docs.map(async (doc) => {
-    const reviewResult = await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: doc.id } }, depth: 1, limit: 1, sort: '-createdAt', overrideAccess: true })
+    const reviewResult = await payload.find({ collection: 'portfolio-reviews', where: { portfolio: { equals: doc.id } }, depth: 1, limit: 1, sort: '-createdAt', overrideAccess: true, pagination: false })
     const review = reviewResult.docs[0]
     const student = doc.student && typeof doc.student === 'object' ? doc.student : null
     const studentClass = student?.class && typeof student.class === 'object' ? student.class.name : null
@@ -59,7 +58,7 @@ export async function GET(request: Request) {
       review: review ? { id: review.id, decision: review.decision, feedback: review.feedback } : null,
     }
   }))
-  const projectResponse = await payload.find({ collection: 'projects', where: { or: [{ verificationStatus: { equals: 'submitted' } }, { status: { equals: 'draft' } }] }, depth: 3, limit: 500, sort: '-updatedAt', overrideAccess: true })
+  const projectResponse = await payload.find({ collection: 'projects', where: { or: [{ verificationStatus: { equals: 'submitted' } }, { status: { equals: 'draft' } }] }, depth: 3, limit: 500, sort: '-updatedAt', overrideAccess: true, pagination: false })
   const assignedProjects = isTeacherUser(sessionUser) ? projectResponse.docs.flatMap((project) => {
     const entries = Array.isArray(project.mentorAssignments) ? project.mentorAssignments : []
     const assignment = entries.find((entry) => String(relationID(entry.mentor)) === String(user.id))

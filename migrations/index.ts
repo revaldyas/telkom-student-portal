@@ -1,5 +1,6 @@
 import * as migration_20261010_003800_add_vercel_blob_object_key from './20261010_003800_add_vercel_blob_object_key';
 import * as migration_20261011_075200_ensure_vercel_blob_object_key from './20261011_075200_ensure_vercel_blob_object_key';
+import * as migration_20261011_085218 from './20261011_085218';
 import * as migration_20261011_120000_portfolio_review_history from './20261011_120000_portfolio_review_history';
 import * as migration_20261011_130000_portfolio_details from './20261011_130000_portfolio_details';
 import * as migration_20261011_140000_portfolio_gallery from './20261011_140000_portfolio_gallery';

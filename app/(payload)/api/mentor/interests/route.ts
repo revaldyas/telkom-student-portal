@@ -15,7 +15,7 @@ export async function GET(request: Request) {
   const sessionUser = await authenticateWebsiteRequest(payload, request)
   if (!isTeacherUser(sessionUser)) return NextResponse.json({ message: 'Akses khusus Guru pembimbing.' }, { status: 403 })
   const teacher = await payload.findByID({ collection: 'users', id: sessionUser.id, depth: 1, overrideAccess: true })
-  const interests = await payload.find({ collection: 'opportunity-interests', depth: 2, limit: 500, sort: '-createdAt', overrideAccess: true })
+  const interests = await payload.find({ collection: 'opportunity-interests', depth: 2, limit: 500, sort: '-createdAt', overrideAccess: true, pagination: false })
   const docs = interests.docs.flatMap((interest) => {
     const student = typeof interest.student === 'object' ? interest.student : null
     const opportunity = typeof interest.opportunity === 'object' ? interest.opportunity : null
