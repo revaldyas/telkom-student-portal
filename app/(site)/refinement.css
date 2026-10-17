@@ -6,7 +6,7 @@ h1,h2,h3 { letter-spacing: -.048em; }
 .home-page { width: min(100% - 64px, 1320px); }
 
 /* Navigation */
-.site-nav-shell { background: rgba(255,255,255,.96); border-bottom-color: #ebebe9; }
+.site-nav-shell { width: calc(100% - 32px); margin: 0 auto; border-bottom-color: #ebebe9; border-radius: 0 0 30px 30px; background: rgba(255,255,255,.96); box-shadow: 0 10px 30px rgba(18,20,24,.14); }
 .site-nav-bar { width: min(100% - 64px, 1320px); min-height: 66px; gap: 28px; }
 .site-brand { flex-direction: column; align-items: flex-start; gap: 0; color: var(--ink); font-size: 19px; letter-spacing: -.07em; line-height: 1; }
 .site-brand:hover { color: var(--ink); }
@@ -16,12 +16,12 @@ h1,h2,h3 { letter-spacing: -.048em; }
 .site-brand small { margin-top: 6px; font-size: 8px; letter-spacing: .19em; }
 .site-brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); font-size: 19px; letter-spacing: -.12em; box-shadow: none; }
 .site-nav-links { gap: 2px; margin-left: 36px; }
-.site-nav-links a { padding: 9px 12px; border-radius: 8px; color: #55565a; font-size: 13px; font-weight: 600; }
+.site-nav-links a { padding: 9px 12px; border-radius: 8px; color: #55565a; font-size: 14px; font-weight: 600; }
 .site-nav-links a[aria-current=page] { background: transparent; box-shadow: none; color: var(--ink); }
 .site-nav-links a[aria-current=page]::after { display: block; height: 2px; margin-top: 4px; border-radius: 2px; background: var(--accent); content: ''; }
 .site-nav-links a:hover { background: #f6f6f4; }
 .global-search { max-width: 290px; }
-.global-search-input-wrap { min-height: 39px; border-color: #ededeb; border-radius: 9px; background: #f7f7f6; }
+.global-search-input-wrap { min-height: 39px; border-color: #d8d8d5; border-radius: 999px; background: #f7f7f6; }
 .site-nav-bar > a:last-child:not(.site-brand) { display: inline-flex; justify-content: center; min-width: 74px; padding: 9px 15px; border: 1px solid var(--line); border-radius: 9px; font-size: 12px; font-weight: 700; }
 .site-nav-bar > a:last-child:not(.site-brand):hover { border-color: var(--ink); color: var(--ink); }
 .site-nav-session-skeleton { display: inline-flex; flex: 0 0 74px; align-items: center; justify-content: center; min-height: 39px; }
