@@ -1,6 +1,5 @@
 import * as migration_20261010_003800_add_vercel_blob_object_key from './20261010_003800_add_vercel_blob_object_key';
 import * as migration_20261011_075200_ensure_vercel_blob_object_key from './20261011_075200_ensure_vercel_blob_object_key';
-import * as migration_20261011_085218 from './20261011_085218';
 import * as migration_20261011_120000_portfolio_review_history from './20261011_120000_portfolio_review_history';
 import * as migration_20261011_130000_portfolio_details from './20261011_130000_portfolio_details';
 import * as migration_20261011_140000_portfolio_gallery from './20261011_140000_portfolio_gallery';
@@ -15,7 +14,9 @@ import * as migration_20261011_240000_home_banner_optional_image from './2026101
 import * as migration_20261017_100000_draft_support from './20261017_100000_draft_support';
 import * as migration_20261017_100100_existing_drafts_submitted from './20261017_100100_existing_drafts_submitted';
 import * as migration_20261017_100200_testimonials from './20261017_100200_testimonials';
+import * as migration_20261017_110000_profile_appearance from './20261017_110000_profile_appearance';
 import * as migration_20261017_110100_testimonials_lock_rels from './20261017_110100_testimonials_lock_rels';
+import * as migration_20261018_100000_pinned_works from './20261018_100000_pinned_works';
 
 export const migrations = [
   {
@@ -99,8 +100,18 @@ export const migrations = [
     name: '20261017_100200_testimonials',
   },
   {
+    up: migration_20261017_110000_profile_appearance.up,
+    down: migration_20261017_110000_profile_appearance.down,
+    name: '20261017_110000_profile_appearance',
+  },
+  {
     up: migration_20261017_110100_testimonials_lock_rels.up,
     down: migration_20261017_110100_testimonials_lock_rels.down,
     name: '20261017_110100_testimonials_lock_rels',
+  },
+  {
+    up: migration_20261018_100000_pinned_works.up,
+    down: migration_20261018_100000_pinned_works.down,
+    name: '20261018_100000_pinned_works',
   },
 ];

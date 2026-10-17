@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { FormEvent, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ProfileSkeleton } from '../../../../components/SiteSkeletons'
-import SkeletonImage from '../../../../components/SkeletonImage'
-import { siteFetch } from '../../../../lib/siteFetch'
+import ProfileView, { type ProfileRecord, type ProfileWork, type RelatedGroup } from '../../../../components/ProfileView'
+import type { Appearance } from '../../../../lib/appearance'
 
 type Mentor = {
   id: string | number
@@ -17,6 +17,7 @@ type Mentor = {
   profilePhoto?: string | null
   class?: string | null
   program?: string | null
+  appearance?: Appearance
 }
 type MentorWork = {
   id: string | number
@@ -28,19 +29,20 @@ type MentorWork = {
   coverImage?: string | null
   student?: { id: string | number; name: string } | null
 }
+type MentorProject = { likes?: number; comments?: number; id: string | number; slug: string; title: string; year?: number; category?: string | null; coverImage?: string | null; members: string[] }
+type MentorAward = { id: string | number; title: string; work: string; winner: boolean; date: string }
 type Impact = { reviews: number; verified: number; revisions: number; works: number }
-
-const parseLines = (value: FormDataEntryValue | null) => String(value || '').split(/\n|,/).map((item) => item.trim()).filter(Boolean)
 
 export default function MentorProfilePage() {
   const { id } = useParams<{ id: string }>()
   const [mentor, setMentor] = useState<Mentor | null>(null)
   const [works, setWorks] = useState<MentorWork[]>([])
+  const [projects, setProjects] = useState<MentorProject[]>([])
+  const [awardList, setAwardList] = useState<MentorAward[]>([])
   const [impact, setImpact] = useState<Impact>({ reviews: 0, verified: 0, revisions: 0, works: 0 })
   const [loading, setLoading] = useState(true)
   const [isOwner, setIsOwner] = useState(false)
-  const [editing, setEditing] = useState(false)
-  const [notice, setNotice] = useState('')
+  const [viewerRole, setViewerRole] = useState('')
 
   useEffect(() => {
     let cancelled = false
@@ -56,8 +58,11 @@ export default function MentorProfilePage() {
         if (cancelled) return
         setMentor(data.mentor)
         setWorks(data.works || [])
+        setProjects(data.projects || [])
+        setAwardList(data.awards || [])
         setImpact(data.impact || { reviews: 0, verified: 0, revisions: 0, works: 0 })
         setIsOwner(session?.user?.role === 'teacher' && String(session.user.id) === String(id))
+        setViewerRole(session?.user?.role || '')
       } catch {
         if (!cancelled) setMentor(null)
       } finally {
@@ -68,93 +73,51 @@ export default function MentorProfilePage() {
     return () => { cancelled = true }
   }, [id])
 
-  async function saveProfile(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (!mentor) return
-    setNotice('')
-    const form = new FormData(event.currentTarget)
-    const photo = form.get('profilePhoto')
-    let profilePhoto: string | number | undefined
-    if (photo instanceof File && photo.size) {
-      const upload = new FormData()
-      upload.append('file', photo)
-      upload.append('alt', `Foto profil Guru ${String(form.get('name') || mentor.name)}`)
-      const uploadResponse = await siteFetch('/api/uploads', { method: 'POST', body: upload })
-      const uploadData = await uploadResponse.json()
-      if (!uploadResponse.ok) { setNotice(uploadData.errors?.[0]?.message || 'Foto profil belum berhasil diunggah.'); return }
-      profilePhoto = uploadData.doc?.id
-    }
-    const data: Record<string, unknown> = {
-      name: String(form.get('name') || '').trim(),
-      bio: String(form.get('bio') || '').trim(),
-      interests: parseLines(form.get('interests')),
-      skills: parseLines(form.get('skills')),
-      experiences: parseLines(form.get('experiences')),
-    }
-    if (profilePhoto !== undefined) data.profilePhoto = profilePhoto
-    const response = await siteFetch(`/api/users/${mentor.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-    const result = await response.json()
-    if (!response.ok) { setNotice(result.errors?.[0]?.message || 'Profil belum berhasil diperbarui.'); return }
-    const user = result.doc || result
-    const nextMentor = {
-      ...mentor,
-      name: user.name,
-      bio: user.bio || null,
-      interests: user.interests || [],
-      skills: user.skills || [],
-      experiences: user.experiences || [],
-      profilePhoto: user.profilePhoto?.url || mentor.profilePhoto,
-    }
-    setMentor(nextMentor)
-    setEditing(false)
-    setNotice('Profil Guru berhasil diperbarui.')
-  }
-
   if (loading) return <ProfileSkeleton />
   if (!mentor) return <main className="lowfi-shell"><p>Profil Guru tidak ditemukan.</p><Link href="/">Kembali ke beranda</Link></main>
 
-  return <main className="lowfi-shell">
-    <section className="lowfi-content student-profile-page mentor-profile-page">
-      <p><Link href="/">Beranda</Link> / Profil Guru</p>
-      <header className="creator-profile-header">
-        <span className="mvs-avatar mvs-avatar--profile">{mentor.profilePhoto ? <SkeletonImage className="creator-avatar" src={mentor.profilePhoto} alt={`Foto profil ${mentor.name}`} /> : <span className="creator-avatar profile-initial">{mentor.name.slice(0, 1).toUpperCase()}</span>}</span>
-        <div className="creator-details">
-          <div className="creator-title-row"><h1>{mentor.name}</h1><span className="lowfi-badge">GURU PEMBIMBING</span>{isOwner && <button className="filter" type="button" onClick={() => setEditing((value) => !value)}>{editing ? 'Tutup' : 'Edit profil'}</button>}</div>
-          <div className="creator-stats"><span><strong>{impact.works}</strong> karya terverifikasi</span><span><strong>{impact.reviews}</strong> tinjauan</span><span><strong>{impact.revisions}</strong> arahan revisi</span></div>
-          <p className="creator-school">{mentor.class || 'Guru'}{mentor.program ? ` · ${mentor.program}` : ''}</p>
-          {mentor.bio && <p className="creator-bio">{mentor.bio}</p>}
-          {isOwner && <Link className="dash-new" href="/portal/guru">Buka Portal Guru</Link>}
-        </div>
-      </header>
+  const mentorWorks: ProfileWork[] = works.map((work) => ({
+    id: work.id, href: `/karya/${work.slug}`, title: work.title, category: work.category, year: work.year, cover: work.coverImage, state: 'published', verified: true,
+    note: work.student ? <>Karya <Link href={`/siswa/${work.student.id}`}>{work.student.name}</Link></> : undefined,
+  }))
+  const mentorProjects: ProfileWork[] = projects.map((project) => ({
+    id: project.id, href: `/proyek/${project.slug}`, title: project.title, category: project.category, year: project.year, cover: project.coverImage, state: 'published', likes: project.likes ?? 0, comments: project.comments ?? 0,
+    note: project.members.length ? project.members.slice(0, 2).join(', ') + (project.members.length > 2 ? ` +${project.members.length - 2}` : '') : 'Proyek bimbingan',
+  }))
+  const milestones: { at: number; value: number; badge: string; title: string; description: string }[] = [
+    { at: 1, value: impact.works, badge: 'KARYA', title: 'Mentor Pertama', description: 'Memverifikasi karya siswa pertama.' },
+    { at: 10, value: impact.works, badge: 'KARYA', title: 'Mentor Aktif', description: 'Memverifikasi 10 karya siswa.' },
+    { at: 25, value: impact.works, badge: 'KARYA', title: 'Mentor Andalan', description: 'Memverifikasi 25 karya siswa.' },
+    { at: 50, value: impact.works, badge: 'KARYA', title: 'Mentor Unggul', description: 'Memverifikasi 50 karya siswa.' },
+    { at: 10, value: impact.reviews, badge: 'TINJAUAN', title: 'Peninjau Rajin', description: 'Menyelesaikan 10 tinjauan karya.' },
+    { at: 50, value: impact.reviews, badge: 'TINJAUAN', title: 'Peninjau Andal', description: 'Menyelesaikan 50 tinjauan karya.' },
+    { at: 100, value: impact.reviews, badge: 'TINJAUAN', title: 'Penjaga Kualitas', description: 'Menyelesaikan 100 tinjauan karya.' },
+    { at: 10, value: impact.revisions, badge: 'ARAHAN', title: 'Pemberi Arahan', description: 'Memberi 10 arahan revisi yang membangun.' },
+  ]
+  const achievements: ProfileRecord[] = milestones.filter((item) => item.value >= item.at).map((item) => ({ id: `${item.badge}-${item.at}`, badge: item.badge, title: item.title, description: item.description, tone: item.at >= 25 ? 'gold' : undefined }))
+  const mentorAwards: ProfileRecord[] = awardList.map((award) => ({ id: `${award.id}-${award.work}`, badge: award.winner ? 'PEMENANG' : 'NOMINASI', title: award.title, description: `Karya bimbingan: ${award.work}`, date: award.date, tone: award.winner ? 'gold' : undefined }))
 
-      {notice && <p className="auth-hint" role="status">{notice}</p>}
-      {editing && isOwner && <form className="project-form profile-edit-form" onSubmit={saveProfile}>
-        <h2>Edit profil Guru</h2>
-        <label htmlFor="mentor-name">NAMA LENGKAP</label><input id="mentor-name" name="name" required defaultValue={mentor.name} />
-        <label htmlFor="mentor-bio">BIO</label><textarea id="mentor-bio" name="bio" maxLength={1200} defaultValue={mentor.bio || ''} placeholder="Ceritakan pengalaman dan pendekatanmu dalam membimbing siswa." />
-        <label htmlFor="mentor-interests">MINAT DAN FOKUS BIMBINGAN</label><textarea id="mentor-interests" name="interests" defaultValue={mentor.interests.join('\n')} placeholder="Satu bidang per baris" />
-        <label htmlFor="mentor-skills">KEAHLIAN</label><textarea id="mentor-skills" name="skills" defaultValue={mentor.skills.join('\n')} placeholder="Satu keahlian per baris" />
-        <label htmlFor="mentor-experiences">PENGALAMAN DAN PROYEK</label><textarea id="mentor-experiences" name="experiences" defaultValue={mentor.experiences.join('\n')} placeholder="Satu pengalaman per baris" />
-        <label htmlFor="mentor-photo">FOTO PROFIL</label><input id="mentor-photo" name="profilePhoto" type="file" accept="image/jpeg,image/png,image/webp" />
-        <button className="auth-submit">Simpan perubahan</button>
-      </form>}
+  const mentored = new Map<string, { id: string | number; name: string; count: number }>()
+  for (const work of works) {
+    if (!work.student) continue
+    const entry = mentored.get(String(work.student.id)) || { id: work.student.id, name: work.student.name, count: 0 }
+    entry.count += 1
+    mentored.set(String(work.student.id), entry)
+  }
+  const related: RelatedGroup[] = [{
+    key: 'students', title: 'Siswa bimbingan', hint: 'Karya mereka diverifikasi guru ini', icon: '🎓', href: (personID) => `/siswa/${personID}`,
+    people: [...mentored.values()].sort((a, b) => b.count - a.count).slice(0, 6).map((entry) => ({ id: entry.id, name: entry.name, subtitle: `${entry.count} karya terverifikasi`, badge: `${entry.count} karya` })),
+  }]
 
-      <section className="competency-panel">
-        <div className="section-heading"><div><span className="section-kicker">PROFIL MENTOR</span><h2>Fokus dan pengalaman</h2></div></div>
-        {mentor.skills.length > 0 && <div className="competency-group"><h3>Keahlian</h3><div className="competency-chips">{mentor.skills.map((skill) => <span key={skill}>{skill}</span>)}</div></div>}
-        {mentor.interests.length > 0 && <div className="competency-group"><h3>Minat dan fokus bimbingan</h3><div className="competency-chips competency-chips--soft">{mentor.interests.map((interest) => <span key={interest}>{interest}</span>)}</div></div>}
-        {mentor.experiences.length > 0 && <div className="competency-group"><h3>Pengalaman dan proyek</h3><ul className="competency-experiences">{mentor.experiences.map((experience) => <li key={experience}>{experience}</li>)}</ul></div>}
-        {!mentor.skills.length && !mentor.interests.length && !mentor.experiences.length && <p>{isOwner ? 'Tambahkan keahlian, fokus bimbingan, dan pengalaman agar siswa mengenal profilmu.' : 'Guru ini belum menambahkan informasi keahlian dan pengalaman.'}</p>}
-        {isOwner && !editing && <button className="filter" type="button" onClick={() => setEditing(true)}>Lengkapi profil</button>}
-      </section>
-
-      <section className="creator-work-section mentor-verified-work">
-        <div className="creator-tabs"><h2>Karya terverifikasi</h2><span>{works.length} karya</span></div>
-        {works.length ? <div className="creator-work-grid">{works.map((work) => <article className="creator-work-card" key={work.id}>
-          <Link className="creator-work-image" href={`/karya/${work.slug}`}>{work.coverImage ? <SkeletonImage src={work.coverImage} alt={`Sampul ${work.title}`} /> : <span>{work.title.slice(0, 1)}</span>}<small className="verified-badge">TERVERIFIKASI</small></Link>
-          <div className="creator-work-meta"><h3><Link href={`/karya/${work.slug}`}>{work.title}</Link></h3><p>{work.category || 'Portofolio'}{work.year ? ` · ${work.year}` : ''}</p>{work.student && <p>Karya <Link href={`/siswa/${work.student.id}`}>{work.student.name}</Link></p>}</div>
-        </article>)}</div> : <div className="empty-state"><h2>Belum ada karya terverifikasi</h2><p>Karya yang kamu verifikasi akan tampil di profil ini.</p></div>}
-      </section>
-    </section>
-  </main>
+  return <ProfileView
+    related={related}
+    sharePath={`/guru/${mentor.id}`}
+    person={{ name: mentor.name, photo: mentor.profilePhoto, subtitle: [mentor.class || 'Guru', mentor.program].filter(Boolean).join(' · '), badges: ['Guru pembimbing'], bio: mentor.bio, appearance: mentor.appearance, skills: mentor.skills, interests: mentor.interests, experiences: mentor.experiences }}
+    stats={[{ value: impact.works, label: 'Terverifikasi' }, { value: impact.reviews, label: 'Tinjauan' }, { value: impact.revisions, label: 'Revisi' }]}
+    isOwner={isOwner}
+    actions={isOwner ? <><Link href="/portal/guru/profil">✎ Edit profil</Link><Link href="/portal/guru">Buka Portal Guru</Link></> : viewerRole ? <Link href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/pesan?dm=${mentor.id}`}>✉ Kirim pesan</Link> : undefined}
+    works={mentorWorks} projects={mentorProjects} achievements={achievements} awards={mentorAwards}
+    worksLabel="Karya" projectsLabel="Proyek"
+    emptyText={{ karya: 'Belum ada karya terverifikasi', proyek: 'Belum ada proyek bimbingan', achievement: 'Belum ada achievement. Pencapaian muncul seiring karya yang kamu verifikasi.', awards: 'Belum ada karya bimbingan yang meraih penghargaan.' }}
+  />
 }

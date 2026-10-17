@@ -120,6 +120,45 @@ export const Users: CollectionConfig = {
       access: { update: ({ req }) => isCMSAdmin(req.user) },
       admin: { condition: (_, siblingData) => ['student', 'teacher'].includes(String(siblingData?.role)) },
     },
+    { name: 'lastSeenAt', label: 'Terakhir terlihat', type: 'date', admin: { hidden: true, readOnly: true } },
+    { name: 'showPresence', label: 'Tampilkan status online', type: 'checkbox', defaultValue: true, admin: { description: 'Jika dimatikan, kamu selalu tampil offline bagi pengguna lain.' } },
+    {
+      name: 'pinnedWorks',
+      label: 'Karya Disematkan',
+      type: 'json',
+      admin: { description: 'ID karya terbit yang disematkan di profil (maksimal 3, urutan = urutan tampil).' },
+      hooks: {
+        // Hanya karya terbit milik sendiri; unik; maksimal 3.
+        beforeValidate: [async ({ value, req, originalDoc }) => {
+          if (value === undefined || value === null) return value
+          const list = Array.isArray(value) ? value : []
+          const ids = Array.from(new Set(list.map(Number).filter((id) => Number.isInteger(id) && id > 0))).slice(0, 3)
+          const ownerID = (originalDoc as { id?: number | string } | undefined)?.id
+          if (!ids.length || ownerID === undefined) return []
+          const owned = await req.payload.find({
+            collection: 'portfolios', where: { and: [{ id: { in: ids } }, { student: { equals: ownerID } }, { status: { equals: 'published' } }] },
+            depth: 0, limit: 3, pagination: false, overrideAccess: true, req,
+          })
+          const allowed = new Set(owned.docs.map((doc) => Number(doc.id)))
+          return ids.filter((id) => allowed.has(id))
+        }],
+      },
+    },
+    {
+      name: 'appearance',
+      label: 'Tampilan Profil',
+      type: 'group',
+      admin: { description: 'Personalisasi profil publik. Siswa dan guru mengaturnya dari portal.' },
+      fields: [
+        { name: 'coverMode', label: 'Jenis cover', type: 'select', defaultValue: 'gradient', options: [{ label: 'Gradien', value: 'gradient' }, { label: 'Gambar', value: 'image' }] },
+        { name: 'gradient', label: 'Gradien', type: 'text', defaultValue: 'telkom', maxLength: 24 },
+        { name: 'pattern', label: 'Pola', type: 'text', defaultValue: 'dots', maxLength: 24 },
+        { name: 'accent', label: 'Warna aksen', type: 'text', defaultValue: '#e50914', maxLength: 7, validate: (value: unknown) => !value || /^#[0-9a-fA-F]{6}$/.test(String(value)) || 'Gunakan format warna heksadesimal, misalnya #e50914.' },
+        { name: 'avatarShape', label: 'Bentuk foto', type: 'select', defaultValue: 'circle', options: [{ label: 'Lingkaran', value: 'circle' }, { label: 'Kotak membulat', value: 'rounded' }] },
+        { name: 'tagline', label: 'Tagline', type: 'text', maxLength: 80 },
+        { name: 'coverImage', label: 'Gambar cover', type: 'upload', relationTo: 'uploads' },
+      ],
+    },
     {
       name: 'profilePhoto',
       label: 'Foto Profil',

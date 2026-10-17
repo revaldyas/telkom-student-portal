@@ -2,6 +2,7 @@ import config from '@payload-config'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
+import { appearanceFromUser } from '../../../../../lib/appearanceFromUser'
 import ProfileEditorPage from './ProfileEditorPage'
 
 export const dynamic = 'force-dynamic'
@@ -14,7 +15,7 @@ export default async function StudentProfilePage() {
   try { user = (await payload.auth({ headers: new Headers({ Authorization: `JWT ${token}`, DisableAutologin: 'true' }) })).user }
   catch { redirect('/login') }
   if (!user || user.collection !== 'users' || !['student', 'teacher'].includes(String(user.role))) redirect('/login')
-  if (user.role === 'teacher') redirect('/portal/guru')
+  if (user.role === 'teacher') redirect('/portal/guru/profil')
 
   const student = await payload.findByID({ collection: 'users', id: user.id, depth: 1, overrideAccess: true })
   const photo = student.profilePhoto && typeof student.profilePhoto === 'object' ? student.profilePhoto.url || null : null
@@ -28,5 +29,5 @@ export default async function StudentProfilePage() {
     photoURL: photo,
     className: student.class && typeof student.class === 'object' ? student.class.name : null,
     programName: student.program && typeof student.program === 'object' ? student.program.name : null,
-  }} />
+  }} appearance={appearanceFromUser(student)} />
 }
