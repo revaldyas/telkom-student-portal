@@ -32,7 +32,7 @@
 **Mengapa layak disetujui?**
 
 1. **Risiko rendah:** fondasi sudah berjalan; yang diminta hanya tahap akhir, dengan hasil jelas dan dapat diuji.
-2. **Biaya kecil:** Rp 10 juta untuk pekerjaan yang bernilai ±Rp 88 juta pada acuan pasar saat ini.
+2. **Biaya kecil:** Rp 10 juta, sekitar sepertiga sampai separuh dari acuan harga pasar untuk pekerjaan serupa (±Rp 25 juta).
 3. **Komitmen bertahap:** hanya MVP yang diminta sekarang. Tahap lanjutan diputuskan setelah hasil MVP dan percontohan terlihat.
 4. **Manfaat terukur:** target dan indikator keberhasilan sudah ditetapkan (bagian 8).
 5. **Aset milik sekolah:** kode, data, dan dokumentasi lengkap sehingga tidak bergantung pada satu orang atau satu vendor.
@@ -172,7 +172,7 @@ Rincian: [FEATURES.md](FEATURES.md). Arsitektur dan keamanan: [ARCHITECTURE.md](
 | **Pengembangan tahap MVP** (pengerjaan, UI/UX, testing dan QA, dokumentasi) | **Rp 10.000.000** |
 | Biaya layanan berjalan (ditanggung sekolah, bukan bagian permohonan ini) | Rp 0,3-1,5 juta per bulan |
 
-Harga pengembangan sudah mencakup UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran. Nilai pasar pekerjaan yang sama sekitar **Rp 88 juta** (acuan tarif pengembang Indonesia saat ini); harga yang diajukan adalah harga khusus sekolah.
+Harga pengembangan sudah mencakup UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran. Acuan harga pasar untuk pekerjaan serupa sekitar 2–3 kali lipat (±Rp 25 juta); harga yang diajukan adalah harga khusus sekolah.
 
 ### 7.2 Biaya layanan berjalan (perkiraan untuk sekolah ±1.200 siswa)
 

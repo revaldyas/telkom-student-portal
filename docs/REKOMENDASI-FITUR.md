@@ -1,6 +1,6 @@
 # Rekomendasi: Fitur Lanjutan dan Fitur AI
 
-> **Status: usulan.** Belum ada yang diimplementasikan. Estimasi usaha: **S** (beberapa hari), **M** (1-2 minggu), **L** (lebih dari 2 minggu). Dampak: **tinggi / sedang / rendah** terhadap nilai bagi siswa, guru, atau sekolah.
+> **Status: usulan.** Belum ada yang diimplementasikan. Perkiraan waktu pengerjaan: **S** (beberapa hari), **M** (1–2 minggu), **L** (lebih dari 2 minggu). Dampak: **tinggi / sedang / rendah** terhadap nilai bagi siswa, guru, atau sekolah.
 
 ## 1. Prinsip pemilihan
 

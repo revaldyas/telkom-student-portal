@@ -31,8 +31,8 @@ Portal publik untuk karya siswa SMK Telkom. Siswa dapat mengelola portofolio dan
 | --- | --- |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Topologi sistem, diagram alur, ERD, status, deployment, migrasi, keamanan, dan batasan |
 | [docs/REKOMENDASI.md](docs/REKOMENDASI.md) | Usulan tahap berikutnya: validasi identitas via API sekolah, migrasi hosting/storage/database, notifikasi realtime, keamanan, fitur dan AI |
-| [docs/SIMULASI.md](docs/SIMULASI.md) | Simulasi adopsi, storage, database, beban server, dan biaya untuk sekolah berskala SMK Telkom (skrip: `scripts/simulate-adoption.py`) |
-| [docs/BIAYA-PENGEMBANGAN.md](docs/BIAYA-PENGEMBANGAN.md) | Biaya pengembangan dengan harga sekolah per paket (MVP, sedang, kecil, ekosistem, AI), nilai fitur yang sudah ada, dan pembanding nilai pasar (skrip: `scripts/estimate-cost.py`) |
+| [docs/SIMULASI.md](docs/SIMULASI.md) | Simulasi adopsi, penyimpanan, beban server, dan biaya layanan untuk sekolah berskala SMK Telkom |
+| [docs/BIAYA-PENGEMBANGAN.md](docs/BIAYA-PENGEMBANGAN.md) | Biaya dan waktu pengerjaan per paket (MVP, sedang, kecil, ekosistem, AI) beserta acuan harga pasar |
 | [docs/PITCH-DECK.md](docs/PITCH-DECK.md) | Naskah pitch deck (format Marp) beserta data pendukung dan sumber, siap dikonversi menjadi slide |
 | [tools/docs-build](tools/docs-build/README.md) | Perangkat untuk membuat PDF siap bagikan (proposal, dokumentasi teknis, pitch deck) ke folder `dist/` |
 | [docs/FEATURES.md](docs/FEATURES.md) | Daftar fitur per area: publik, portal siswa, portal Guru, admin CMS, pesan, tracker, dan fitur lintas bagian |

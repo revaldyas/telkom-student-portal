@@ -297,7 +297,7 @@ Tahap MVP yang diajukan **memastikan semua ini terpasang sebelum peluncuran ke s
 | Fitur AI | Bantuan AI untuk guru, siswa, admin (di luar biaya pemakaian model) | Rp 12,5 juta | 2 minggu |
 
 Seluruh program lanjutan: **Rp 51,5 juta** (termasuk MVP dan migrasi hosting opsional Rp 2,5 juta).
-Nilai pasar MVP ±Rp 88 juta → **harga khusus sekolah**.
+Acuan pasar MVP ±Rp 25 juta → **harga khusus sekolah**.
 
 > Visual: tangga biaya kumulatif (10 → 20 → 27 → 36,5 → 49 juta).
 
@@ -431,6 +431,6 @@ Kontak: Tim Pengembang Telkom Student Creation
 | S10 | ±50 sekolah, ±15.075 siswa, ±974 pendidik, 11 SMK | Situs Telkom Schools — https://telkomschools.sch.id/ |
 | S11 | Empat komponen instrumen akreditasi BAN-PDM | Panduan Akreditasi SMK/MAK — https://www.komunitasbelajar.id/2024/09/panduan-akreditasi-smk-mak-tahun-2024.html |
 
-**Data internal:** fitur, modul, dan 409 uji (docs/FEATURES.md, docs/TESTING.md) · proyeksi dampak dan kapasitas dari simulasi Monte Carlo 2.000 kali untuk sekolah ±1.200 siswa (docs/SIMULASI.md) · biaya, jadwal, dan paket (docs/BIAYA-PENGEMBANGAN.md).
+**Data internal:** fitur, modul, dan 409 uji (docs/FEATURES.md, docs/TESTING.md) · proyeksi dampak dan kapasitas dari simulasi untuk sekolah ±1.200 siswa (docs/SIMULASI.md) · biaya, jadwal, dan paket (docs/BIAYA-PENGEMBANGAN.md).
 
 **Catatan:** survei perekrutan (S6–S9) berasal dari Amerika Serikat dan dipakai sebagai indikasi arah tren, bukan potret pasar kerja Indonesia. Angka TPT lulusan SMK berbeda sedikit antar sumber (8,62% dan 9,01%); rujuk Berita Resmi Statistik BPS untuk angka resmi. Platform membantu menyediakan bukti untuk akreditasi dan tidak menjamin hasilnya.
