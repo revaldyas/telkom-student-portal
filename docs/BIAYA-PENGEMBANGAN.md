@@ -6,35 +6,35 @@ Dokumen terkait: [PROPOSAL.md](PROPOSAL.md), [REKOMENDASI-FITUR.md](REKOMENDASI-
 
 ## 1. Ringkasan
 
-Tim pengembang terdiri dari 2 orang. Tahap pertama yang diminta adalah **MVP: Rp 10 juta, dikerjakan dalam 2 minggu** (1 minggu pengerjaan + 1 minggu testing dan Quality Assurance).
+Tim pengembang terdiri dari 2 orang. Tahap pertama yang diminta adalah **MVP: Rp 9.750.000, dikerjakan dalam 2 minggu** (1 minggu pengerjaan + 1 minggu testing dan Quality Assurance).
 
 | Paket | Isi singkat | Waktu | Biaya yang diajukan | Acuan pasar (±2,5×) |
 | --- | --- | --- | ---: | ---: |
-| **MVP (diminta sekarang)** | Keamanan, pendaftaran via data sekolah, lupa kata sandi, notifikasi di server, moderasi | **2 minggu** | **Rp 10 juta** | Rp 25 juta |
-| Prioritas sedang | Rubrik penilaian, realtime, ekspor PDF, laporan proyek, analitik, impor CSV | 2 minggu | Rp 10 juta | Rp 25 juta |
-| Prioritas kecil | PWA, aksesibilitas, pencarian, riwayat revisi, tracker lanjutan | 1,5 minggu | Rp 7 juta | Rp 17,5 juta |
-| Ekosistem | Mentor industri, pencocokan peluang, juri, integrasi GitHub | 2 minggu | Rp 9,5 juta | Rp 24 juta |
-| Fitur AI | Bantuan AI untuk guru, siswa, dan admin | 2 minggu | Rp 12,5 juta | Rp 31 juta |
-| Migrasi hosting (opsional) | Pindah ke server milik sekolah | 1 minggu | Rp 2,5 juta | Rp 6 juta |
+| **MVP (diminta sekarang)** | Keamanan, pendaftaran via data sekolah, lupa kata sandi, notifikasi di server, moderasi | **2 minggu** | **Rp 9.750.000** | ±Rp 24 juta |
+| Prioritas sedang | Rubrik penilaian, realtime, ekspor PDF, laporan proyek, analitik, impor CSV | 2 minggu | Rp 9.850.000 | ±Rp 25 juta |
+| Prioritas kecil | PWA, aksesibilitas, pencarian, riwayat revisi, tracker lanjutan | 1,5 minggu | Rp 6.850.000 | ±Rp 17 juta |
+| Ekosistem | Mentor industri, pencocokan peluang, juri, integrasi GitHub | 2 minggu | Rp 9.350.000 | ±Rp 23 juta |
+| Fitur AI | Bantuan AI untuk guru, siswa, dan admin | 2 minggu | Rp 12.450.000 | ±Rp 31 juta |
+| Migrasi hosting (opsional) | Pindah ke server milik sekolah | 1 minggu | Rp 2.450.000 | ±Rp 6 juta |
 
-Jika dijalankan berurutan, total waktunya **±10,5 minggu** dan total biayanya **Rp 51,5 juta** (acuan pasar ±Rp 129 juta).
+Jika dijalankan berurutan, total waktunya **±10,5 minggu** dan total biayanya **Rp 50.700.000** (acuan pasar ±Rp 127 juta).
 
 ### Jalur bertahap
 
 | Sampai paket | Total biaya | Acuan pasar | Total waktu |
 | --- | ---: | ---: | ---: |
-| MVP | **Rp 10 juta** | Rp 25 juta | 2 minggu |
-| + Prioritas sedang | Rp 20 juta | Rp 50 juta | 4 minggu |
-| + Prioritas kecil | Rp 27 juta | Rp 68 juta | 5,5 minggu |
-| + Ekosistem | Rp 36,5 juta | Rp 91 juta | 7,5 minggu |
-| + Fitur AI | Rp 49 juta | Rp 123 juta | 9,5 minggu |
-| + Migrasi hosting | Rp 51,5 juta | Rp 129 juta | 10,5 minggu |
+| MVP | **Rp 9.750.000** | ±Rp 24 juta | 2 minggu |
+| + Prioritas sedang | Rp 19.600.000 | ±Rp 49 juta | 4 minggu |
+| + Prioritas kecil | Rp 26.450.000 | ±Rp 66 juta | 5,5 minggu |
+| + Ekosistem | Rp 35.800.000 | ±Rp 90 juta | 7,5 minggu |
+| + Fitur AI | Rp 48.250.000 | ±Rp 121 juta | 9,5 minggu |
+| + Migrasi hosting | Rp 50.700.000 | ±Rp 127 juta | 10,5 minggu |
 
 Setiap paket dikerjakan **paling lama 2 minggu**, sudah termasuk testing dan QA. Paket berikutnya baru dimulai setelah paket sebelumnya selesai diuji, dan setiap paket dapat dihentikan tanpa merusak paket sebelumnya.
 
 ## 2. Yang sudah tersedia
 
-Seluruh fitur yang sudah berjalan (karya dan verifikasi guru, proyek tim, tracker, chat, penghargaan, peluang, profil, dashboard, dan lainnya, beserta 409 uji otomatis dan dokumentasinya) **tidak termasuk** dalam biaya di atas. Sebagai gambaran nilainya, harga khusus sekolah ±Rp 32 juta (acuan pasar ±Rp 80 juta).
+Seluruh fitur yang sudah berjalan (karya dan verifikasi guru, proyek tim, tracker, chat, penghargaan, peluang, profil, dashboard, dan lainnya, beserta 409 uji otomatis dan dokumentasinya) **tidak termasuk** dalam biaya di atas.
 
 ## 3. Jadwal pengerjaan
 

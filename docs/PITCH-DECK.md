@@ -290,14 +290,14 @@ Tahap MVP yang diajukan **memastikan semua ini terpasang sebelum peluncuran ke s
 
 | Paket | Isi | Biaya | Jadwal |
 | --- | --- | ---: | --- |
-| **MVP (diminta sekarang)** | Keamanan, registrasi data sekolah, lupa kata sandi, notifikasi, moderasi | **Rp 10 juta** | 2 minggu |
-| Prioritas sedang | Rubrik, realtime, ekspor PDF, laporan proyek, analitik | Rp 10 juta | 2 minggu |
-| Prioritas kecil | PWA, aksesibilitas, pencarian, tracker lanjutan | Rp 7 juta | 1,5 minggu |
-| Ekosistem | Mentor industri, pencocokan peluang, juri, GitHub | Rp 9,5 juta | 2 minggu |
-| Fitur AI | Bantuan AI untuk guru, siswa, admin (di luar biaya pemakaian model) | Rp 12,5 juta | 2 minggu |
+| **MVP (diminta sekarang)** | Keamanan, registrasi data sekolah, lupa kata sandi, notifikasi, moderasi | **Rp 9,75 juta** | 2 minggu |
+| Prioritas sedang | Rubrik, realtime, ekspor PDF, laporan proyek, analitik | Rp 9,85 juta | 2 minggu |
+| Prioritas kecil | PWA, aksesibilitas, pencarian, tracker lanjutan | Rp 6,85 juta | 1,5 minggu |
+| Ekosistem | Mentor industri, pencocokan peluang, juri, GitHub | Rp 9,35 juta | 2 minggu |
+| Fitur AI | Bantuan AI untuk guru, siswa, admin (di luar biaya pemakaian model) | Rp 12,45 juta | 2 minggu |
 
-Seluruh program lanjutan: **Rp 51,5 juta** (termasuk MVP dan migrasi hosting opsional Rp 2,5 juta).
-Acuan pasar MVP ±Rp 25 juta → **harga khusus sekolah**.
+Seluruh program lanjutan: **Rp 50,7 juta** (termasuk MVP dan migrasi hosting opsional Rp 2,45 juta).
+Acuan pasar MVP ±Rp 24 juta → **harga khusus sekolah**.
 
 > Visual: tangga biaya kumulatif (10 → 20 → 27 → 36,5 → 49 juta).
 
@@ -309,7 +309,7 @@ Untuk sekolah ±1.200 siswa pada tahun pertama:
 
 | Komponen | Perkiraan |
 | --- | ---: |
-| Pengembangan MVP (sekali) | Rp 10 juta |
+| Pengembangan MVP (sekali) | Rp 9,75 juta |
 | Hosting, database, penyimpanan | Rp 3,6–18 juta per tahun |
 | Domain | ±Rp 0,3 juta |
 | Pelatihan guru dan siswa | Rp 3–10 juta |
@@ -351,7 +351,7 @@ Kebutuhan teknis ringan: penyimpanan ±3–4 GB tahun pertama, ±12 permintaan p
 
 ## Yang kami minta dari yayasan dan sekolah
 
-1. **Persetujuan anggaran MVP Rp 10 juta**, jadwal 2 minggu.
+1. **Persetujuan anggaran MVP Rp 9,75 juta**, jadwal 2 minggu.
 2. **Penunjukan koordinator sekolah** dan admin platform.
 3. **Akses data siswa dan guru** (CSV atau API portal sekolah) untuk validasi pendaftaran.
 4. **Keputusan hosting** dan penyediaan domain/email pengirim.
@@ -363,7 +363,7 @@ Kebutuhan teknis ringan: penyimpanan ±3–4 GB tahun pertama, ±12 permintaan p
 ## Penutup
 
 > **Karya siswa tidak seharusnya berakhir di folder laptop.**
-> Dengan Rp 10 juta dan 2 minggu, kita membuka platform yang aman untuk seluruh siswa, dan mulai membangun bukti kemampuan lulusan SMK Telkom yang dapat dipercaya industri.
+> Dengan Rp 9,75 juta dan 2 minggu, kita membuka platform yang aman untuk seluruh siswa, dan mulai membangun bukti kemampuan lulusan SMK Telkom yang dapat dipercaya industri.
 
 **Keputusan hari ini:** setujui MVP dan percontohan.
 

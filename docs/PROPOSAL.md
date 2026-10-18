@@ -23,7 +23,7 @@
 
 | | |
 | --- | --- |
-| **Anggaran** | **Rp 10.000.000** (sekali, untuk tahap MVP) |
+| **Anggaran** | **Rp 9.750.000** (sekali, untuk tahap MVP) |
 | **Waktu** | **2 minggu**: 1 minggu pengerjaan + 1 minggu testing dan Quality Assurance (QA) |
 | **Isi** | Pendaftaran guru dan siswa tervalidasi data sekolah, lupa kata sandi, perlindungan anti-bot dan keamanan, kebijakan privasi, notifikasi tersimpan di server, moderasi konten |
 | **Hasil** | Platform siap dipakai seluruh siswa dan guru, dengan keamanan yang layak untuk pengguna di bawah umur |
@@ -32,12 +32,12 @@
 **Mengapa layak disetujui?**
 
 1. **Risiko rendah:** fondasi sudah berjalan; yang diminta hanya tahap akhir, dengan hasil jelas dan dapat diuji.
-2. **Biaya kecil:** Rp 10 juta, sekitar sepertiga sampai separuh dari acuan harga pasar untuk pekerjaan serupa (±Rp 25 juta).
+2. **Biaya kecil:** Rp 9,75 juta, sekitar sepertiga sampai separuh dari acuan harga pasar untuk pekerjaan serupa (±Rp 24 juta).
 3. **Komitmen bertahap:** hanya MVP yang diminta sekarang. Tahap lanjutan diputuskan setelah hasil MVP dan percontohan terlihat.
 4. **Manfaat terukur:** target dan indikator keberhasilan sudah ditetapkan (bagian 8).
 5. **Aset milik sekolah:** kode, data, dan dokumentasi lengkap sehingga tidak bergantung pada satu orang atau satu vendor.
 
-**Keputusan yang diminta:** persetujuan anggaran Rp 10 juta, penunjukan koordinator sekolah, dan akses data siswa/guru (lihat bagian 11 dan formulir persetujuan di bagian 12).
+**Keputusan yang diminta:** persetujuan anggaran Rp 9,75 juta, penunjukan koordinator sekolah, dan akses data siswa/guru (lihat bagian 11 dan formulir persetujuan di bagian 12).
 
 ---
 
@@ -169,10 +169,10 @@ Rincian: [FEATURES.md](FEATURES.md). Arsitektur dan keamanan: [ARCHITECTURE.md](
 
 | Pos | Nilai |
 | --- | ---: |
-| **Pengembangan tahap MVP** (pengerjaan, UI/UX, testing dan QA, dokumentasi) | **Rp 10.000.000** |
+| **Pengembangan tahap MVP** (pengerjaan, UI/UX, testing dan QA, dokumentasi) | **Rp 9.750.000** |
 | Biaya layanan berjalan (ditanggung sekolah, bukan bagian permohonan ini) | Rp 0,3-1,5 juta per bulan |
 
-Harga pengembangan sudah mencakup UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran. Acuan harga pasar untuk pekerjaan serupa sekitar 2–3 kali lipat (±Rp 25 juta); harga yang diajukan adalah harga khusus sekolah.
+Harga pengembangan sudah mencakup UI/UX, pengujian otomatis, dokumentasi, dan dukungan peluncuran. Acuan harga pasar untuk pekerjaan serupa sekitar 2–3 kali lipat (±Rp 24 juta); harga yang diajukan adalah harga khusus sekolah.
 
 ### 7.2 Biaya layanan berjalan (perkiraan untuk sekolah ±1.200 siswa)
 
@@ -192,13 +192,13 @@ Diputuskan di akhir tiap tahap berdasarkan hasil. Setiap paket dikerjakan **pali
 
 | Paket | Isi | Harga | Jadwal |
 | --- | --- | ---: | --- |
-| Prioritas sedang | Rubrik penilaian dan lencana keahlian, notifikasi realtime, ekspor portofolio PDF, laporan proyek mingguan, analitik sekolah, impor CSV dan kenaikan kelas | Rp 10 juta | 2 minggu |
-| Prioritas kecil | PWA dan mode gelap, aksesibilitas, pencarian lebih baik, riwayat revisi karya, tracker lanjutan | Rp 7 juta | 1,5 minggu |
-| Ekosistem | Mentor industri/alumni, pencocokan peluang, penghargaan berbasis juri, integrasi GitHub | Rp 9,5 juta | 2 minggu |
-| Fitur AI | Bantuan AI untuk guru (draf umpan balik), siswa (asisten penulisan), dan admin (moderasi); belum termasuk biaya pemakaian model AI | Rp 12,5 juta | 2 minggu |
-| Migrasi hosting sendiri | Server, penyimpanan, dan database milik sekolah | Rp 2,5 juta | 1 minggu |
+| Prioritas sedang | Rubrik penilaian dan lencana keahlian, notifikasi realtime, ekspor portofolio PDF, laporan proyek mingguan, analitik sekolah, impor CSV dan kenaikan kelas | Rp 9,85 juta | 2 minggu |
+| Prioritas kecil | PWA dan mode gelap, aksesibilitas, pencarian lebih baik, riwayat revisi karya, tracker lanjutan | Rp 6,85 juta | 1,5 minggu |
+| Ekosistem | Mentor industri/alumni, pencocokan peluang, penghargaan berbasis juri, integrasi GitHub | Rp 9,35 juta | 2 minggu |
+| Fitur AI | Bantuan AI untuk guru (draf umpan balik), siswa (asisten penulisan), dan admin (moderasi); belum termasuk biaya pemakaian model AI | Rp 12,45 juta | 2 minggu |
+| Migrasi hosting sendiri | Server, penyimpanan, dan database milik sekolah | Rp 2,45 juta | 1 minggu |
 
-Total seluruh opsi lanjutan Rp 41,5 juta; bersama MVP Rp 51,5 juta. Dasar perhitungan: [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md).
+Total seluruh opsi lanjutan Rp 40,95 juta; bersama MVP Rp 50,7 juta. Dasar perhitungan: [BIAYA-PENGEMBANGAN.md](BIAYA-PENGEMBANGAN.md).
 
 ---
 
@@ -274,7 +274,7 @@ Kami memohon persetujuan atas hal berikut:
 
 | No. | Keputusan | Setuju |
 | --- | --- | --- |
-| 1 | Anggaran pengembangan tahap MVP sebesar **Rp 10.000.000** dengan jadwal **2 minggu** (1 pengerjaan + 1 testing dan QA) | ☐ |
+| 1 | Anggaran pengembangan tahap MVP sebesar **Rp 9.750.000** dengan jadwal **2 minggu** (1 pengerjaan + 1 testing dan QA) | ☐ |
 | 2 | Penunjukan koordinator sekolah dan admin platform | ☐ |
 | 3 | Penyediaan data siswa dan guru untuk validasi pendaftaran | ☐ |
 | 4 | Keputusan hosting dan penyediaan domain/email pengirim | ☐ |
