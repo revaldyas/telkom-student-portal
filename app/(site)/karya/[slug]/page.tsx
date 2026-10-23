@@ -318,7 +318,7 @@ export default function WorkPage() {
 
           {portfolio.projectFile?.url && <section className="wd-section"><h2>Lampiran</h2>{portfolio.projectFile.mimeType?.startsWith('video/')
             ? <video className="wd-video" controls preload="metadata" src={portfolio.projectFile.url}>Browser tidak mendukung pemutaran video.</video>
-            : <a className="wd-file" href={portfolio.projectFile.url} target="_blank" rel="noreferrer"><span aria-hidden="true">📄</span><div><strong>{portfolio.projectFile.filename || 'Dokumen pendukung'}</strong><small>Lihat atau unduh dokumen</small></div><b aria-hidden="true">↗</b></a>}</section>}
+            : <a className="wd-file" href={portfolio.projectFile.url} target="_blank" rel="noreferrer"><span aria-hidden="true">FILE</span><div><strong>{portfolio.projectFile.filename || 'Dokumen pendukung'}</strong><small>Lihat atau unduh dokumen</small></div><b aria-hidden="true">↗</b></a>}</section>}
 
           {portfolio.status === 'published' ? <section className="wd-section wd-comments" id="komentar"><h2>Komentar <small>{comments.length}</small></h2>
             <form onSubmit={submitComment} className="wd-comment-form"><label htmlFor="comment" className="sr-only">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder={role === 'student' || role === 'teacher' ? 'Berikan tanggapan yang membangun…' : 'Masuk untuk berkomentar'} /><div><small>{commentText.length}/1200</small><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></div></form>

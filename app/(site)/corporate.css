@@ -472,6 +472,53 @@ body .au-rules li.is-ok i { background: #1a7f4b; }
 body .au-row { grid-template-columns: auto 1fr; }
 body .au-row .au-ghost { padding: 0 24px; }
 
+/* ───────── Detail karya / proyek ───────── */
+body .wd-crumb [aria-current] { color: var(--ink); font-weight: 600; }
+body .wd-chip { border-radius: 6px; background: #efefec; color: var(--ink); font-weight: 700; }
+body .wd-chip--gold { background: var(--accent-tint); color: var(--accent-dark); }
+body .wd-chip--green { background: #e6f4ec; color: #14653c; }
+body .wd-chip--blue { background: #eef1f6; color: #2b3a55; }
+body .wd-head h1 { font-family: var(--font-display); font-weight: 700; letter-spacing: -.04em; }
+body .wd-lead { color: #4a4c52; }
+body .wd-cover button { border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow-hover); }
+body .wd-cover button:hover img, body .wd-gallery button:hover img { transform: none; }
+body .wd-gallery button { border-radius: 10px; }
+body .wd-section h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -.03em; }
+body .wd-section h2 small { border-radius: 999px; background: var(--accent-tint); color: var(--accent); }
+body .wd-prose img, body .wd-video { border-radius: 10px; }
+body .wd-file { border-radius: 10px; }
+body .wd-file:hover { transform: none; border-color: var(--ink); }
+body .wd-file span { border-radius: 8px; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
+body .wd-comment-form, body .wd-empty { border-radius: 10px; }
+body .wd-comment-form textarea { border-radius: 8px; }
+body .wd-comment-form textarea:focus { box-shadow: 0 0 0 1px var(--ink); }
+body .wd-comment-form button { border-radius: 8px; background: var(--accent); }
+body .wd-comment-form button:hover:not(:disabled) { background: var(--accent-dark); }
+body .wd-avatar { background: var(--ink); font-family: var(--font-body); }
+body .wd-avatar small { border-radius: 4px; }
+body .wd-card, body .pd .project-mentor-workflow, body .pd-mentor { border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .wd-ghost { border-radius: 8px; border-color: var(--line); color: var(--ink); font-weight: 600; }
+body .wd-ghost:hover { border-color: var(--ink); color: var(--ink); }
+body .wd-like { border-radius: 8px; background: var(--ink); font-weight: 700; }
+body .wd-like b { border-radius: 6px; }
+body .wd-like:hover:not(:disabled) { background: var(--accent); transform: none; }
+body .wd-like.is-liked { background: var(--accent); }
+body .wd-cta { border-radius: 8px; font-weight: 700; }
+body .wd-cta:hover { filter: none; transform: none; background: var(--accent-dark); }
+body .wd-tools li, body .wd-card li { border-radius: 6px; }
+body .wd-verified { border-color: #cfe6d9; background: #f4faf6; }
+body .wd-seal { border-radius: 8px; }
+body .pd-banner { border-radius: 10px; }
+body .pd-response { border-radius: 4px; }
+body .pd-timeline p, body .wd-comment-edit textarea { border-radius: 8px; }
+body .pd-team a { border-radius: 8px; }
+
+/* Peluang, mentor, dan halaman informasi */
+body .opportunity-card, body .mentor-card { border-radius: var(--radius-lg); }
+body .kl-actions { border-top: 1px solid var(--line); }
+body .kl-primary, body .kl-secondary { border-radius: 8px; }
+body .opportunity-page .kr-card, body .kl-grid .kr-card { border-radius: var(--radius-lg); }
+
 /* ───────── Responsif ───────── */
 @media (max-width: 980px) {
   body .site-nav-links a { padding: 12px 14px; }
