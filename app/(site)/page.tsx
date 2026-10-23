@@ -239,14 +239,8 @@ export default function Home() {
       </ol>
     </section>
 
-    <section className="home-note">
-      <p>TEL-CREATION adalah tempat siswa SMK Telkom menyimpan hasil belajarnya. Guru memverifikasi, teman memberi komentar, dan mitra industri bisa melihat prosesnya, bukan hanya hasil akhirnya.</p>
-      <Link href="/register">Daftar dengan akun siswa →</Link>
-    </section>
-
-    {studyShortcuts.length > 0 && <section className="home-programs" aria-label="Jelajahi jurusan">
-      <span>Lihat karya per jurusan</span>
-      <div>{studyShortcuts.map((item) => <Link key={item.id} href={`/karya?program=${encodeURIComponent(String(item.id))}`} title={item.name}>{item.code || item.name}</Link>)}</div>
+    {studyShortcuts.length > 0 && <section className="home-marquee" aria-label="Lihat karya per jurusan">
+      <div className="home-marquee-track">{[0, 1].map((copy) => <div key={copy} aria-hidden={copy === 1 ? true : undefined}>{studyShortcuts.map((item) => <Link key={item.id} href={`/karya?program=${encodeURIComponent(String(item.id))}`} title={item.name} tabIndex={copy === 1 ? -1 : undefined}>{item.code || item.name}</Link>)}</div>)}</div>
     </section>}
 
     <section className="home-section" id="karya"><div className="section-heading"><div><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => slideRecentWorks(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => slideRecentWorks(1)}>›</button></div></div>
@@ -369,6 +363,11 @@ export default function Home() {
         <section className="lb-list-card"><div className="lb-list-head"><span className="lb-list-icon lb-list-icon--hot" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 22c4 0 7-2.8 7-7 0-3-1.8-5-3.5-6.8-.4 1.4-1.2 2.3-2.2 2.8.2-3.2-1.3-6-4.3-8C9 6 5 9.5 5 15c0 4.2 3 7 7 7Z"/></svg></span><h3>Trending · Karya</h3></div>{board.trending.slice(0, 3).map((work, index) => <article className="lb-row" key={work.id}><span className="lb-rank">{index + 1}</span><Link className="lb-thumb" href={`/karya/${work.slug}`} aria-label={`Lihat karya ${work.title}`}>{work.coverImage ? <SkeletonImage src={work.coverImage} alt={`Sampul ${work.title}`} /> : <span aria-hidden="true">K</span>}</Link><div className="lb-info">{work.isNominee && <small className="lb-nominee">NOMINEE</small>}<Link className="lb-title" href={`/karya/${work.slug}`}>{displayTitle(work.title, work.studentName)}</Link><small className="lb-author">Oleh {work.studentID ? <Link href={`/siswa/${work.studentID}`}>{work.studentName}</Link> : work.studentName}</small></div><div className="lb-stats"><span><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.5 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7h2C14 6.1 15.600 5 17.600 5 21 5 23 8.500 21.600 11.800 19.500 16.400 12 21 12 21Z"/></svg>{work.likes}</span><span><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg>{work.comments}</span></div></article>)}{!board.trending.length && <p className="leaderboard-empty">Belum ada karya yang ramai dikomentari.</p>}</section>
       </div>
     </div> : <p>Data belum cukup untuk menampilkan leaderboard. Peringkat akan muncul setelah karya mendapatkan suka atau komentar.</p>) : <p>Leaderboard akan muncul setelah ada interaksi pada karya.</p>}<div className="home-centered-link"><RevealLink href="/leaderboard">Lihat semua peringkat <span>↗</span></RevealLink></div></section>
+
+    <section className="home-note">
+      <p>TEL-CREATION adalah tempat siswa SMK Telkom menyimpan hasil belajarnya. Guru memverifikasi, teman memberi komentar, dan mitra industri bisa melihat prosesnya, <em>bukan hanya hasil akhirnya.</em></p>
+      <Link href="/register">Daftar dengan akun siswa →</Link>
+    </section>
 
     <section className="home-section home-testimonials-section" id="testimoni">
       <div className="section-heading"><div><h2>Cerita di balik <span className="home-recent-title-accent">karya</span></h2></div>{testimonials.length > 3 && <div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Testimoni sebelumnya" onClick={() => navigateSwiper(testimonialTrackRef.current, -1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Testimoni berikutnya" onClick={() => navigateSwiper(testimonialTrackRef.current, 1)}>›</button></div>}</div>
