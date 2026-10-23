@@ -375,6 +375,51 @@ body .ws-row[aria-current=page] .ws-ico, body .ws-group.has-active > .ws-head .w
 body .ws-row[aria-current=page]::before { border-radius: 0; background: var(--accent); }
 body .ws-badge { border-radius: 2px; }
 
+/* ───────── Halaman dalam: selaras dengan beranda ───────── */
+body .kl-head, body .lowfi-section-heading { margin-bottom: 24px; padding-bottom: 0; border-bottom: 0; }
+body .lowfi-section-heading h1, body .kl-head h1 { color: var(--ink); font-size: clamp(2rem, 3.4vw, 2.9rem); font-weight: 700; letter-spacing: -.035em; line-height: 1.1; }
+body .kl-count { padding: 4px 12px; border-radius: 999px; background: var(--accent-tint); color: var(--accent); }
+body .kl-lead { max-width: 560px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+body .kl-search input, body .kl-dd-trigger, body .kl-toggle { border-color: var(--line); border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
+body .kl-dd-menu { border-radius: 12px; }
+body .kl-dd-menu button { border-radius: 8px; }
+body .kl-dd-trigger:hover, body .kl-dd.is-open .kl-dd-trigger { border-color: var(--ink); }
+body .kl-dd.is-set .kl-dd-trigger { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-dark); }
+body .kl-dd.is-set .kl-dd-label, body .kl-dd.is-set .kl-dd-trigger svg { color: var(--accent); }
+body .kl-dd-menu button.is-active { background: var(--accent-tint); color: var(--accent-dark); }
+body .kl-toggle.is-active { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-dark); }
+body .kl-more button, body .kl-empty button, body .kl-primary { border-radius: 10px; background: var(--accent); }
+body .kl-more button:hover, body .kl-empty button:hover, body .kl-primary:hover { background: var(--accent-dark); }
+body .kl-secondary { border-radius: 10px; border-color: var(--ink); color: var(--ink); }
+body .kl-secondary:hover { background: var(--ink); color: #fff; }
+body .kl-empty, body .kl-note { border-radius: var(--radius-lg); }
+body .kr-category { top: auto; bottom: 12px; left: 12px; padding: 5px 10px; border-radius: 6px; background: rgba(255,255,255,.95); color: var(--ink); font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+body .kr-nominee { border-radius: 6px; }
+body .kr-media { border-radius: 0; }
+body .kr-like, body .kr-comments { border-radius: 8px; }
+body .lb-initial { background: transparent; color: #fff; }
+body .lb-list-card { border: 1px solid var(--line); border-top-width: 1px; border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .lb-rank { border-radius: 6px; }
+body .listing-filters, body .lowfi-panel, body .award-card, body .project-form, body .empty-state, body .competency-panel, body .impact-panel, body .mentor-card, body .opportunity-card { border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .award-hero, body .opportunity-hero, body .impact-hero, body .mentor-hero { border-radius: var(--radius-lg); }
+body .award-nominee { border-radius: 10px; }
+body .award-status { border-radius: 999px; }
+body .creator-profile-header { border: 1px solid var(--line); border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .creator-avatar { border: 0; }
+body .creator-work-card { border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .creator-work-card:hover, body .creator-work-card:focus-within { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+body .creator-achievements, body .profile-edit-form { border-radius: var(--radius-lg); box-shadow: var(--shadow); }
+body .profile-history-tabs { border-radius: 10px; background: #efefec; }
+body .profile-history-tabs button { border-radius: 8px; }
+body .profile-history-tabs button[aria-selected=true] { border-bottom: 0; box-shadow: var(--shadow); }
+body .creator-tabs h2 { border-bottom-color: var(--accent); }
+body .auth-shell, body .au { border-radius: var(--radius-lg); }
+body .auth-box input, body .au-input input { border-radius: 10px; }
+body .auth-submit, body .au button[type=submit] { border-radius: 10px; background: var(--accent); }
+body .auth-submit:hover, body .au button[type=submit]:hover:not(:disabled) { background: var(--accent-dark); }
+body .ds-hero, body .ds-card, body .ds-kpi { border-radius: var(--radius-lg); }
+body .ds-hero { background: var(--ink); }
+
 /* ───────── Responsif ───────── */
 @media (max-width: 980px) {
   body .site-nav-links a { padding: 12px 14px; }
