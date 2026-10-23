@@ -74,7 +74,6 @@ const selectRecentByProgram = (works: Portfolio[]) => {
   }
   return works.filter((work) => selectedIDs.has(String(work.id)))
 }
-const splitTitle = (title: string): [string, string] => { const words = title.split(' '); if (words.length < 3) return [title, '']; const k = Math.ceil(words.length / 2); return [words.slice(0, k).join(' '), words.slice(k).join(' ')] }
 const mvsRank = (board: Board | null, id: string | number | null | undefined) => {
   if (id === undefined || !board) return 0
   const rank = board.topOverall.findIndex((student) => String(student.id) === String(id))
@@ -211,7 +210,7 @@ export default function Home() {
         {slides.map((slide, index) => <SwiperSlide className={`home-slide${index === activeSlide ? ' is-active' : ''}`} key={slide.key} aria-hidden={index !== activeSlide} inert={index !== activeSlide}>
           <div className="home-slide-content">
             <span className="home-slide-eyebrow"><i />{slide.eyebrow}</span>
-            <h1>{splitTitle(slide.title)[0]} <span className="home-hero-accent">{splitTitle(slide.title)[1]}</span></h1>
+            <h1>{slide.title}</h1>
             <p>{slide.description}</p>
             <div className="home-slide-actions"><Link className="button button-primary" href={slide.href}>{slide.action}<span aria-hidden="true">↗</span></Link>{slide.secondaryHref && slide.secondaryAction && <Link className="button button-glass" href={slide.secondaryHref}>{slide.secondaryAction}</Link>}</div>
           </div>
@@ -223,44 +222,34 @@ export default function Home() {
 
     {!loading && <section className="home-stats" aria-label="Ringkasan portal">
       <dl>
-        <div><span className="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/></svg></span><dd>{totals.portfolios ?? '—'}</dd><dt>Karya terbit</dt></div>
-        <div><span className="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15.5 14.3c3 .2 5.500 2 5.500 5.700"/></svg></span><dd>{totals.projects ?? '—'}</dd><dt>Proyek kolaborasi</dt></div>
-        <div><span className="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><dd>{totals.opportunities ?? '—'}</dd><dt>Peluang aktif</dt></div>
-        <div><span className="home-stat-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><dd>{totals.awards ?? '—'}</dd><dt>Penghargaan</dt></div>
+        <div><dd>{totals.portfolios ?? '—'}</dd><dt>karya terbit</dt></div>
+        <div><dd>{totals.projects ?? '—'}</dd><dt>proyek kolaborasi</dt></div>
+        <div><dd>{totals.opportunities ?? '—'}</dd><dt>peluang dibuka</dt></div>
+        <div><dd>{totals.awards ?? '—'}</dd><dt>penghargaan</dt></div>
       </dl>
     </section>}
 
-    <section className="home-explore" aria-labelledby="home-explore-title">
-      <div className="home-explore-head"><div><span className="section-kicker">YANG BISA KAMU LAKUKAN</span><h2 id="home-explore-title">Satu portal untuk <span className="home-recent-title-accent">berkarya dan berkembang</span></h2></div><div><p>Dari memamerkan portofolio hingga menemukan kolaborator dan kesempatan, semuanya tersedia untuk siswa SMK Telkom.</p><Link className="home-explore-all" href="/karya">Mulai menjelajah <span aria-hidden="true">→</span></Link></div></div>
-      <div className="home-explore-grid">
-        <Link className="home-explore-card" href="/karya"><span className="home-explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/></svg></span><h3>Portofolio Siswa</h3><p>Telusuri karya terbaik dari seluruh jurusan dan beri apresiasi lewat suka dan komentar.</p><span className="home-explore-more">Lihat karya <i aria-hidden="true">→</i></span></Link>
-        <Link className="home-explore-card" href="/proyek"><span className="home-explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M15.5 14.3c3 .2 5.500 2 5.500 5.700"/></svg></span><h3>Proyek Kolaborasi</h3><p>Lihat proyek tim lintas jurusan dan temukan teman untuk membangun sesuatu bersama.</p><span className="home-explore-more">Lihat proyek <i aria-hidden="true">→</i></span></Link>
-        <Link className="home-explore-card" href="/peluang"><span className="home-explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/></svg></span><h3>Peluang &amp; Mentoring</h3><p>Kompetisi, pameran, dan program industri yang dibuka guru dan mitra untuk siswa.</p><span className="home-explore-more">Lihat peluang <i aria-hidden="true">→</i></span></Link>
-        <Link className="home-explore-card" href="/awards"><span className="home-explore-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><h3>Awards &amp; Leaderboard</h3><p>Ikuti voting penghargaan dan pantau kreator dengan interaksi terbanyak.</p><span className="home-explore-more">Lihat awards <i aria-hidden="true">→</i></span></Link>
-      </div>
+    <section className="home-index" aria-labelledby="home-index-title">
+      <h2 id="home-index-title">Isi portal</h2>
+      <ol>
+        <li><Link href="/karya"><span className="home-index-no">01</span><strong>Karya</strong><span className="home-index-desc">Portofolio individu: desain, kode, foto, video. Bisa disaring per jurusan dan tahun.</span><span className="home-index-go">{totals.portfolios !== undefined ? `${totals.portfolios} karya` : 'Buka'} →</span></Link></li>
+        <li><Link href="/proyek"><span className="home-index-no">02</span><strong>Proyek</strong><span className="home-index-desc">Pekerjaan tim lintas jurusan, lengkap dengan anggota dan perannya.</span><span className="home-index-go">{totals.projects !== undefined ? `${totals.projects} proyek` : 'Buka'} →</span></Link></li>
+        <li><Link href="/peluang"><span className="home-index-no">03</span><strong>Peluang</strong><span className="home-index-desc">Lomba, pameran, dan tantangan dari guru serta mitra industri.</span><span className="home-index-go">{totals.opportunities !== undefined ? `${totals.opportunities} dibuka` : 'Buka'} →</span></Link></li>
+        <li><Link href="/awards"><span className="home-index-no">04</span><strong>Penghargaan</strong><span className="home-index-desc">Voting karya terbaik dan peringkat kreator dengan interaksi terbanyak.</span><span className="home-index-go">{totals.awards !== undefined ? `${totals.awards} voting` : 'Buka'} →</span></Link></li>
+      </ol>
     </section>
 
-    <section className="home-about" aria-labelledby="home-about-title">
-      <div className="home-about-copy">
-        <span className="section-kicker">TENTANG TEL-CREATION</span>
-        <h2 id="home-about-title">Ruang digital untuk <span className="home-recent-title-accent">menunjukkan karya siswa</span></h2>
-        <p>TEL-CREATION mengumpulkan portofolio, proyek, dan pencapaian siswa SMK Telkom dalam satu tempat, sehingga proses belajar terlihat nyata bagi guru, mitra industri, dan teman sekelas.</p>
-        <ul>
-          <li><span aria-hidden="true">✓</span>Portofolio terverifikasi oleh guru</li>
-          <li><span aria-hidden="true">✓</span>Kolaborasi lintas jurusan dan kelas</li>
-          <li><span aria-hidden="true">✓</span>Penghargaan dan peringkat yang transparan</li>
-        </ul>
-        <Link className="button button-primary" href="/register">Daftar sekarang</Link>
-      </div>
-      <div className="home-about-media"><img src={slides[0]?.image || '/demo-covers/pinterest-2026/banners/hero-student-collaboration.jpg'} alt="Siswa SMK Telkom berkarya bersama" loading="lazy" /><div className="home-about-badge"><strong>{totals.portfolios ?? '—'}</strong><b>Karya terbit</b><span>Dari seluruh program keahlian SMK Telkom.</span></div></div>
+    <section className="home-note">
+      <p>TEL-CREATION adalah tempat siswa SMK Telkom menyimpan hasil belajarnya. Guru memverifikasi, teman memberi komentar, dan mitra industri bisa melihat prosesnya, bukan hanya hasil akhirnya.</p>
+      <Link href="/register">Daftar dengan akun siswa →</Link>
     </section>
 
     {studyShortcuts.length > 0 && <section className="home-programs" aria-label="Jelajahi jurusan">
-      <p>PROGRAM KEAHLIAN · TELUSURI KARYA PER JURUSAN</p>
+      <span>Lihat karya per jurusan</span>
       <div>{studyShortcuts.map((item) => <Link key={item.id} href={`/karya?program=${encodeURIComponent(String(item.id))}`} title={item.name}>{item.code || item.name}</Link>)}</div>
     </section>}
 
-    <section className="home-section" id="karya"><div className="section-heading"><div><span className="section-kicker">PORTOFOLIO SISWA</span><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => slideRecentWorks(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => slideRecentWorks(1)}>›</button></div></div>
+    <section className="home-section" id="karya"><div className="section-heading"><div><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => slideRecentWorks(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => slideRecentWorks(1)}>›</button></div></div>
       {likeNotice && <p className="home-like-notice" role="status">{likeNotice}</p>}
       <div className="home-recent-carousel home-works-carousel"><div className="home-recent-all"><RevealLink href="/karya">Lihat semua{totals.portfolios !== undefined ? ` ${totals.portfolios}` : ''} karya <span>↗</span></RevealLink></div>
       {loading ? <WorkGridSkeleton count={4} className="home-recent-track home-works-track" /> : portfolios.length ? <Swiper
@@ -293,7 +282,7 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="home-section home-projects-section" id="proyek-terbaru"><div className="section-heading"><div><span className="section-kicker">KOLABORASI</span><h2>Proyek <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Proyek sebelumnya" disabled={loading} onClick={() => slideRecentProjects(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Proyek berikutnya" disabled={loading} onClick={() => slideRecentProjects(1)}>›</button></div></div>
+    <section className="home-section home-projects-section" id="proyek-terbaru"><div className="section-heading"><div><h2>Proyek <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Proyek sebelumnya" disabled={loading} onClick={() => slideRecentProjects(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Proyek berikutnya" disabled={loading} onClick={() => slideRecentProjects(1)}>›</button></div></div>
       <div className="home-recent-carousel home-projects-carousel"><div className="home-recent-all"><RevealLink href="/proyek">Lihat semua{totals.projects !== undefined ? ` ${totals.projects}` : ''} proyek <span>↗</span></RevealLink></div>
       {loading ? <WorkGridSkeleton count={4} className="home-recent-track home-project-track" /> : projects.length ? <Swiper
         className="home-recent-track home-project-track"
@@ -319,7 +308,7 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="home-section home-opportunities-section" id="peluang-terbaru"><div className="section-heading"><div><span className="section-kicker">LANGKAH BERIKUTNYA</span><h2>Peluang <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Peluang sebelumnya" disabled={loading} onClick={() => slideRecentOpportunities(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Peluang berikutnya" disabled={loading} onClick={() => slideRecentOpportunities(1)}>›</button></div></div>
+    <section className="home-section home-opportunities-section" id="peluang-terbaru"><div className="section-heading"><div><h2>Peluang <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Peluang sebelumnya" disabled={loading} onClick={() => slideRecentOpportunities(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Peluang berikutnya" disabled={loading} onClick={() => slideRecentOpportunities(1)}>›</button></div></div>
       <div className="home-recent-carousel home-opportunities-carousel"><div className="home-recent-all"><RevealLink href="/peluang">Lihat semua{totals.opportunities !== undefined ? ` ${totals.opportunities}` : ''} peluang <span>↗</span></RevealLink></div>
       {loading ? <WorkGridSkeleton count={3} className="home-recent-track home-opportunities-track" /> : opportunities.length ? <Swiper
         className="home-recent-track home-opportunities-track"
@@ -347,7 +336,7 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="home-section home-awards-section" id="penghargaan"><div className="section-heading"><div><span className="section-kicker">MOMEN APRESIASI</span><h2>Penghargaan <span className="home-recent-title-accent">Tersedia</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Penghargaan sebelumnya" onClick={() => slideAwards(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Penghargaan berikutnya" onClick={() => slideAwards(1)}>›</button></div></div>{loading ? <AwardCardsSkeleton /> : awards.length ? <div className="home-awards-carousel"><Swiper
+    <section className="home-section home-awards-section" id="penghargaan"><div className="section-heading"><div><h2>Penghargaan <span className="home-recent-title-accent">Tersedia</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Penghargaan sebelumnya" onClick={() => slideAwards(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Penghargaan berikutnya" onClick={() => slideAwards(1)}>›</button></div></div>{loading ? <AwardCardsSkeleton /> : awards.length ? <div className="home-awards-carousel"><Swiper
       className="home-awards-track"
       modules={[Keyboard]}
       slidesPerView={2}
@@ -372,7 +361,7 @@ export default function Home() {
       </article></SwiperSlide>
     })}</Swiper></div> : <p className="section-empty">Belum ada voting penghargaan yang sedang tersedia.</p>}<div className="home-centered-link"><RevealLink href="/awards">Lihat semua{totals.awards !== undefined ? ` ${totals.awards}` : ''} penghargaan <span>↗</span></RevealLink></div></section>
 
-    <section className="home-section leaderboard-home"><div className="section-heading"><div><span className="section-kicker">KREATOR PILIHAN</span><h2><span className="home-recent-title-accent">Leaderboard</span></h2></div></div>{boardLoading ? <LeaderboardSkeleton /> : board ? (board.topOverall.some((leader) => (leader.score || 0) > 0) ? <div className="lb-grid">
+    <section className="home-section leaderboard-home"><div className="section-heading"><div><h2><span className="home-recent-title-accent">Leaderboard</span></h2></div></div>{boardLoading ? <LeaderboardSkeleton /> : board ? (board.topOverall.some((leader) => (leader.score || 0) > 0) ? <div className="lb-grid">
       <section className="lb-podium-card" aria-label="Most Valuable Student"><div className="lb-card-head"><span className="lb-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg></span><div><h3>Most Valuable Student</h3><p>Kreator dengan interaksi terbanyak</p></div><span className="lb-brand" aria-label="TEL-CREATION"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></span></div>
         <div className="lb-podium">{[1, 0, 2].map((slot) => { const leader = board.topOverall.filter((entry) => (entry.score || 0) > 0)[slot]; return leader ? <Link className={`lb-step lb-step--${slot + 1}`} href={`/siswa/${leader.id}`} key={leader.id}><span className="lb-avatar">{slot === 0 && <span className="lb-crown" aria-hidden="true">♛</span>}{leader.profilePhoto ? <SkeletonImage src={leader.profilePhoto} alt={`Foto profil ${leader.name}`} /> : <span className="lb-initial">{leader.name.slice(0, 1).toUpperCase()}</span>}</span><strong className="lb-name">{leader.name}</strong><span className="lb-stats lb-stats--center"><span><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.5 3 5 6.4 5c2 0 3.6 1.1 4.6 2.7h2C14 6.1 15.600 5 17.600 5 21 5 23 8.500 21.600 11.800 19.500 16.400 12 21 12 21Z"/></svg>{leader.likes}</span><span><svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg>{leader.comments}</span></span><span className="lb-block"><b>{slot + 1}</b></span></Link> : <span className="lb-step lb-step--empty" key={`empty-${slot}`} aria-hidden="true"><span className="lb-block"><b>{slot + 1}</b></span></span> })}</div></section>
       <div className="lb-lists">
@@ -382,7 +371,7 @@ export default function Home() {
     </div> : <p>Data belum cukup untuk menampilkan leaderboard. Peringkat akan muncul setelah karya mendapatkan suka atau komentar.</p>) : <p>Leaderboard akan muncul setelah ada interaksi pada karya.</p>}<div className="home-centered-link"><RevealLink href="/leaderboard">Lihat semua peringkat <span>↗</span></RevealLink></div></section>
 
     <section className="home-section home-testimonials-section" id="testimoni">
-      <div className="section-heading"><div><span className="section-kicker">SUARA KOMUNITAS</span><h2>Cerita di balik <span className="home-recent-title-accent">karya</span></h2></div>{testimonials.length > 3 && <div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Testimoni sebelumnya" onClick={() => navigateSwiper(testimonialTrackRef.current, -1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Testimoni berikutnya" onClick={() => navigateSwiper(testimonialTrackRef.current, 1)}>›</button></div>}</div>
+      <div className="section-heading"><div><h2>Cerita di balik <span className="home-recent-title-accent">karya</span></h2></div>{testimonials.length > 3 && <div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Testimoni sebelumnya" onClick={() => navigateSwiper(testimonialTrackRef.current, -1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Testimoni berikutnya" onClick={() => navigateSwiper(testimonialTrackRef.current, 1)}>›</button></div>}</div>
       {testimonials.length ? <Swiper
         className="home-testimonial-track"
         modules={[Keyboard]}
@@ -404,7 +393,7 @@ export default function Home() {
     </section>
 
     <section className="home-final-cta" aria-labelledby="home-final-cta-title">
-      <div className="home-final-cta-copy"><span className="home-final-cta-kicker">BERGABUNG DENGAN KOMUNITAS</span><h2 id="home-final-cta-title">Ide kamu layak jadi karya nyata.</h2><p>Mulai ceritakan prosesmu, bagikan karyamu, dan temukan ruang untuk berkembang bersama komunitas.</p><div className="home-final-cta-actions"><Link className="home-final-cta-primary" href="/register">Mulai berkarya <span aria-hidden="true">↗</span></Link><Link className="home-final-cta-secondary" href="/karya">Jelajahi karya</Link></div></div>
+      <div className="home-final-cta-copy"><span className="home-final-cta-kicker">BERGABUNG DENGAN KOMUNITAS</span><h2 id="home-final-cta-title">Punya karya yang belum pernah kamu tunjukkan?</h2><p>Unggah, minta masukan dari guru, dan lihat siapa saja yang tertarik.</p><div className="home-final-cta-actions"><Link className="home-final-cta-primary" href="/register">Mulai berkarya <span aria-hidden="true">↗</span></Link><Link className="home-final-cta-secondary" href="/karya">Lihat karya lain dulu</Link></div></div>
       <div className="home-final-cta-art" aria-hidden="true"><span>✳</span><strong>IDE<br />JADI<br />KARYA</strong><i /></div>
     </section>
 
