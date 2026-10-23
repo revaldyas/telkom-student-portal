@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export type DashIconName = 'image' | 'check' | 'clock' | 'edit' | 'alert' | 'heart' | 'chat' | 'users' | 'spark' | 'trophy' | 'user' | 'plus' | 'arrow' | 'folder' | 'school' | 'chart'
+export type DashIconName = 'image' | 'check' | 'clock' | 'edit' | 'alert' | 'heart' | 'chat' | 'users' | 'spark' | 'trophy' | 'user' | 'plus' | 'arrow' | 'folder' | 'school' | 'chart' | 'star' | 'crown' | 'pin' | 'mail' | 'board' | 'tick'
 
 const paths: Record<DashIconName, ReactNode> = {
   image: <><rect x="3" y="4" width="18" height="16" rx="3" /><circle cx="9" cy="10" r="1.8" /><path d="m21 16-5-5-8 9" /></>,
@@ -19,8 +19,14 @@ const paths: Record<DashIconName, ReactNode> = {
   folder: <path d="M3 7a2 2 0 0 1 2-2h4l2 2.500h8a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />,
   school: <><path d="M3 9.500 12 5l9 4.500-9 4.500L3 9.500Z" /><path d="M7 12v4.500c0 1 2.200 2.500 5 2.500s5-1.500 5-2.500V12" /></>,
   chart: <path d="M4 20V10M10 20V4M16 20v-7M22 20H2" />,
+  star: <path d="m12 3 2.700 5.600 6.100.9-4.400 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9L12 3Z" />,
+  crown: <path d="m3 8 4.500 4L12 5l4.500 7L21 8l-2 11H5L3 8Z" />,
+  pin: <><path d="M9 3h6l-1 6 3 3H7l3-3-1-6Z" /><path d="M12 12v9" /></>,
+  mail: <><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></>,
+  board: <><rect x="3" y="4" width="5" height="16" rx="1.500" /><rect x="10" y="4" width="5" height="10" rx="1.500" /><rect x="17" y="4" width="4" height="13" rx="1.500" /></>,
+  tick: <path d="m5 12.500 4.500 4.500L19 7.500" />,
 }
 
-export default function DashIcon({ name, size = 20 }: { name: DashIconName; size?: number }) {
-  return <svg className="ds-icon" viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
+export default function DashIcon({ name, size = 20, filled = false }: { name: DashIconName; size?: number; filled?: boolean }) {
+  return <svg className="ds-icon" viewBox="0 0 24 24" width={size} height={size} fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{paths[name]}</svg>
 }

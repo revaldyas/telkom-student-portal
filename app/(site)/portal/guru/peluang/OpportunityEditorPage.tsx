@@ -12,8 +12,8 @@ import './opportunity-editor.css'
 
 type Props = { programs: { id: string | number; name: string }[]; opportunity?: OpportunityEditorData | null }
 const types = [
-  { value: 'competition', label: 'Kompetisi', icon: '🏆' }, { value: 'exhibition', label: 'Pameran', icon: '🖼️' }, { value: 'challenge', label: 'Tantangan proyek', icon: '🧩' },
-  { value: 'mentoring', label: 'Mentoring', icon: '🤝' }, { value: 'collaboration', label: 'Kolaborasi industri', icon: '🏢' }, { value: 'other', label: 'Lainnya', icon: '✨' },
+  { value: 'competition', label: 'Kompetisi' }, { value: 'exhibition', label: 'Pameran' }, { value: 'challenge', label: 'Tantangan proyek' },
+  { value: 'mentoring', label: 'Mentoring' }, { value: 'collaboration', label: 'Kolaborasi industri' }, { value: 'other', label: 'Lainnya' },
 ]
 const sections = [{ id: 'dasar', label: 'Informasi' }, { id: 'jadwal', label: 'Jadwal' }, { id: 'sasaran', label: 'Sasaran & media' }, { id: 'kontak', label: 'Tautan & kontak' }]
 const SUMMARY_MAX = 1200
@@ -102,7 +102,7 @@ export default function OpportunityEditorPage({ programs, opportunity = null }: 
       setBaseline(serialize()); setCoverFile(null)
       if (!opportunity && nextStatus === 'draft') router.replace(`/portal/guru/peluang/${result.doc?.id}/edit`)
       else if (nextStatus === 'open' && (intent === 'publish')) { router.push('/portal/guru/peluang'); router.refresh() }
-      else { setToast(intent === 'draft' ? 'Draf tersimpan ✓ Terbitkan saat sudah siap.' : intent === 'close' ? 'Pendaftaran ditutup.' : intent === 'reopen' ? 'Peluang dibuka kembali ✓' : 'Perubahan tersimpan ✓'); router.refresh() }
+      else { setToast(intent === 'draft' ? 'Draf tersimpan. Terbitkan saat sudah siap.' : intent === 'close' ? 'Pendaftaran ditutup.' : intent === 'reopen' ? 'Peluang dibuka kembali' : 'Perubahan tersimpan'); router.refresh() }
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Peluang belum berhasil disimpan.') }
     finally { setBusy('') }
   }
@@ -119,7 +119,7 @@ export default function OpportunityEditorPage({ programs, opportunity = null }: 
 
         <section className="pe-card" id="dasar"><header><span>01</span><div><h2>Informasi peluang</h2><p>Nama, jenis, dan penjelasan yang membuat siswa tertarik.</p></div></header>
           <div className="pe-field"><div className="pe-label"><label htmlFor="op-title">Nama peluang <i>*</i></label><span className="pe-count">{title.length}/160</span></div><input id="op-title" className="pe-input pw-title" value={title} maxLength={160} autoFocus={!opportunity} onChange={(event) => setTitle(event.target.value)} placeholder="Contoh: Lomba Desain Poster Nasional 2026" /></div>
-          <div className="pe-field"><div className="pe-label"><span id="op-type" className="pw-fake-label">Jenis peluang</span></div><div className="oe-types" role="radiogroup" aria-labelledby="op-type">{types.map((item) => <button type="button" role="radio" aria-checked={type === item.value} key={item.value} className={type === item.value ? 'is-active' : ''} onClick={() => setType(item.value)}><span aria-hidden="true">{item.icon}</span>{item.label}</button>)}</div></div>
+          <div className="pe-field"><div className="pe-label"><span id="op-type" className="pw-fake-label">Jenis peluang</span></div><div className="oe-types" role="radiogroup" aria-labelledby="op-type">{types.map((item) => <button type="button" role="radio" aria-checked={type === item.value} key={item.value} className={type === item.value ? 'is-active' : ''} onClick={() => setType(item.value)}>{item.label}</button>)}</div></div>
           <div className="pe-field"><div className="pe-label"><label htmlFor="op-org">Penyelenggara <i>*</i></label></div><input id="op-org" className="pe-input" value={organizer} maxLength={120} onChange={(event) => setOrganizer(event.target.value)} placeholder="Contoh: Kementerian Pendidikan, Telkom University" /></div>
           <div className="pe-field"><div className="pe-label"><label htmlFor="op-sum">Deskripsi <i>*</i></label><span className={`pe-count${summary.length > SUMMARY_MAX - 80 ? ' is-warn' : ''}`}>{summary.length}/{SUMMARY_MAX}</span></div><textarea id="op-sum" className="pe-input pe-textarea" rows={5} maxLength={SUMMARY_MAX} value={summary} onChange={(event) => setSummary(event.target.value)} placeholder="Apa peluang ini, siapa yang cocok mengikuti, dan apa manfaatnya?" /><div className="pe-meter" aria-hidden="true"><span style={{ width: `${Math.min(100, (summary.length / SUMMARY_MAX) * 100)}%` }} /></div></div>
           <div className="pe-field"><div className="pe-label"><label htmlFor="op-req">Syarat dan informasi</label><span className="pe-count">Opsional</span></div><textarea id="op-req" className="pe-input pe-textarea" rows={4} maxLength={3000} value={requirements} onChange={(event) => setRequirements(event.target.value)} placeholder="Persyaratan peserta, kelengkapan, hadiah, atau catatan penting lainnya." /></div>
@@ -139,11 +139,11 @@ export default function OpportunityEditorPage({ programs, opportunity = null }: 
             <p className="pe-hint">Kosongkan pilihan (Semua program) bila terbuka untuk semua siswa.</p></div>
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Gambar sampul</span><span className="pe-count">Rasio 4:3 disarankan</span></div>
             {coverShown ? <div className="pw-cover"><img src={coverShown} alt="Pratinjau sampul" /><div className="pw-cover-actions"><DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-inline" label="Ganti gambar sampul"><span>Ganti</span></DropZone><button type="button" onClick={() => { setRemoveCover(true); setCoverFile(null); setCoverPreview('') }}>Hapus</button></div></div>
-              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><span className="pw-drop-icon" aria-hidden="true">🖼️</span><strong>Seret poster atau gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small></DropZone>}</div>
+              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><svg className="pw-drop-icon" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="1.5" /><path d="m4 18 5-5 4 4 3-3 4 4" /></svg><strong>Seret poster atau gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small></DropZone>}</div>
         </section>
 
         <section className="pe-card" id="kontak"><header><span>04</span><div><h2>Tautan dan kontak</h2><p>Tempat siswa mendaftar atau bertanya lebih lanjut.</p></div></header>
-          <div className="pe-field"><div className="pe-label"><label htmlFor="op-url">Tautan informasi atau pendaftaran</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? '✓ Format valid' : 'Awali dengan https://'}</span>}</div><input id="op-url" className={`pe-input${urlValid ? '' : ' pw-invalid'}`} type="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /></div>
+          <div className="pe-field"><div className="pe-label"><label htmlFor="op-url">Tautan informasi atau pendaftaran</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? 'Format valid' : 'Awali dengan https://'}</span>}</div><input id="op-url" className={`pe-input${urlValid ? '' : ' pw-invalid'}`} type="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /></div>
           <div className="pe-field"><div className="pe-label"><label htmlFor="op-contact">Kontak</label></div><input id="op-contact" className="pe-input" value={contact} maxLength={120} onChange={(event) => setContact(event.target.value)} placeholder="Email atau nomor WhatsApp panitia" /></div>
         </section>
       </form>
@@ -152,14 +152,14 @@ export default function OpportunityEditorPage({ programs, opportunity = null }: 
         <span className="pe-side-label">Pratinjau kartu</span>
         <article className="kr-card pw-preview"><div className="kr-media">{coverShown ? <img src={coverShown} alt="" /> : <span className="kr-placeholder">{typeInfo.label}</span>}<span className="kr-category">{typeInfo.label}</span>{daysLeft !== null && <span className={`kr-nominee kr-deadline${daysLeft <= 7 ? ' is-urgent' : ''}`}>{daysLeft < 0 ? 'Berakhir' : daysLeft === 0 ? 'Hari ini' : `${daysLeft} hari lagi`}</span>}</div>
           <div className="kr-body"><h3>{title.trim() || 'Nama peluangmu'}</h3><p className="oe-org">{organizer.trim() || 'Penyelenggara'}</p>{summary.trim() ? <p className="kr-summary">{summary.trim()}</p> : <p className="kr-summary pw-ghost-text">Deskripsi akan tampil di sini.</p>}{programNames.length > 0 && <div className="oe-prog">{programNames.slice(0, 3).map((name) => <span key={name}>{name}</span>)}{programNames.length > 3 && <span>+{programNames.length - 3}</span>}</div>}</div></article>
-        <section className="pe-progress"><div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan ${percent} persen`}><b>{percent}%</b></div><div><strong>{percent === 100 ? 'Siap diterbitkan! 🎉' : canPublish ? 'Sudah bisa diterbitkan' : 'Kelengkapan peluang'}</strong>{nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Semua bagian sudah terisi.</small>}</div></section>
+        <section className="pe-progress"><div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan ${percent} persen`}><b>{percent}%</b></div><div><strong>{percent === 100 ? 'Siap diterbitkan' : canPublish ? 'Sudah bisa diterbitkan' : 'Kelengkapan peluang'}</strong>{nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Semua bagian sudah terisi.</small>}</div></section>
         <ul className="pe-checklist">{checklist.map((item) => <li key={item.label} className={item.done ? 'is-done' : ''}><button type="button" onClick={() => jump(item.id)}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}{item.required && !item.done && <em>wajib</em>}</button></li>)}</ul>
         <p className="pw-note">{status === 'draft' ? 'Draf hanya terlihat olehmu. Siswa baru melihatnya setelah kamu menerbitkan.' : status === 'open' ? 'Peluang ini sedang tampil di halaman publik. Perubahan langsung terlihat setelah disimpan.' : 'Pendaftaran peluang ini sudah ditutup. Kamu bisa membukanya kembali kapan saja.'}</p>
       </aside>
     </div>
 
     <div className="pe-savebar is-visible pw-actionbar" role="region" aria-label="Simpan peluang">
-      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>✓ {opportunity ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
+      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>{opportunity ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
       <div><Link className="pe-ghost" href="/portal/guru/peluang">Keluar</Link>
         {status === 'draft'
           ? <><button type="button" className="pe-ghost" onClick={() => void save('draft')} disabled={Boolean(busy)}>{busy === 'draft' ? 'Menyimpan…' : 'Simpan draf'}</button><button type="button" className="pe-save" onClick={() => void save('publish')} disabled={Boolean(busy)} title={canPublish ? undefined : 'Lengkapi nama, penyelenggara, dan deskripsi dulu'}>{busy === 'publish' ? 'Menerbitkan…' : 'Terbitkan peluang'}</button></>

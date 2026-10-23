@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { ProfileSkeleton } from '../../../../components/SiteSkeletons'
 import ProfileView, { type ProfileRecord, type ProfileWork, type RelatedGroup } from '../../../../components/ProfileView'
 import type { Appearance } from '../../../../lib/appearance'
+import DashIcon from '../../../../components/DashIcon'
 
 type Mentor = {
   id: string | number
@@ -105,7 +106,7 @@ export default function MentorProfilePage() {
     mentored.set(String(work.student.id), entry)
   }
   const related: RelatedGroup[] = [{
-    key: 'students', title: 'Siswa bimbingan', hint: 'Karya mereka diverifikasi guru ini', icon: '🎓', href: (personID) => `/siswa/${personID}`,
+    key: 'students', title: 'Siswa bimbingan', hint: 'Karya mereka diverifikasi guru ini', icon: <DashIcon name="school" size={18} />, href: (personID) => `/siswa/${personID}`,
     people: [...mentored.values()].sort((a, b) => b.count - a.count).slice(0, 6).map((entry) => ({ id: entry.id, name: entry.name, subtitle: `${entry.count} karya terverifikasi`, badge: `${entry.count} karya` })),
   }]
 
@@ -115,7 +116,7 @@ export default function MentorProfilePage() {
     person={{ name: mentor.name, photo: mentor.profilePhoto, subtitle: [mentor.class || 'Guru', mentor.program].filter(Boolean).join(' · '), badges: ['Guru pembimbing'], bio: mentor.bio, appearance: mentor.appearance, skills: mentor.skills, interests: mentor.interests, experiences: mentor.experiences }}
     stats={[{ value: impact.works, label: 'Terverifikasi' }, { value: impact.reviews, label: 'Tinjauan' }, { value: impact.revisions, label: 'Revisi' }]}
     isOwner={isOwner}
-    actions={isOwner ? <><Link href="/portal/guru/profil">✎ Edit profil</Link><Link href="/portal/guru">Buka Portal Guru</Link></> : viewerRole ? <Link href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/pesan?dm=${mentor.id}`}>✉ Kirim pesan</Link> : undefined}
+    actions={isOwner ? <><Link href="/portal/guru/profil"><DashIcon name="edit" size={14} /> Edit profil</Link><Link href="/portal/guru">Buka Portal Guru</Link></> : viewerRole ? <Link href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/pesan?dm=${mentor.id}`}><DashIcon name="mail" size={14} /> Kirim pesan</Link> : undefined}
     works={mentorWorks} projects={mentorProjects} achievements={achievements} awards={mentorAwards}
     worksLabel="Karya" projectsLabel="Proyek"
     emptyText={{ karya: 'Belum ada karya terverifikasi', proyek: 'Belum ada proyek bimbingan', achievement: 'Belum ada achievement. Pencapaian muncul seiring karya yang kamu verifikasi.', awards: 'Belum ada karya bimbingan yang meraih penghargaan.' }}

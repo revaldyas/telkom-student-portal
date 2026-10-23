@@ -87,7 +87,7 @@ export default async function StudentPortalDashboard() {
     <header className="ds-hero">
       <div className="ds-hero-text">
         <span className="ds-date">{today}</span>
-        <h1>{greeting}, {firstName}! 👋</h1>
+        <h1>{greeting}, {firstName}!</h1>
         <p>{[studentClass, program].filter(Boolean).join(' · ') || 'Ruang untuk mengelola profil kompetensi dan karya-karyamu.'}{appearance.tagline ? <em> · {appearance.tagline}</em> : null}</p>
         <div className="ds-hero-actions"><Link className="ds-btn ds-btn--primary" href="/portal/siswa/karya/baru"><DashIcon name="plus" size={16} />Karya baru</Link><Link className="ds-btn" href="/portal/siswa/proyek/baru">Proyek baru</Link><Link className="ds-btn" href={`/siswa/${user.id}`}>Profil publik <DashIcon name="arrow" size={14} /></Link></div>
       </div>
@@ -103,7 +103,7 @@ export default async function StudentPortalDashboard() {
             <span className="ds-todo-icon"><DashIcon name={kind === 'revision' ? 'alert' : kind === 'draft' ? 'edit' : 'clock'} size={18} /></span>
             <div><strong>{work.title || 'Tanpa judul'}</strong><small>{kind === 'revision' ? (work.reviewFeedback ? `Catatan guru: ${work.reviewFeedback.length > 90 ? `${work.reviewFeedback.slice(0, 90)}…` : work.reviewFeedback}` : 'Guru meminta revisi.') : kind === 'draft' ? 'Draf belum diajukan. Lengkapi lalu ajukan verifikasi.' : 'Sedang ditinjau guru pembimbing.'}</small></div>
             {kind !== 'submitted' ? <Link className="ds-pill" href={`/portal/siswa/karya/${work.id}/edit`}>{kind === 'revision' ? 'Perbaiki' : 'Lanjutkan'}</Link> : <span className="ds-pill is-muted">Menunggu</span>}
-          </li>)}</ul> : <div className="ds-empty"><span aria-hidden="true">🎉</span><strong>Semua beres!</strong><p>Tidak ada karya yang perlu tindakan saat ini.</p></div>}
+          </li>)}</ul> : <div className="ds-empty"><strong>Semua beres!</strong><p>Tidak ada karya yang perlu tindakan saat ini.</p></div>}
         </section>
 
         <section className="ds-card"><header><div><h2>Karya terbaru</h2><p>Terakhir diperbarui</p></div><Link href="/portal/siswa/karya">Kelola →</Link></header>
@@ -112,7 +112,7 @@ export default async function StudentPortalDashboard() {
             <div><strong>{work.title || 'Tanpa judul'}</strong><small>{typeof work.categoryRef === 'object' && work.categoryRef ? work.categoryRef.name : 'Tanpa kategori'} · {work.year} · diperbarui {ago(work.updatedAt)}</small></div>
             <span className={`portal-status ${workStateClass[state]}`}>{workStateLabel[state]}</span>
             <Link className="ds-link" href={`/portal/siswa/karya/${work.id}/edit`}>Edit</Link>
-          </li> })}</ul> : <div className="ds-empty"><span aria-hidden="true">🚀</span><strong>Mulai isi portofoliomu</strong><p>Tambahkan karya pertamamu agar dapat ditinjau guru dan tampil di galeri publik.</p><Link className="ds-btn ds-btn--primary" href="/portal/siswa/karya/baru">Buat karya pertama</Link></div>}
+          </li> })}</ul> : <div className="ds-empty"><strong>Mulai isi portofoliomu</strong><p>Tambahkan karya pertamamu agar dapat ditinjau guru dan tampil di galeri publik.</p><Link className="ds-btn ds-btn--primary" href="/portal/siswa/karya/baru">Buat karya pertama</Link></div>}
         </section>
 
         <section className="ds-card"><header><div><h2>Aktivitas terbaru</h2><p>Komentar pada karyamu</p></div></header>

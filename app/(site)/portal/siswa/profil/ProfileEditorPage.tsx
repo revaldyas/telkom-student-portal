@@ -150,7 +150,7 @@ export default function ProfileEditorPage({ profile, appearance, role = 'student
       const result = await response.json()
       if (!response.ok) throw new Error(result.errors?.[0]?.message || result.message || 'Profil belum berhasil diperbarui.')
       setBaseline(JSON.stringify({ name: name.trim(), bio: bio.trim(), skills, interests, experiences: experienceLines }))
-      setPhotoFile(null); setToast('Profil berhasil disimpan ✓')
+      setPhotoFile(null); setToast('Profil berhasil disimpan')
       window.dispatchEvent(new Event('karyakita-session-change'))
       router.refresh()
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Profil belum berhasil diperbarui.') }
@@ -175,14 +175,14 @@ export default function ProfileEditorPage({ profile, appearance, role = 'student
             <div className={`pe-drop${dragging ? ' is-drag' : ''}`} onDragOver={(event) => { event.preventDefault(); setDragging(true) }} onDragLeave={() => setDragging(false)} onDrop={(event) => { event.preventDefault(); setDragging(false); choosePhoto(event.dataTransfer.files?.[0]) }}>
               <button type="button" className={`pe-avatar${appearance.avatarShape === 'rounded' ? ' is-rounded' : ''}`} onClick={() => fileRef.current?.click()} aria-label="Ganti foto profil">
                 {photo ? (preview ? <img src={preview} alt="Pratinjau foto profil" /> : <SkeletonImage src={photo} alt={`Foto profil ${profile.name}`} />) : <span aria-hidden="true">{(name || profile.name).slice(0, 1).toUpperCase()}</span>}
-                <i aria-hidden="true">📷</i>
+                <i aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z" /><circle cx="12" cy="13" r="3.500" /></svg></i>
               </button>
               <input ref={fileRef} className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => choosePhoto(event.target.files?.[0])} />
               <p><button type="button" className="pe-link" onClick={() => fileRef.current?.click()}>{photoFile ? 'Ganti foto lain' : 'Unggah foto'}</button> atau seret ke sini<small>JPG, PNG, WebP · maks 8 MB{photoFile ? ` · ${photoFile.name}` : ''}</small></p>
             </div>
             <div className="pe-field pe-grow"><div className="pe-label"><label htmlFor="pe-name">Nama lengkap <i>*</i></label><span className="pe-count">{name.length}/120</span></div>
               <input id="pe-name" className="pe-input" value={name} maxLength={120} onChange={(event) => setName(event.target.value)} placeholder="Nama yang tampil di profil" />
-              {subtitle && <p className="pe-locked">🔒 {subtitle} <small>Kelas dan program diatur oleh admin sekolah.</small></p>}</div>
+              {subtitle && <p className="pe-locked">{subtitle} <small>Kelas dan program diatur oleh admin sekolah.</small></p>}</div>
           </div>
         </section>
 
@@ -229,11 +229,11 @@ export default function ProfileEditorPage({ profile, appearance, role = 'student
         </div>
         <section className="pe-progress">
           <div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan profil ${percent} persen`}><b>{percent}%</b></div>
-          <div><strong>{percent === 100 ? 'Profil lengkap! 🎉' : 'Kelengkapan profil'}</strong>
+          <div><strong>{percent === 100 ? 'Profil lengkap' : 'Kelengkapan profil'}</strong>
             {nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Profilmu siap dilihat banyak orang.</small>}</div>
         </section>
         <ul className="pe-checklist">{checklist.map((item) => <li key={item.label} className={item.done ? 'is-done' : ''}><button type="button" onClick={() => jump(item.id)}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}</button></li>)}</ul>
-        <Link className="pe-ghost pe-appearance" href={`${base}/tampilan`}>🎨 Atur cover &amp; warna →</Link>
+        <Link className="pe-ghost pe-appearance" href={`${base}/tampilan`}>Atur cover &amp; warna →</Link>
       </aside>
     </div>
 

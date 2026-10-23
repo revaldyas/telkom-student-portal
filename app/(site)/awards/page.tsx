@@ -8,6 +8,7 @@ import { AwardListSkeleton } from '../../../components/SiteSkeletons'
 import SkeletonImage from '../../../components/SkeletonImage'
 import '../listing.css'
 import { Dropdown, ListingHead, SearchField } from '../../../components/ListingControls'
+import DashIcon from '../../../components/DashIcon'
 
 type Portfolio = {
   id: string | number
@@ -193,10 +194,10 @@ export default function AwardsPage() {
             const canVote = !result && open && (role === '' || role === 'student')
             return <div className={`awp-nominee${selected ? ' is-selected' : ''}${winner ? ' is-winner' : ''}`} key={portfolio.id}>
               <div className="awp-cover">{cover ? <SkeletonImage src={cover} alt={`Sampul ${portfolio.title}`} /> : <span className="kr-placeholder">Telkom Student Creation</span>}
-                {result ? <span className="awp-rank">{winner ? '♛ Juara' : `#${index + 1}`}</span> : <span className="awp-rank">Nominasi</span>}{selected && !result && <span className="awp-picked">✓ Pilihanmu</span>}</div>
+                {result ? <span className="awp-rank">{winner ? <><DashIcon name="crown" size={13} /> Juara</> : `#${index + 1}`}</span> : <span className="awp-rank">Nominasi</span>}{selected && !result && <span className="awp-picked"><DashIcon name="tick" size={13} /> Pilihanmu</span>}</div>
               <div className="awp-body"><h3>{displayTitle(portfolio.title, studentLabel)}</h3><p>Oleh {studentLabel}</p>
                 {result && <div className="awp-result"><div className="awp-bar"><span style={{ width: `${percent}%` }} /></div><strong>{votesCount} suara <small>{percent}%</small></strong></div>}
-                {canVote && <button type="button" className={`awp-vote${selected ? ' is-selected' : ''}`} disabled={busy !== ''} onClick={() => void castVote(award, portfolio)}>{busy === `${awardKey}:${portfolio.id}` ? 'Menyimpan…' : selected ? '✓ Pilihanmu' : ownVote ? 'Ubah pilihan' : 'Pilih karya'}</button>}
+                {canVote && <button type="button" className={`awp-vote${selected ? ' is-selected' : ''}`} disabled={busy !== ''} onClick={() => void castVote(award, portfolio)}>{busy === `${awardKey}:${portfolio.id}` ? 'Menyimpan…' : selected ? <><DashIcon name="tick" size={13} /> Pilihanmu</> : ownVote ? 'Ubah pilihan' : 'Pilih karya'}</button>}
               </div>
             </div>
           })}</div> : <p className="awp-empty">Belum ada karya nominasi untuk penghargaan ini.</p>}

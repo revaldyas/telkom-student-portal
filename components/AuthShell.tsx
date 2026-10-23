@@ -44,8 +44,6 @@ export default function AuthShell({ side, children }: { side: Side; children: Re
       <Link href="/" className="au-brand" aria-label="TEL-CREATION — Beranda"><img className="tel-creation-mark" src="/brand/telkom-schools.png" alt="" /><span className="tel-creation-wordmark"><span className="tel-creation-name">TEL</span><span className="tel-creation-accent">-CREATION</span></span></Link>
       <div className="au-side-copy"><span className="au-kicker"><i aria-hidden="true" />{side.kicker}</span><h1>{side.title}</h1><p>{side.text}</p></div>
       <ul className="au-points">{side.points.map((point) => <li key={point.title}><span><AuthSvg name={point.icon} size={20} /></span><div><strong>{point.title}</strong><small>{point.text}</small></div></li>)}</ul>
-      <div className="au-float au-float--a" aria-hidden="true"><b>♥ 128</b><span>suka untuk karya terbarumu</span></div>
-      <div className="au-float au-float--b" aria-hidden="true"><b>✓</b><span>Karya terverifikasi guru</span></div>
       <div className="au-side-foot">SMK TELKOM · CREATE WHAT’S NEXT</div>
     </aside>
     <section className="au-main"><div className="au-card">{children}</div></section>

@@ -9,6 +9,7 @@ import ProfileView, { type ProfileRecord, type ProfileWork, type RelatedGroup, t
 import type { WorkState } from '../../../../lib/workState'
 import { siteFetch } from '../../../../lib/siteFetch'
 import type { Appearance } from '../../../../lib/appearance'
+import DashIcon from '../../../../components/DashIcon'
 
 type AwardEntry = { id: string | number; title: string; portfolio?: string }
 type Badge = { id: string; name: string; description: string; portfolio: string }
@@ -137,8 +138,8 @@ export default function StudentProfilePage() {
   ]
 
   const related: RelatedGroup[] = [
-    { key: 'team', title: 'Satu tim proyek', hint: 'Rekan yang pernah berkolaborasi', icon: '🤝', href: (personID) => `/siswa/${personID}`, people: profile.related?.team || [] },
-    { key: 'program', title: profile.related?.programName ? `Satu jurusan · ${profile.related.programName}` : 'Satu jurusan', hint: 'Siswa lain yang aktif berkarya', icon: '🎓', href: (personID) => `/siswa/${personID}`, people: profile.related?.program || [] },
+    { key: 'team', title: 'Satu tim proyek', hint: 'Rekan yang pernah berkolaborasi', icon: <DashIcon name="users" size={18} />, href: (personID) => `/siswa/${personID}`, people: profile.related?.team || [] },
+    { key: 'program', title: profile.related?.programName ? `Satu jurusan · ${profile.related.programName}` : 'Satu jurusan', hint: 'Siswa lain yang aktif berkarya', icon: <DashIcon name="school" size={18} />, href: (personID) => `/siswa/${personID}`, people: profile.related?.program || [] },
   ]
 
   return <ProfileView
@@ -150,7 +151,7 @@ export default function StudentProfilePage() {
     stats={[{ value: profile.totals.portfolios, label: 'Karya' }, { value: profile.totals.likes, label: 'Suka' }, { value: profile.totals.comments, label: 'Komentar' }]}
     isOwner={isOwner}
     showDrafts={isOwner}
-    actions={isOwner ? <><Link href="/portal/siswa/karya/baru">+ Karya baru</Link><Link href="/portal/siswa">Buka dashboard</Link></> : viewer ? <Link href={`/portal/${viewer.role === 'teacher' ? 'guru' : 'siswa'}/pesan?dm=${student.id}`}>✉ Kirim pesan</Link> : undefined}
+    actions={isOwner ? <><Link href="/portal/siswa/karya/baru">+ Karya baru</Link><Link href="/portal/siswa">Buka dashboard</Link></> : viewer ? <Link href={`/portal/${viewer.role === 'teacher' ? 'guru' : 'siswa'}/pesan?dm=${student.id}`}><DashIcon name="mail" size={14} /> Kirim pesan</Link> : undefined}
     works={works} projects={projects} achievements={achievements} awards={awards}
     emptyText={{ achievement: 'Belum ada achievement. Pencapaian leaderboard akan tercatat di sini.', awards: 'Belum ada riwayat penghargaan.' }}
   />

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import DashIcon from '../../../../components/DashIcon'
 
 type Comment = { id: number; body: string; createdAt: string; edited: boolean; mine: boolean; canDelete: boolean; author: { id: number; name: string; photo: string | null; role: string } | null }
 type Stats = { likes: number; comments: number; liked: boolean; role: string | null }
@@ -81,8 +82,8 @@ export default function ProjectSocial({ projectID, isTeam }: { projectID: number
 
   return <section className="wd-section wd-comments" id="komentar">
     <div className="ps-bar">
-      <button type="button" className={`wd-like ps-like${stats?.liked ? ' is-liked' : ''}`} disabled={busy || !stats || isTeam} aria-pressed={Boolean(stats?.liked)} title={isTeam ? 'Kamu tidak dapat menyukai proyek timmu sendiri' : undefined} onClick={() => void toggleLike()}><span aria-hidden="true">{stats?.liked ? '♥' : '♡'}</span>{stats?.liked ? 'Disukai' : 'Suka'}<b>{stats?.likes ?? 0}</b></button>
-      <a className="wd-ghost" href="#komentar-form">💬 {stats?.comments ?? comments.length} komentar</a>
+      <button type="button" className={`wd-like ps-like${stats?.liked ? ' is-liked' : ''}`} disabled={busy || !stats || isTeam} aria-pressed={Boolean(stats?.liked)} title={isTeam ? 'Kamu tidak dapat menyukai proyek timmu sendiri' : undefined} onClick={() => void toggleLike()}><DashIcon name="heart" size={18} filled={Boolean(stats?.liked)} />{stats?.liked ? 'Disukai' : 'Suka'}<b>{stats?.likes ?? 0}</b></button>
+      <a className="wd-ghost" href="#komentar-form"><DashIcon name="chat" size={14} /> {stats?.comments ?? comments.length} komentar</a>
       {stats && !stats.role && <small className="wd-hint">Masuk untuk menyukai dan berkomentar. <Link href="/login">Masuk</Link></small>}
     </div>
     <h2>Komentar <small>{comments.length}</small></h2>

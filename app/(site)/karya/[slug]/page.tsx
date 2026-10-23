@@ -10,6 +10,7 @@ import { displayTitle } from '../../../../lib/displayTitle'
 import { WorkDetailSkeleton } from '../../../../components/SiteSkeletons'
 import SkeletonImage from '../../../../components/SkeletonImage'
 import './work-detail.css'
+import DashIcon from '../../../../components/DashIcon'
 
 type Relation = string | number | { id: string | number; name?: string; title?: string; url?: string; code?: string; profilePhoto?: { url?: string } | string | null }
 type Portfolio = {
@@ -299,8 +300,8 @@ export default function WorkPage() {
       <header className="wd-head">
         <div className="wd-chips">
           {category && <span className="wd-chip">{category}{portfolio.year ? ` · ${portfolio.year}` : ''}</span>}
-          {portfolio.isNominee && <span className="wd-chip wd-chip--gold">★ Nominee</span>}
-          {verified && <span className="wd-chip wd-chip--green">✓ Terverifikasi</span>}
+          {portfolio.isNominee && <span className="wd-chip wd-chip--gold"><DashIcon name="star" size={12} filled /> Nominee</span>}
+          {verified && <span className="wd-chip wd-chip--green"><DashIcon name="tick" size={12} /> Terverifikasi</span>}
           {isDraft && <span className="wd-chip wd-chip--grey">Draf</span>}
         </div>
         <h1>{displayTitle(portfolio.title, authorName)}</h1>
@@ -318,7 +319,7 @@ export default function WorkPage() {
 
           {portfolio.projectFile?.url && <section className="wd-section"><h2>Lampiran</h2>{portfolio.projectFile.mimeType?.startsWith('video/')
             ? <video className="wd-video" controls preload="metadata" src={portfolio.projectFile.url}>Browser tidak mendukung pemutaran video.</video>
-            : <a className="wd-file" href={portfolio.projectFile.url} target="_blank" rel="noreferrer"><span aria-hidden="true">📄</span><div><strong>{portfolio.projectFile.filename || 'Dokumen pendukung'}</strong><small>Lihat atau unduh dokumen</small></div><b aria-hidden="true">↗</b></a>}</section>}
+            : <a className="wd-file" href={portfolio.projectFile.url} target="_blank" rel="noreferrer"><span aria-hidden="true">FILE</span><div><strong>{portfolio.projectFile.filename || 'Dokumen pendukung'}</strong><small>Lihat atau unduh dokumen</small></div><b aria-hidden="true">↗</b></a>}</section>}
 
           {portfolio.status === 'published' ? <section className="wd-section wd-comments" id="komentar"><h2>Komentar <small>{comments.length}</small></h2>
             <form onSubmit={submitComment} className="wd-comment-form"><label htmlFor="comment" className="sr-only">Tulis komentar</label><textarea id="comment" value={commentText} onChange={(event) => setCommentText(event.target.value)} required minLength={2} maxLength={1200} placeholder={role === 'student' || role === 'teacher' ? 'Berikan tanggapan yang membangun…' : 'Masuk untuk berkomentar'} /><div><small>{commentText.length}/1200</small><button disabled={busy || !commentText.trim()}>{busy ? 'Mengirim…' : 'Kirim komentar'}</button></div></form>
@@ -334,8 +335,8 @@ export default function WorkPage() {
           </section>
 
           {portfolio.status === 'published' && <section className="wd-card wd-actions">
-            <button type="button" className={`wd-like${myLike ? ' is-liked' : ''}`} disabled={busy} aria-pressed={Boolean(myLike)} onClick={() => void toggleLike()}><span aria-hidden="true">{myLike ? '♥' : '♡'}</span>{myLike ? 'Disukai' : 'Suka'}<b>{counts.likes}</b></button>
-            <div className="wd-row"><a className="wd-ghost" href="#komentar">◉ {counts.comments} komentar</a><button type="button" className="wd-ghost" onClick={() => void copyLink()}>Salin tautan</button></div>
+            <button type="button" className={`wd-like${myLike ? ' is-liked' : ''}`} disabled={busy} aria-pressed={Boolean(myLike)} onClick={() => void toggleLike()}><DashIcon name="heart" size={18} filled={Boolean(myLike)} />{myLike ? 'Disukai' : 'Suka'}<b>{counts.likes}</b></button>
+            <div className="wd-row"><a className="wd-ghost" href="#komentar"><DashIcon name="chat" size={14} /> {counts.comments} komentar</a><button type="button" className="wd-ghost" onClick={() => void copyLink()}>Salin tautan</button></div>
             {role !== 'student' && role !== 'teacher' && <p className="wd-hint">Masuk untuk menyukai dan berkomentar. <Link href="/login">Masuk</Link></p>}
           </section>}
 
@@ -347,7 +348,7 @@ export default function WorkPage() {
           {awards.length > 0 && <section className="wd-card wd-awards"><span className="wd-label">Voting penghargaan</span><p>Karya ini masuk nominasi yang sedang dibuka.</p>{awards.map((award) => <div className="wd-award" key={award.id}><strong>{award.title}</strong><button type="button" disabled={busy || !canInteract} onClick={() => void vote(award)}>{myVotes[String(award.id)] ? 'Ubah suara' : 'Vote karya'}</button></div>)}</section>}
 
           {verified && <section className="wd-card wd-verified">
-            <span className="wd-seal" aria-hidden="true">✓</span>
+            <span className="wd-seal" aria-hidden="true"><DashIcon name="tick" size={16} /></span>
             <div><strong>Terverifikasi guru pembimbing</strong>
               {portfolio.verifiedBy?.name
                 ? <Link className="wd-mentor" href={portfolio.verifiedBy.id ? `/guru/${portfolio.verifiedBy.id}` : '#'}><span className="wd-avatar sm">{portfolio.verifiedBy.photo ? <SkeletonImage src={portfolio.verifiedBy.photo} alt="" /> : portfolio.verifiedBy.name.slice(0, 1).toUpperCase()}</span><span><b>{portfolio.verifiedBy.name}</b>{portfolio.verifiedAt && <small>{new Intl.DateTimeFormat('id-ID', { dateStyle: 'long' }).format(new Date(portfolio.verifiedAt))}</small>}</span></Link>
