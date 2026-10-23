@@ -424,6 +424,35 @@ body .ds-hero { background: var(--ink); }
 body .au-side { background: linear-gradient(180deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.78) 100%), url('/demo-covers/pinterest-2026/banners/hero-student-collaboration.jpg') center / cover no-repeat, #111214; }
 body .au-kicker { background: rgba(255,255,255,.14); backdrop-filter: blur(4px); }
 
+/* Form login/daftar: datar, rapi, tanpa bayangan berwarna */
+body .au-main { place-items: center; }
+body .au-card { max-width: 400px; }
+body .au-back { gap: 4px; margin-bottom: 36px; color: var(--muted); font-size: 13px; font-weight: 500; }
+body .au-back:hover { color: var(--ink); }
+body .au-card h2 { margin: 0 0 8px; font-family: var(--font-display); font-size: 2.1rem; font-weight: 700; letter-spacing: -.035em; line-height: 1.1; }
+body .au-sub { margin: 0 0 32px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+body .au-form { gap: 20px; }
+body .au-field label { margin-bottom: 8px; color: var(--ink); font-size: 13px; font-weight: 600; }
+body .au-input-icon { display: none; }
+body .au-input input { min-height: 48px; padding: 12px 44px 12px 14px; border: 1px solid #c9ccd2; border-radius: 8px; background: #fff; font-size: 15px; box-shadow: none; }
+body .au-input input:hover { border-color: #9da1a9; }
+body .au-input input:focus, body .au-input input:focus-visible { border-color: var(--ink); background: #fff; box-shadow: 0 0 0 1px var(--ink); outline: 0; }
+body .au-field.has-error input { border-color: var(--accent); background: #fff; }
+body .au-field.has-error input:focus { box-shadow: 0 0 0 1px var(--accent); }
+body .au-eye { right: 6px; border-radius: 6px; }
+body .au-submit { min-height: 48px; margin-top: 4px; border-radius: 8px; background: var(--accent); font-size: 15px; font-weight: 600; box-shadow: none; filter: none; transition: background .15s; }
+body .au-submit:hover:not(:disabled) { background: var(--accent-dark); filter: none; transform: none; }
+body .au-submit:disabled { background: #e4e5e8; color: #8b8e96; opacity: 1; }
+body .au-ghost { min-height: 48px; border: 1px solid #c9ccd2; border-radius: 8px; font-weight: 600; }
+body .au-ghost:hover { border-color: var(--ink); }
+body .au-alert { padding: 11px 14px; border-radius: 8px; border-left: 3px solid var(--accent); background: #fdf1f2; font-weight: 600; animation: none; }
+body .au-caps { border-radius: 8px; }
+body .au-foot { margin-top: 24px; color: var(--muted); font-size: 13.5px; text-align: left; }
+body .au-foot a { color: var(--accent); font-weight: 600; }
+body .au-note { margin-top: 28px; padding: 16px 0 0; border-radius: 0; border-top: 1px solid var(--line); background: transparent; color: var(--muted); }
+body .au-step b { border-radius: 6px; }
+body .au-chip { border-radius: 8px; }
+
 /* ───────── Responsif ───────── */
 @media (max-width: 980px) {
   body .site-nav-links a { padding: 12px 14px; }

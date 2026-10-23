@@ -44,15 +44,15 @@ export default function LoginPage() {
   }
 
   return <AuthShell side={side}>
-    <Link href="/" className="au-back">← Kembali ke beranda</Link>
-    <h2>Halo lagi! 👋</h2>
-    <p className="au-sub">Masuk ke Telkom Student Creation.</p>
+    <Link href="/" className="au-back"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6" /></svg>Kembali ke beranda</Link>
+    <h2>Masuk</h2>
+    <p className="au-sub">Gunakan email dan kata sandi akun siswa atau guru.</p>
     <form className="au-form" onSubmit={submit} noValidate={false}>
       <Field id="email" label="Email akun" icon="mail" type="email" autoComplete="username" placeholder="nama@smktelkom.sch.id" required autoFocus value={email} onChange={(event) => { setEmail(event.target.value); if (error) setError('') }} />
       <PasswordField id="password" label="Kata sandi" autoComplete="current-password" placeholder="Masukkan kata sandi" required value={password} onChange={(event) => { setPassword(event.target.value); if (error) setError('') }} onCaps={setCaps} />
       {caps && <p className="au-caps" role="status"><AuthSvg name="alert" size={16} />Caps Lock sedang aktif.</p>}
       {error && <p className="au-alert" role="alert"><AuthSvg name="alert" size={18} />{error}</p>}
-      <button className="au-submit" disabled={busy || !email || !password}>{busy ? <><span className="au-spin" aria-hidden="true" />Sedang masuk…</> : <>Masuk ke ruangku <span aria-hidden="true">→</span></>}</button>
+      <button className="au-submit" disabled={busy || !email || !password}>{busy ? <><span className="au-spin" aria-hidden="true" />Sedang masuk…</> : <>Masuk</>}</button>
     </form>
     <p className="au-foot">Belum punya akun siswa? <Link href="/register">Daftar dengan NIS terdaftar.</Link></p>
     <p className="au-note">Akun Guru dibuat oleh admin sekolah. Lupa kata sandi? Hubungi admin sekolah untuk mengatur ulang.</p>
