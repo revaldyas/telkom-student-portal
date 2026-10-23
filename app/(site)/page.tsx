@@ -220,14 +220,24 @@ export default function Home() {
       {slides.length > 1 && <div className="home-slider-controls"><button type="button" aria-label="Sorotan sebelumnya" onClick={() => heroSwiperRef.current?.slidePrev()}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg></button><div>{slides.map((slide, index) => <button key={slide.key} type="button" aria-label={`Tampilkan sorotan ${index + 1}`} aria-current={activeSlide === index} onClick={() => heroSwiperRef.current?.slideToLoop(index)} />)}</div><button type="button" aria-label="Sorotan berikutnya" onClick={() => heroSwiperRef.current?.slideNext()}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg></button></div>}
     </section>}
 
+    {!loading && <section className="home-stats" aria-label="Ringkasan portal">
+      <dl>
+        <div><dt>Karya terbit</dt><dd>{totals.portfolios ?? '—'}</dd></div>
+        <div><dt>Proyek kolaborasi</dt><dd>{totals.projects ?? '—'}</dd></div>
+        <div><dt>Peluang aktif</dt><dd>{totals.opportunities ?? '—'}</dd></div>
+        <div><dt>Penghargaan</dt><dd>{totals.awards ?? '—'}</dd></div>
+      </dl>
+    </section>}
+
     {studyShortcuts.length > 0 && <section className="home-study-section" aria-label="Jelajahi jurusan">
+      <div className="section-heading"><div><span className="section-kicker">PROGRAM KEAHLIAN</span><h2>Jelajahi karya per jurusan</h2></div></div>
       <div className="home-study-grid">{studyShortcuts.map((item) => <Link className="home-study-card" key={item.id} href={`/karya?program=${encodeURIComponent(String(item.id))}`}>
         <span className="home-study-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="m3 9 9-5 9 5-9 5-9-5Z"/><path d="M7 11.2v5.1c2.8 2.3 7.2 2.3 10 0v-5.1M21 9v6"/></svg></span>
         {item.code && <small>{item.code}</small>}<strong>{item.name}</strong><span className="home-study-arrow" aria-hidden="true">↗</span>
       </Link>)}</div>
     </section>}
 
-    <section className="home-section" id="karya"><div className="section-heading"><div><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => slideRecentWorks(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => slideRecentWorks(1)}>›</button></div></div>
+    <section className="home-section" id="karya"><div className="section-heading"><div><span className="section-kicker">PORTOFOLIO SISWA</span><h2>Karya <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Karya sebelumnya" disabled={loading} onClick={() => slideRecentWorks(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Karya berikutnya" disabled={loading} onClick={() => slideRecentWorks(1)}>›</button></div></div>
       {likeNotice && <p className="home-like-notice" role="status">{likeNotice}</p>}
       <div className="home-recent-carousel home-works-carousel"><div className="home-recent-all"><RevealLink href="/karya">Lihat semua{totals.portfolios !== undefined ? ` ${totals.portfolios}` : ''} karya <span>↗</span></RevealLink></div>
       {loading ? <WorkGridSkeleton count={4} className="home-recent-track home-works-track" /> : portfolios.length ? <Swiper
@@ -260,7 +270,7 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="home-section home-projects-section" id="proyek-terbaru"><div className="section-heading"><div><h2>Proyek <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Proyek sebelumnya" disabled={loading} onClick={() => slideRecentProjects(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Proyek berikutnya" disabled={loading} onClick={() => slideRecentProjects(1)}>›</button></div></div>
+    <section className="home-section home-projects-section" id="proyek-terbaru"><div className="section-heading"><div><span className="section-kicker">KOLABORASI</span><h2>Proyek <span className="home-recent-title-accent">Terbaru</span></h2></div><div className="home-heading-controls"><button className="home-recent-arrow" type="button" aria-label="Proyek sebelumnya" disabled={loading} onClick={() => slideRecentProjects(-1)}>‹</button><button className="home-recent-arrow" type="button" aria-label="Proyek berikutnya" disabled={loading} onClick={() => slideRecentProjects(1)}>›</button></div></div>
       <div className="home-recent-carousel home-projects-carousel"><div className="home-recent-all"><RevealLink href="/proyek">Lihat semua{totals.projects !== undefined ? ` ${totals.projects}` : ''} proyek <span>↗</span></RevealLink></div>
       {loading ? <WorkGridSkeleton count={4} className="home-recent-track home-project-track" /> : projects.length ? <Swiper
         className="home-recent-track home-project-track"
@@ -371,7 +381,7 @@ export default function Home() {
     </section>
 
     <section className="home-final-cta" aria-labelledby="home-final-cta-title">
-      <div className="home-final-cta-copy"><span className="home-final-cta-kicker">BUAT SESUATU BERARTI</span><h2 id="home-final-cta-title">Ide kamu layak jadi karya nyata.</h2><p>Mulai ceritakan prosesmu, bagikan karyamu, dan temukan ruang untuk berkembang bersama komunitas.</p><div className="home-final-cta-actions"><Link className="home-final-cta-primary" href="/register">Mulai berkarya <span aria-hidden="true">↗</span></Link><Link className="home-final-cta-secondary" href="/karya">Jelajahi karya</Link></div></div>
+      <div className="home-final-cta-copy"><span className="home-final-cta-kicker">BERGABUNG DENGAN KOMUNITAS</span><h2 id="home-final-cta-title">Ide kamu layak jadi karya nyata.</h2><p>Mulai ceritakan prosesmu, bagikan karyamu, dan temukan ruang untuk berkembang bersama komunitas.</p><div className="home-final-cta-actions"><Link className="home-final-cta-primary" href="/register">Mulai berkarya <span aria-hidden="true">↗</span></Link><Link className="home-final-cta-secondary" href="/karya">Jelajahi karya</Link></div></div>
       <div className="home-final-cta-art" aria-hidden="true"><span>✳</span><strong>IDE<br />JADI<br />KARYA</strong><i /></div>
     </section>
 

@@ -5,6 +5,7 @@ import './refinement.css'
 import './portfolio-editor.css'
 import './workspace-notifications.css'
 import './home-banner.css'
+import './corporate.css'
 
 export const metadata: Metadata = {
   title: 'Telkom Student Creation — Portofolio Siswa',
