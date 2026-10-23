@@ -519,6 +519,11 @@ body .kl-actions { border-top: 1px solid var(--line); }
 body .kl-primary, body .kl-secondary { border-radius: 8px; }
 body .opportunity-page .kr-card, body .kl-grid .kr-card { border-radius: var(--radius-lg); }
 
+/* Editor: ikon unggah dan berkas tanpa emoji */
+body .pw-drop-icon { color: var(--muted); }
+body .pw-file > span { border-radius: 8px; font-size: 10px; font-weight: 800; letter-spacing: .06em; }
+body .pe-avatar i { display: grid; place-items: center; }
+
 /* ───────── Responsif ───────── */
 @media (max-width: 980px) {
   body .site-nav-links a { padding: 12px 14px; }

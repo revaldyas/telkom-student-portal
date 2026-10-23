@@ -131,7 +131,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
       if (!response.ok) throw new Error(result.errors?.[0]?.message || result.message || 'Proyek belum berhasil disimpan.')
       setBaseline(serialize()); setDetailsDirty(false); setCoverFile(null); setNewGallery([])
       if (!project) router.replace(`/portal/siswa/proyek/${result.doc?.id}/edit?saved=draft`)
-      else { setToast('Draf tersimpan ✓ Ajukan verifikasi dari halaman proyek setelah mentor utama menerima undangan.'); router.refresh() }
+      else { setToast('Draf tersimpan. Ajukan verifikasi dari halaman proyek setelah mentor utama menerima undangan.'); router.refresh() }
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Proyek belum berhasil disimpan.') }
     finally { setBusy(false) }
   }
@@ -143,7 +143,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
   return <main className="portal-page pe-page pw-page pj-page">
     <nav className="portfolio-form-breadcrumb" aria-label="Breadcrumb"><Link href="/portal/siswa">Portal siswa</Link><span>/</span><Link href="/portal/siswa/proyek">Proyek saya</Link><span>/</span><span>{project ? 'Edit proyek' : 'Proyek baru'}</span></nav>
     <header className="pe-head"><div><span className="section-kicker">KARYA KOLABORATIF</span><h1>{project ? 'Edit proyek' : 'Buat proyek kolaborasi'}</h1><p>Atur tim, peran, dan pembimbing agar kontribusi setiap siswa terlihat jelas.</p></div>
-      <div className="pe-head-actions">{project && <Link className="pe-ghost" href={`/portal/siswa/tracker/${project.id}`}>📋 Tracker</Link>}<Link className="pe-ghost" href="/portal/siswa/proyek">← Daftar proyek</Link></div></header>
+      <div className="pe-head-actions">{project && <Link className="pe-ghost" href={`/portal/siswa/tracker/${project.id}`}>Tracker</Link>}<Link className="pe-ghost" href="/portal/siswa/proyek">← Daftar proyek</Link></div></header>
 
     <div className="pe-layout">
       <form className="pe-form" onSubmit={(event) => event.preventDefault()} noValidate>
@@ -182,7 +182,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
           <PortfolioDetailEditor initialValue={project?.details} onChange={(value) => { setDetails(value); if (detailsSeen.current) setDetailsDirty(true); else detailsSeen.current = true }} />
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Gambar sampul</span><span className="pe-count">Rasio 4:3 disarankan</span></div>
             {coverShown ? <div className="pw-cover"><img src={coverShown} alt="Pratinjau sampul" /><div className="pw-cover-actions"><DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-inline" label="Ganti gambar sampul"><span>Ganti</span></DropZone><button type="button" onClick={() => { setRemoveCover(true); setCoverFile(null); setCoverPreview('') }}>Hapus</button></div></div>
-              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><span className="pw-drop-icon" aria-hidden="true">🖼️</span><strong>Seret gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small></DropZone>}</div>
+              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><svg className="pw-drop-icon" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="1.5" /><path d="m4 18 5-5 4 4 3-3 4 4" /></svg><strong>Seret gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small></DropZone>}</div>
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Galeri proyek</span><span className="pe-count">{galleryCount} gambar</span></div>
             <div className="pw-gallery">
               {existingGallery.filter((image) => !removedGallery.includes(String(image.id))).map((image) => <figure key={image.id}><img src={image.url || ''} alt={image.alt || image.filename || 'Gambar galeri'} /><button type="button" aria-label="Hapus gambar galeri" onClick={() => setRemovedGallery((current) => [...current, String(image.id)])}>×</button></figure>)}
@@ -192,7 +192,7 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
 
         <section className="pe-card" id="tautan"><header><span>05</span><div><h2>Alat &amp; tautan</h2><p>Perangkat yang dipakai dan tautan ke hasil proyek.</p></div></header>
           <TagField id="pj-tools" label="Perangkat & teknologi" values={tools} onChange={setTools} suggestions={toolSuggestions} placeholder="Ketik lalu tekan Enter atau koma" />
-          <div className="pe-field"><div className="pe-label"><label htmlFor="pj-url">Tautan hasil proyek</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? '✓ Format valid' : 'Awali dengan https://'}</span>}</div><input id="pj-url" className={`pe-input${urlValid ? '' : ' pw-invalid'}`} type="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /></div>
+          <div className="pe-field"><div className="pe-label"><label htmlFor="pj-url">Tautan hasil proyek</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? 'Format valid' : 'Awali dengan https://'}</span>}</div><input id="pj-url" className={`pe-input${urlValid ? '' : ' pw-invalid'}`} type="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /></div>
         </section>
       </form>
 
@@ -201,14 +201,14 @@ export default function ProjectEditorPage({ userID, students, teachers, categori
         <article className="kr-card pw-preview"><div className="kr-media">{coverShown ? <img src={coverShown} alt="" /> : <span className="kr-placeholder">Belum ada sampul</span>}<span className="kr-category">{category?.name || 'Kategori'}{year ? ` · ${year}` : ''}</span></div>
           <div className="kr-body"><h3>{title.trim() || 'Nama proyekmu'}</h3>{summary.trim() ? <p className="kr-summary">{summary.trim()}</p> : <p className="kr-summary pw-ghost-text">Ringkasan proyek akan tampil di sini.</p>}
             <div className="pj-prev-team">{members.slice(0, 4).map((item) => { const student = studentByID.get(String(item.member)); return <Avatar key={String(item.member)} name={student?.name || 'S'} photo={student?.photo} size={28} /> })}<span>{members.length} anggota</span></div></div></article>
-        <section className="pe-progress"><div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan proyek ${percent} persen`}><b>{percent}%</b></div><div><strong>{percent === 100 ? 'Siap diajukan! 🎉' : 'Kelengkapan proyek'}</strong>{nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Semua bagian sudah terisi.</small>}</div></section>
+        <section className="pe-progress"><div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan proyek ${percent} persen`}><b>{percent}%</b></div><div><strong>{percent === 100 ? 'Siap diajukan' : 'Kelengkapan proyek'}</strong>{nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Semua bagian sudah terisi.</small>}</div></section>
         <ul className="pe-checklist">{checklist.map((item) => <li key={item.label} className={item.done ? 'is-done' : ''}><button type="button" onClick={() => jump(item.id)}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}{item.required && !item.done && <em>wajib</em>}</button></li>)}</ul>
         <p className="pw-note">{leavesReview ? 'Menyimpan perubahan membatalkan pengajuan sebelumnya. Ajukan ulang dari halaman proyek agar mentor utama meninjaunya lagi.' : 'Draf hanya terlihat oleh anggota tim. Cukup isi nama proyek dulu; ringkasan wajib saat proyek diajukan untuk verifikasi, setelah mentor utama menerima undangan.'}</p>
       </aside>
     </div>
 
     <div className="pe-savebar is-visible pw-actionbar" role="region" aria-label="Simpan proyek">
-      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>✓ {project ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
+      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>{project ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
       <div><Link className="pe-ghost" href="/portal/siswa/proyek">Keluar</Link><button type="button" className="pe-save" onClick={() => void save()} disabled={busy}>{busy ? 'Menyimpan…' : 'Simpan draf'}</button></div>
     </div>
     {picker === 'member' && <PersonPicker title="Tambah anggota tim" people={availableStudents} meta={(person) => person.className || 'Siswa'} onClose={() => setPicker(null)} onPick={(person) => { setMembers((current) => [...current, { member: person.id, contribution: '' }]); setPicker(null) }} />}

@@ -97,7 +97,7 @@ export default async function TeacherPortalDashboard() {
     <header className="ds-hero">
       <div className="ds-hero-text">
         <span className="ds-date">{today}</span>
-        <h1>{greeting}, {firstName}! 👋</h1>
+        <h1>{greeting}, {firstName}!</h1>
         <p>{program ? `Pembimbing program ${program}.` : 'Ruang untuk memverifikasi karya dan mendampingi perkembangan siswa.'}{queue.length ? <em> · {queue.length} karya menunggu perhatianmu</em> : <em> · Antrean bersih</em>}</p>
         <div className="ds-hero-actions"><Link className="ds-btn ds-btn--primary" href="/portal/guru/verifikasi"><DashIcon name="check" size={16} />Buka antrean</Link><Link className="ds-btn" href="/portal/guru/peluang">Kelola peluang</Link><Link className="ds-btn" href={`/guru/${teacher.id}`}>Profil publik <DashIcon name="arrow" size={14} /></Link></div>
       </div>
@@ -118,7 +118,7 @@ export default async function TeacherPortalDashboard() {
               <div><strong>{work.title}</strong><small>{student?.name || 'Siswa'} · {revision ? 'Menunggu perbaikan siswa' : 'Menunggu tinjauanmu'} · {days === 0 ? 'hari ini' : `${days} hari lalu`}{!revision && days >= 3 ? ' · perlu segera' : ''}</small></div>
               <Link className="ds-pill" href={`/karya/${work.slug}`}>{revision ? 'Lihat' : 'Tinjau'}</Link>
             </li>
-          })}</ul> : <div className="ds-empty"><span aria-hidden="true">🎉</span><strong>Antrean kosong</strong><p>Karya dari program atau kelas bimbinganmu akan muncul di sini.</p></div>}
+          })}</ul> : <div className="ds-empty"><strong>Antrean kosong</strong><p>Karya dari program atau kelas bimbinganmu akan muncul di sini.</p></div>}
         </section>
 
         <section className="ds-card"><header><div><h2>Sebaran kategori</h2><p>{published.totalDocs} karya terbit di seluruh sekolah</p></div></header>

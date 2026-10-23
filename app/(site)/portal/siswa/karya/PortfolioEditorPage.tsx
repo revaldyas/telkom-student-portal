@@ -201,7 +201,7 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
         // Draf baru: lanjut di halaman edit supaya pengerjaan bisa diteruskan.
         router.replace(`/portal/siswa/karya/${result.doc?.id}/edit?saved=draft`)
       } else {
-        setToast(state === 'draft' || state === 'revision' || state === 'published' ? 'Draf tersimpan ✓ Ajukan verifikasi saat karya siap.' : 'Perubahan tersimpan ✓')
+        setToast(state === 'draft' || state === 'revision' || state === 'published' ? 'Draf tersimpan. Ajukan verifikasi saat karya siap.' : 'Perubahan tersimpan')
         router.refresh()
       }
     } catch (cause) {
@@ -246,7 +246,7 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
         <section className="pe-card" id="media"><header><span>03</span><div><h2>Media</h2><p>Visual yang kuat membuat karya lebih menarik. Seret berkas ke kotak atau klik untuk memilih.</p></div></header>
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Gambar sampul</span><span className="pe-count">Rasio 4:3 disarankan</span></div>
             {coverShown ? <div className="pw-cover"><img src={coverShown} alt="Pratinjau sampul" /><div className="pw-cover-actions"><DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-inline" label="Ganti gambar sampul"><span>Ganti</span></DropZone><button type="button" onClick={() => { setRemoveCover(true); setCoverFile(null); setCoverPreview('') }}>Hapus</button></div></div>
-              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><span className="pw-drop-icon" aria-hidden="true">🖼️</span><strong>Seret gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small>{removeCover && existingCover && <em>Sampul akan dihapus saat disimpan</em>}</DropZone>}
+              : <DropZone accept="image/jpeg,image/png,image/webp" onFiles={pickCover} className="pw-cover-drop" label="Pilih gambar sampul"><svg className="pw-drop-icon" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="1.5" /><path d="m4 18 5-5 4 4 3-3 4 4" /></svg><strong>Seret gambar sampul ke sini</strong><small>atau klik untuk memilih · JPG, PNG, WebP</small>{removeCover && existingCover && <em>Sampul akan dihapus saat disimpan</em>}</DropZone>}
           </div>
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Galeri karya</span><span className="pe-count">{galleryCount} gambar</span></div>
             <div className="pw-gallery">
@@ -256,9 +256,9 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
             </div>
             <p className="pe-hint">Gambar tambahan tampil sebagai galeri di halaman detail karya.</p></div>
           <div className="pe-field"><div className="pe-label"><span className="pw-fake-label">Video atau dokumen pendukung</span><span className="pe-count">Opsional</span></div>
-            {evidenceFile ? <div className="pw-file"><span aria-hidden="true">{evidenceFile.type.startsWith('video/') ? '🎬' : '📄'}</span><div><strong>{evidenceFile.name}</strong><small>{sizeLabel(evidenceFile.size)} · akan diunggah saat disimpan</small></div><button type="button" onClick={() => setEvidenceFile(null)}>Batal</button></div>
-              : existingEvidence?.url && !removeEvidence ? <div className="pw-file"><span aria-hidden="true">📎</span><div><strong>{existingEvidence.filename || 'Berkas karya'}</strong><small><a href={existingEvidence.url} target="_blank" rel="noreferrer">Buka berkas saat ini ↗</a></small></div><button type="button" onClick={() => setRemoveEvidence(true)}>Hapus</button></div>
-                : <DropZone accept="video/mp4,video/webm,application/pdf" onFiles={pickEvidence} className="pw-file-drop" label="Pilih video atau dokumen"><span className="pw-drop-icon" aria-hidden="true">🎬</span><strong>Seret video MP4/WebM atau PDF</strong><small>atau klik untuk memilih{removeEvidence ? ' · berkas lama akan dihapus saat disimpan' : ''}</small></DropZone>}
+            {evidenceFile ? <div className="pw-file"><span aria-hidden="true">{evidenceFile.type.startsWith('video/') ? 'VIDEO' : 'FILE'}</span><div><strong>{evidenceFile.name}</strong><small>{sizeLabel(evidenceFile.size)} · akan diunggah saat disimpan</small></div><button type="button" onClick={() => setEvidenceFile(null)}>Batal</button></div>
+              : existingEvidence?.url && !removeEvidence ? <div className="pw-file"><span aria-hidden="true">FILE</span><div><strong>{existingEvidence.filename || 'Berkas karya'}</strong><small><a href={existingEvidence.url} target="_blank" rel="noreferrer">Buka berkas saat ini ↗</a></small></div><button type="button" onClick={() => setRemoveEvidence(true)}>Hapus</button></div>
+                : <DropZone accept="video/mp4,video/webm,application/pdf" onFiles={pickEvidence} className="pw-file-drop" label="Pilih video atau dokumen"><svg className="pw-drop-icon" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3" /></svg><strong>Seret video MP4/WebM atau PDF</strong><small>atau klik untuk memilih{removeEvidence ? ' · berkas lama akan dihapus saat disimpan' : ''}</small></DropZone>}
           </div>
         </section>
 
@@ -269,7 +269,7 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
               <input id="pw-tools" value={toolInput} maxLength={40} onChange={(event) => { const parts = event.target.value.split(/[\n,]/); if (parts.length > 1) addTools(parts.slice(0, -1).join(',')); setToolInput(parts[parts.length - 1] || '') }} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ',') { event.preventDefault(); addTools(toolInput); setToolInput('') } else if (event.key === 'Backspace' && !toolInput && tools.length) setTools((current) => current.slice(0, -1)) }} onBlur={() => { addTools(toolInput); setToolInput('') }} placeholder={tools.length ? 'Tambah lagi…' : 'Ketik lalu tekan Enter atau koma'} />
             </div>
             <div className="pe-suggest"><span>Saran:</span>{toolSuggestions.filter((item) => !tools.some((tool) => tool.toLocaleLowerCase() === item.toLocaleLowerCase())).slice(0, 7).map((item) => <button type="button" key={item} onClick={() => addTools(item)}>+ {item}</button>)}</div></div>
-          <div className="pe-field"><div className="pe-label"><label htmlFor="pw-url">Tautan karya</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? '✓ Format valid' : 'Awali dengan https://'}</span>}</div>
+          <div className="pe-field"><div className="pe-label"><label htmlFor="pw-url">Tautan karya</label>{url.trim() && <span className={`pe-count${urlValid ? '' : ' is-warn'}`}>{urlValid ? 'Format valid' : 'Awali dengan https://'}</span>}</div>
             <input id="pw-url" className={`pe-input${urlValid ? '' : ' pw-invalid'}`} type="url" value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://…" /><p className="pe-hint">Prototipe, situs, repositori, atau demo jika tersedia.</p></div>
         </section>
       </form>
@@ -283,7 +283,7 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
         </article>
         <section className="pe-progress">
           <div className="pe-ring" style={{ ['--p' as string]: `${percent}%` }} role="img" aria-label={`Kelengkapan karya ${percent} persen`}><b>{percent}%</b></div>
-          <div><strong>{percent === 100 ? 'Siap diajukan! 🎉' : readyToSubmit ? 'Sudah bisa diajukan' : 'Kelengkapan karya'}</strong>
+          <div><strong>{percent === 100 ? 'Siap diajukan' : readyToSubmit ? 'Sudah bisa diajukan' : 'Kelengkapan karya'}</strong>
             {nextTodo ? <button type="button" className="pe-link" onClick={() => jump(nextTodo.id)}>Berikutnya: {nextTodo.label} →</button> : <small>Semua bagian sudah terisi.</small>}</div>
         </section>
         <ul className="pe-checklist">{checklist.map((item) => <li key={item.label} className={item.done ? 'is-done' : ''}><button type="button" onClick={() => jump(item.id)}><span aria-hidden="true">{item.done ? '✓' : '○'}</span>{item.label}{item.required && !item.done && <em>wajib</em>}</button></li>)}</ul>
@@ -292,7 +292,7 @@ export default function PortfolioEditorPage({ categories, work = null, notice: i
     </div>
 
     <div className="pe-savebar is-visible pw-actionbar" role="region" aria-label="Simpan karya">
-      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>✓ {work ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
+      <span>{dirty ? <><i aria-hidden="true" />Perubahan belum disimpan</> : <>{work ? 'Tersimpan' : 'Belum ada perubahan'}</>}</span>
       <div>
         <Link className="pe-ghost" href="/portal/siswa/karya">Keluar</Link>
         {state === 'submitted'
