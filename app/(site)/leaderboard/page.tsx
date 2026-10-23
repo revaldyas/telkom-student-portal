@@ -8,6 +8,7 @@ import SkeletonImage from '../../../components/SkeletonImage'
 import MvsPodium, { chatIcon, heartIcon } from '../../../components/MvsPodium'
 import '../listing.css'
 import { ListingHead, SearchField } from '../../../components/ListingControls'
+import DashIcon from '../../../components/DashIcon'
 
 type Leader = { id: string; name: string; profilePhoto: string | null; likes: number; comments: number; karya: number; score?: number }
 type RankedPortfolio = { id: string; slug: string; title: string; studentID?: string; studentName: string; profilePhoto: string | null; coverImage: string | null; likes: number; comments: number; isNominee?: boolean }
@@ -19,7 +20,7 @@ const fireIcon = <svg viewBox="0 0 24 24" width="15" height="15" fill="currentCo
 const MVS_LIMIT = 20
 
 function StudentList({ title, rows, offset = 0, onMore }: { title: string; rows: Leader[]; offset?: number; onMore?: () => void }) {
-  return <section className="lb-list-card"><div className="lb-list-head"><span className="lb-list-icon lb-list-icon--gold" aria-hidden="true">♛</span><h3>{title}</h3></div>{rows.length ? rows.map((student, index) => <article className="lb-row lb-row--student" key={student.id}>
+  return <section className="lb-list-card"><div className="lb-list-head"><span className="lb-list-icon lb-list-icon--gold" aria-hidden="true"><DashIcon name="crown" size={16} /></span><h3>{title}</h3></div>{rows.length ? rows.map((student, index) => <article className="lb-row lb-row--student" key={student.id}>
     <span className="lb-rank">{offset + index + 1}</span>
     <Link className="lb-thumb" href={`/siswa/${student.id}`} aria-label={`Profil ${student.name}`}>{student.profilePhoto ? <SkeletonImage src={student.profilePhoto} alt="" /> : <span aria-hidden="true">{student.name.slice(0, 1).toUpperCase()}</span>}</Link>
     <div className="lb-info"><Link className="lb-title" href={`/siswa/${student.id}`}>{student.name}</Link><small className="lb-author">{student.karya} karya</small></div>

@@ -9,6 +9,7 @@ import { CopyLinkButton, ProjectMedia } from './ProjectMedia'
 import ProjectSocial from './ProjectSocial'
 import '../../karya/[slug]/work-detail.css'
 import './project-detail.css'
+import DashIcon from '../../../../components/DashIcon'
 
 export const dynamic = 'force-dynamic'
 
@@ -65,8 +66,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
     <header className="wd-head">
       <div className="wd-chips">
         <span className="wd-chip">{category}{project.year ? ` · ${project.year}` : ''}</span>
-        <span className="wd-chip wd-chip--blue">👥 {teamMembers.length} anggota</span>
-        {verified && published && <span className="wd-chip wd-chip--green">✓ Terverifikasi</span>}
+        <span className="wd-chip wd-chip--blue"><DashIcon name="users" size={12} /> {teamMembers.length} anggota</span>
+        {verified && published && <span className="wd-chip wd-chip--green"><DashIcon name="tick" size={12} /> Terverifikasi</span>}
         {!published && <span className="wd-chip wd-chip--grey">Draf</span>}
       </div>
       <h1>{project.title}</h1>
@@ -97,13 +98,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
         <section className="wd-card">
           {project.projectUrl && <a className="wd-cta" href={project.projectUrl} target="_blank" rel="noreferrer">Lihat hasil proyek <span aria-hidden="true">↗</span></a>}
-          {inTeam && <Link className="wd-cta" href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/tracker/${project.id}`}>📋 Buka tracker proyek <span aria-hidden="true">→</span></Link>}
-          {inTeam && <Link className="wd-cta" href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/pesan?room=project:${project.id}`}>💬 Chat tim proyek <span aria-hidden="true">→</span></Link>}
+          {inTeam && <Link className="wd-cta" href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/tracker/${project.id}`}><DashIcon name="board" size={16} /> Buka tracker proyek <span aria-hidden="true">→</span></Link>}
+          {inTeam && <Link className="wd-cta" href={`/portal/${viewerRole === 'teacher' ? 'guru' : 'siswa'}/pesan?room=project:${project.id}`}><DashIcon name="chat" size={16} /> Chat tim proyek <span aria-hidden="true">→</span></Link>}
           <div className="wd-row"><CopyLinkButton /><Link className="wd-ghost" href="/proyek">Semua proyek</Link></div>
           {project.tools?.length ? <div className="wd-tools"><span className="wd-label">Perangkat &amp; teknologi</span><ul>{project.tools.map((tool: string) => <li key={tool}>{tool}</li>)}</ul></div> : null}
         </section>
 
-        {published && acceptedMentors.length > 0 && <section className="wd-card wd-verified"><span className="wd-seal" aria-hidden="true">✓</span><div><strong>{verified ? 'Terverifikasi guru pembimbing' : 'Dibimbing oleh'}</strong>{acceptedMentors.map((mentor) => <Link className="wd-mentor" href={`/guru/${mentor.id}`} key={mentor.id}><span className="wd-avatar sm">{mentor.photo ? <img src={mentor.photo} alt="" /> : mentor.name.slice(0, 1).toUpperCase()}</span><span><b>{mentor.name}</b><small>{mentor.primary ? 'Mentor utama' : 'Mentor pendamping'}{verified && mentor.primary && project.verifiedAt ? ` · ${fmtDate(project.verifiedAt)}` : ''}</small></span></Link>)}</div></section>}
+        {published && acceptedMentors.length > 0 && <section className="wd-card wd-verified"><span className="wd-seal" aria-hidden="true"><DashIcon name="tick" size={16} /></span><div><strong>{verified ? 'Terverifikasi guru pembimbing' : 'Dibimbing oleh'}</strong>{acceptedMentors.map((mentor) => <Link className="wd-mentor" href={`/guru/${mentor.id}`} key={mentor.id}><span className="wd-avatar sm">{mentor.photo ? <img src={mentor.photo} alt="" /> : mentor.name.slice(0, 1).toUpperCase()}</span><span><b>{mentor.name}</b><small>{mentor.primary ? 'Mentor utama' : 'Mentor pendamping'}{verified && mentor.primary && project.verifiedAt ? ` · ${fmtDate(project.verifiedAt)}` : ''}</small></span></Link>)}</div></section>}
       </aside>
     </div>
   </article></main>

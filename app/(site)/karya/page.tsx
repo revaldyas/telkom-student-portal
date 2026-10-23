@@ -7,6 +7,7 @@ import { WorkGridSkeleton } from '../../../components/SiteSkeletons'
 import SkeletonImage from '../../../components/SkeletonImage'
 import '../listing.css'
 import { Dropdown, ListingHead, SearchField } from '../../../components/ListingControls'
+import DashIcon from '../../../components/DashIcon'
 
 type Student = { id: string | number; name?: string; profilePhoto?: string | null; class?: { id: string | number; name?: string } | string | number | null; program?: { id: string | number; name?: string } | string | number | null }
 type Portfolio = {
@@ -144,7 +145,7 @@ export default function AllWorksPage() {
         <Dropdown label="Jurusan" value={programFilter} allLabel="Semua" options={programs.map((program) => ({ value: program.id, label: program.name, count: counts.byProgram[program.id] || 0 }))} onChange={(value) => { setProgramFilter(value); setClassFilter('') }} />
         <Dropdown label="Kelas" value={classFilter} allLabel="Semua" options={visibleClasses.map((item) => ({ value: String(item.id), label: item.name, count: counts.byClass[String(item.id)] || 0 }))} onChange={setClassFilter} />
         <Dropdown label="Kategori" value={categoryFilter} allLabel="Semua" options={categories.map((category) => ({ value: String(category.id), label: category.name, count: counts.byCategory[String(category.id)] || 0 }))} onChange={setCategoryFilter} />
-        <button type="button" className={`kl-toggle${nomineesOnly ? ' is-active' : ''}`} aria-pressed={nomineesOnly} onClick={() => setNomineesOnly(!nomineesOnly)}><span aria-hidden="true">★</span> Nominee</button>
+        <button type="button" className={`kl-toggle${nomineesOnly ? ' is-active' : ''}`} aria-pressed={nomineesOnly} onClick={() => setNomineesOnly(!nomineesOnly)}><DashIcon name="star" size={13} filled /> Nominee</button>
         {hasFilter && <button type="button" className="kl-reset" onClick={reset}>Reset</button>}
         <div className="kl-bar-sort"><Dropdown label="Urutkan" value={sort} options={sortOptions} onChange={(value) => setSort(value as Sort)} /></div>
       </div>
@@ -161,8 +162,8 @@ export default function AllWorksPage() {
           const author = <>{photo ? <span className="mvs-avatar"><SkeletonImage src={photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{studentName(work.student).slice(0, 1).toUpperCase()}</span>}<span className="work-author-details"><span className="work-author-name">{studentName(work.student)}{rank > 0 && <small className="work-author-rank">MVS #{rank}</small>}</span>{classInfo && <small className="work-author-major" title={classInfo}>{classInfo}</small>}</span></>
           return <article className="kr-card" key={work.id}>
             <div className="kr-media"><Link className="kr-cover" href={`/karya/${work.slug}`} tabIndex={-1} aria-hidden="true">{image ? <SkeletonImage src={image} alt="" loading="lazy" /> : <span className="kr-placeholder">Telkom Student Creation</span>}</Link>
-              <span className="kr-category">{category}{work.year ? ` · ${work.year}` : ''}</span>{work.isNominee && <span className="kr-nominee">★ NOMINEE</span>}
-              <span className="kr-actions"><span className="kr-comments" aria-label={`${work.likes ?? 0} suka`}><span aria-hidden="true">♥</span>{work.likes ?? 0}</span><Link className="kr-comments" href={`/karya/${work.slug}#komentar`} aria-label={`${work.comments ?? 0} komentar`}><span aria-hidden="true">◉</span>{work.comments ?? 0}</Link></span></div>
+              <span className="kr-category">{category}{work.year ? ` · ${work.year}` : ''}</span>{work.isNominee && <span className="kr-nominee"><DashIcon name="star" size={11} filled /> NOMINEE</span>}
+              <span className="kr-actions"><span className="kr-comments" aria-label={`${work.likes ?? 0} suka`}><DashIcon name="heart" size={13} filled />{work.likes ?? 0}</span><Link className="kr-comments" href={`/karya/${work.slug}#komentar`} aria-label={`${work.comments ?? 0} komentar`}><DashIcon name="chat" size={13} />{work.comments ?? 0}</Link></span></div>
             <div className="kr-body"><h2><Link href={`/karya/${work.slug}`} title={displayTitle(work.title, studentName(work.student))}>{displayTitle(work.title, studentName(work.student))}</Link></h2>{work.summary && <p className="kr-summary">{work.summary}</p>}
               <p className="kr-author">{authorID ? <Link href={`/siswa/${authorID}`}>{author}</Link> : <span>{author}</span>}</p></div>
           </article>

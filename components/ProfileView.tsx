@@ -8,6 +8,7 @@ import SkeletonImage from './SkeletonImage'
 import ShareProfile from './ShareProfile'
 import { coverStyle, defaultAppearance, type Appearance } from '../lib/appearance'
 import { workStateLabel, type WorkState } from '../lib/workState'
+import DashIcon from './DashIcon'
 
 export type ProfileWork = {
   id: string | number; href: string; title: string; category?: string | null; year?: number | null; cover?: string | null
@@ -21,7 +22,7 @@ export type ProfilePerson = {
   appearance?: Appearance
 }
 export type RelatedPerson = { id: string | number; name: string; photo?: string | null; subtitle?: string | null; badge?: string }
-export type RelatedGroup = { key: string; title: string; hint?: string; icon: string; href: (id: string | number) => string; people: RelatedPerson[] }
+export type RelatedGroup = { key: string; title: string; hint?: string; icon: ReactNode; href: (id: string | number) => string; people: RelatedPerson[] }
 type TabKey = 'karya' | 'proyek' | 'achievement' | 'awards'
 type Props = {
   person: ProfilePerson
@@ -57,19 +58,19 @@ function WorkGrid({ items, query, owner, onPin, pinFull, busyID }: { items: Prof
       <div className="kr-media"><Link className="kr-cover" href={work.href} tabIndex={-1} aria-hidden="true">{work.cover ? <SkeletonImage src={work.cover} alt="" loading="lazy" /> : <span className="kr-placeholder">{work.title.slice(0, 1).toUpperCase()}</span>}</Link>
         {work.category && <span className="kr-category">{work.category}{work.year ? ` · ${work.year}` : ''}</span>}
         {work.pinned && <span className="pf-pin-badge" title="Disematkan di profil"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor" aria-hidden="true"><path d="M16 3a1 1 0 0 1 .7 1.7L15.4 6l.9 5.4 2.4 2.1a1 1 0 0 1-.7 1.7H13v5.5a1 1 0 0 1-2 0v-5.5H6a1 1 0 0 1-.7-1.7L7.7 11.400 8.6 6 7.300 4.700A1 1 0 0 1 8 3h8Z"/></svg>Disematkan</span>}
-        {isDraft ? <span className={`kr-nominee pf-state pf-state--${work.state}`}>{workStateLabel[work.state]}</span> : work.isNominee ? <span className="kr-nominee">★ NOMINEE</span> : null}
+        {isDraft ? <span className={`kr-nominee pf-state pf-state--${work.state}`}>{workStateLabel[work.state]}</span> : work.isNominee ? <span className="kr-nominee"><DashIcon name="star" size={11} filled /> NOMINEE</span> : null}
         <span className="kr-actions">{isDraft && owner && work.editHref
-          ? <Link className="kr-comments" href={work.editHref}>Lanjutkan <span aria-hidden="true">✎</span></Link>
-          : <>{owner && onPin && !isDraft && <button type="button" className={`kr-comments pf-pin-btn${work.pinned ? ' is-on' : ''}`} disabled={busyID !== null && busyID !== undefined || (!work.pinned && pinFull)} title={!work.pinned && pinFull ? 'Maksimal 3 karya disematkan. Lepas satu dulu.' : work.pinned ? 'Lepas sematan' : 'Sematkan di profil'} aria-pressed={Boolean(work.pinned)} aria-label={work.pinned ? 'Lepas sematan' : 'Sematkan di profil'} onClick={() => onPin(work)}>📌</button>}{work.likes !== undefined && <span className="kr-comments" aria-label={`${work.likes} suka`}>{heart}{work.likes}</span>}{work.comments !== undefined && <span className="kr-comments" aria-label={`${work.comments} komentar`}><span aria-hidden="true">◉</span>{work.comments}</span>}</>}</span></div>
+          ? <Link className="kr-comments" href={work.editHref}>Lanjutkan <DashIcon name="edit" size={14} /></Link>
+          : <>{owner && onPin && !isDraft && <button type="button" className={`kr-comments pf-pin-btn${work.pinned ? ' is-on' : ''}`} disabled={busyID !== null && busyID !== undefined || (!work.pinned && pinFull)} title={!work.pinned && pinFull ? 'Maksimal 3 karya disematkan. Lepas satu dulu.' : work.pinned ? 'Lepas sematan' : 'Sematkan di profil'} aria-pressed={Boolean(work.pinned)} aria-label={work.pinned ? 'Lepas sematan' : 'Sematkan di profil'} onClick={() => onPin(work)}><DashIcon name="pin" size={14} filled={Boolean(work.pinned)} /></button>}{work.likes !== undefined && <span className="kr-comments" aria-label={`${work.likes} suka`}>{heart}{work.likes}</span>}{work.comments !== undefined && <span className="kr-comments" aria-label={`${work.comments} komentar`}><DashIcon name="chat" size={13} />{work.comments}</span>}</>}</span></div>
       <div className="kr-body"><h3><Link href={work.href} title={work.title}>{work.title}</Link></h3>
-        {(work.verified || work.note) && <p className="pf-note">{work.verified && <span className="pf-verified">✓ Terverifikasi</span>}{work.note}</p>}</div>
+        {(work.verified || work.note) && <p className="pf-note">{work.verified && <span className="pf-verified"><DashIcon name="tick" size={12} /> Terverifikasi</span>}{work.note}</p>}</div>
     </article>
   })}{!items.length && <p className="pf-empty-inline">{query ? 'Tidak ada yang cocok dengan pencarian.' : 'Belum ada item.'}</p>}</div>
 }
 
 function Records({ items, empty }: { items: ProfileRecord[]; empty: string }) {
   return items.length ? <div className="pf-records">{items.map((record) => <article className={`pf-record${record.tone === 'gold' ? ' is-gold' : ''}`} key={record.id}>
-    <span className="pf-record-icon" aria-hidden="true">{record.tone === 'gold' ? '♛' : '★'}</span>
+    <span className="pf-record-icon" aria-hidden="true">{record.tone === 'gold' ? <DashIcon name="crown" size={20} /> : <DashIcon name="star" size={20} />}</span>
     <div><span className="pf-record-badge">{record.badge}</span><h3>{record.title}</h3>{record.description && <p>{record.description}</p>}{record.note && <small>{record.note}</small>}</div>
     {record.date && <time dateTime={record.date}>{formatDate(record.date)}</time>}
   </article>)}</div> : <div className="kl-empty"><strong>{empty}</strong></div>
@@ -153,7 +154,7 @@ export default function ProfileView({ person, stats, isOwner = false, showDrafts
       {tab === 'karya' && <>
         <div className="pf-toolbar"><Toggle view={workView} setView={setWorkView} published={publishedWorks.length} drafts={draftWorks.length} />
           <label className="kl-search pf-search"><span className="sr-only">Cari {worksLabel.toLowerCase()}</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Cari judul atau kategori…" /></label></div>
-        {isOwner && onTogglePin && workView === 'published' && publishedWorks.length > 0 && <p className="pf-pin-hint">📌 Sematkan hingga {pinLimit} karya terbaikmu agar tampil paling atas · {pinnedIds.length}/{pinLimit} dipakai</p>}
+        {isOwner && onTogglePin && workView === 'published' && publishedWorks.length > 0 && <p className="pf-pin-hint"><DashIcon name="pin" size={14} /> Sematkan hingga {pinLimit} karya terbaikmu agar tampil paling atas · {pinnedIds.length}/{pinLimit} dipakai</p>}
         {workView === 'draft' && isOwner && showDrafts && <p className="kl-note">Draft hanya terlihat olehmu. Karya muncul di profil publik setelah diverifikasi guru dan terbit.</p>}
         {shownWorks.length ? <WorkGrid items={shownWorks} query={needle} owner={isOwner} onPin={onTogglePin ? (work) => void togglePin(work) : undefined} pinFull={pinnedIds.length >= pinLimit} busyID={pinBusy} /> : <div className="kl-empty"><strong>{emptyText.karya || (workView === 'draft' ? 'Tidak ada draft' : 'Belum ada karya yang terbit')}</strong>{needle && <p>Tidak ada yang cocok dengan pencarian.</p>}</div>}
       </>}

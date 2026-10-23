@@ -126,7 +126,7 @@ export default function OpportunitiesPage() {
             <div className="kr-body"><h2>{opportunity.title}</h2><p className="kl-organizer">{opportunity.organizer}</p><p className="kr-summary">{opportunity.summary}</p>
               {opportunity.requirements && <details className="kl-details"><summary>Syarat dan informasi</summary><p>{opportunity.requirements}</p></details>}
               <div className="kl-meta">{opportunity.opensAt && <span>Mulai {dateLabel(opportunity.opensAt)}</span>}{opportunity.deadline && <span>Batas {dateLabel(opportunity.deadline)}</span>}{opportunity.contact && <span>Kontak: {opportunity.contact}</span>}</div>
-              <div className="kl-actions">{isOpen && <button type="button" className="kl-primary" disabled={busy === String(opportunity.id)} onClick={() => void expressInterest(opportunity)}>{busy === String(opportunity.id) ? 'Menyimpan…' : interests[String(opportunity.id)] ? 'Tertarik ✓ · Batalkan' : 'Saya tertarik'}</button>}{opportunity.url && <a className="kl-secondary" href={opportunity.url} target="_blank" rel="noreferrer">Info & daftar ↗</a>}</div>
+              <div className="kl-actions">{isOpen && <button type="button" className="kl-primary" disabled={busy === String(opportunity.id)} onClick={() => void expressInterest(opportunity)}>{busy === String(opportunity.id) ? 'Menyimpan…' : interests[String(opportunity.id)] ? 'Tertarik · Batalkan' : 'Saya tertarik'}</button>}{opportunity.url && <a className="kl-secondary" href={opportunity.url} target="_blank" rel="noreferrer">Info & daftar ↗</a>}</div>
             </div>
           </article>
         })}</div>

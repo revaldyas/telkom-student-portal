@@ -24,7 +24,7 @@ export function ProjectMedia({ cover, gallery }: { cover: Shot | null; gallery: 
 export function CopyLinkButton({ className = 'wd-ghost' }: { className?: string }) {
   const [text, setText] = useState('Salin tautan')
   return <button type="button" className={className} onClick={async () => {
-    try { await navigator.clipboard.writeText(window.location.href.split('#')[0]); setText('Tautan disalin ✓') } catch { setText('Salin dari bilah alamat') }
+    try { await navigator.clipboard.writeText(window.location.href.split('#')[0]); setText('Tautan disalin') } catch { setText('Salin dari bilah alamat') }
     setTimeout(() => setText('Salin tautan'), 2500)
   }}>{text}</button>
 }

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import '../app/(site)/listing.css'
 import { Dropdown, ListingHead, SearchField } from './ListingControls'
+import DashIcon from './DashIcon'
 
 export type ProjectItem = {
   id: string | number; slug: string; title: string; summary: string; year?: number | null
@@ -78,7 +79,7 @@ export default function ProjectsListing({ projects }: { projects: ProjectItem[] 
         return <article className="kr-card" key={project.id}>
           <div className="kr-media"><Link className="kr-cover" href={`/proyek/${project.slug}`} tabIndex={-1} aria-hidden="true">{project.cover ? <img src={project.cover} alt="" loading="lazy" /> : <span className="kr-placeholder">Proyek kolaborasi</span>}</Link>
             <span className="kr-category">{project.category}</span>{project.year ? <span className="kr-nominee kr-year">{project.year}</span> : null}
-            <span className="kr-actions"><span className="kr-comments" aria-label={`${project.likes} suka`}><span aria-hidden="true">♥</span>{project.likes}</span><Link className="kr-comments" href={`/proyek/${project.slug}#komentar`} aria-label={`${project.comments} komentar`}><span aria-hidden="true">◉</span>{project.comments}</Link></span></div>
+            <span className="kr-actions"><span className="kr-comments" aria-label={`${project.likes} suka`}><DashIcon name="heart" size={13} filled />{project.likes}</span><Link className="kr-comments" href={`/proyek/${project.slug}#komentar`} aria-label={`${project.comments} komentar`}><DashIcon name="chat" size={13} />{project.comments}</Link></span></div>
           <div className="kr-body"><h2><Link href={`/proyek/${project.slug}`} title={project.title}>{project.title}</Link></h2>{project.summary && <p className="kr-summary">{project.summary}</p>}
             <p className="kr-author">{first ? <Link href={`/siswa/${first.id}`}>{first.photo ? <span className="mvs-avatar"><img src={first.photo} alt="" loading="lazy" /></span> : <span className="mvs-avatar work-author-placeholder">{first.name.slice(0, 1).toUpperCase()}</span>}<span className="work-author-details"><span className="work-author-name">{first.name}</span><small className="work-author-major">{project.members.length > 1 ? `+ ${project.members.length - 1} anggota proyek` : 'Proyek kolaborasi'}</small></span></Link> : <span><span className="work-author-details"><span className="work-author-name">Proyek kolaborasi</span></span></span>}</p></div>
         </article>
