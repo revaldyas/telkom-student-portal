@@ -13,7 +13,13 @@ export const Uploads: CollectionConfig = {
   },
   admin: { group: 'Media', useAsTitle: 'alt', defaultColumns: ['mimeType', 'filesize', 'createdAt'], listSearchableFields: ['alt', 'filename'] },
   hooks: {
-    beforeOperation: [async ({ operation, req }) => {
+    beforeOperation: [({ req }) => {
+      // Cloud storage persists the generated filename with a nested update. Do not
+      // re-run the outer image crop as part of that metadata-only update.
+      if (req.context?.skipCloudStorage && req.query && typeof req.query === 'object') {
+        delete (req.query as Record<string, unknown>).uploadEdits
+      }
+    }, async ({ operation, req }) => {
       if (operation !== 'create' && operation !== 'update') return
       const file = req.file
       if (!file) return

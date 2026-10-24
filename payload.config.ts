@@ -43,6 +43,8 @@ export default buildConfig({
       // Use the same storage adapter locally when a Blob token is configured;
       // otherwise Payload builds local /media URLs for files that only exist in Blob.
       enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      // Give replaced files a new URL so Vercel's CDN cannot serve a cached pre-crop image.
+      addRandomSuffix: true,
       collections: { uploads: true },
       token: process.env.BLOB_READ_WRITE_TOKEN,
     }),
